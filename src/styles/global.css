@@ -7,11 +7,12 @@
 
 @theme {
   /* Brand palette — warm charcoal + ember/copper + stone */
-  --color-coal-950: #14110d;
-  --color-coal-900: #1d1812;
+  --color-coal-950: #120f0b;
+  --color-coal-900: #1b1611;
+  --color-coal-850: #221c15;
   --color-coal-800: #2a231a;
   --color-coal-700: #3a3024;
-  --color-stone-100: #f6f2ea;
+  --color-stone-100: #f7f3ec;
   --color-stone-200: #ece5d8;
   --color-stone-300: #d9cfbd;
   --color-stone-400: #b8ad97;
@@ -19,6 +20,16 @@
   --color-ember-500: #c6843f;
   --color-ember-400: #d99a52;
   --color-ash-600: #6b6253;
+
+  /* Refined gold — used for fine detail: eyebrows, hairlines, flourishes */
+  --color-gold-500: #b9995c;
+  --color-gold-400: #ccae72;
+  --color-gold-300: #e0c891;
+
+  /* Depth */
+  --shadow-luxe: 0 30px 60px -25px rgba(0, 0, 0, 0.55), 0 12px 24px -18px rgba(0, 0, 0, 0.5);
+  --shadow-card: 0 20px 45px -25px rgba(20, 14, 8, 0.35);
+  --ease-lux: cubic-bezier(0.22, 1, 0.36, 1);
 
   /* Typography */
   --font-display: "Cormorant Garamond", "Playfair Display", Georgia, serif;
@@ -47,14 +58,74 @@
   h1, h2, h3, h4 {
     font-family: var(--font-display);
     font-weight: 500;
-    line-height: 1.08;
+    line-height: 1.04;
     color: var(--color-stone-100);
-    letter-spacing: -0.01em;
+    letter-spacing: -0.015em;
+  }
+
+  /* Serif italic accent for emphasised words in display headings */
+  .display-accent {
+    font-style: italic;
+    font-weight: 400;
+    color: var(--color-gold-300);
   }
 
   ::selection {
     background: var(--color-ember-600);
     color: var(--color-coal-950);
+  }
+}
+
+/* =========================================================================
+   Motion system — cinematic, restrained (plan §19.1). Reveal-on-scroll,
+   hero Ken Burns, refined hover. All gated on .js + prefers-reduced-motion.
+   ========================================================================= */
+@layer base {
+  /* Reveal-on-scroll: only active when JS is present, so no-JS still shows all */
+  html.js [data-reveal] {
+    opacity: 0;
+    transform: translateY(28px);
+    transition:
+      opacity 0.9s var(--ease-lux),
+      transform 0.9s var(--ease-lux);
+    will-change: opacity, transform;
+  }
+  html.js [data-reveal].is-visible {
+    opacity: 1;
+    transform: none;
+  }
+  /* Stagger children within a revealed group */
+  html.js [data-reveal-group].is-visible > * {
+    animation: rise 0.9s var(--ease-lux) both;
+  }
+  html.js [data-reveal-group].is-visible > *:nth-child(2) { animation-delay: 0.08s; }
+  html.js [data-reveal-group].is-visible > *:nth-child(3) { animation-delay: 0.16s; }
+  html.js [data-reveal-group].is-visible > *:nth-child(4) { animation-delay: 0.24s; }
+  html.js [data-reveal-group].is-visible > *:nth-child(5) { animation-delay: 0.32s; }
+  html.js [data-reveal-group].is-visible > *:nth-child(6) { animation-delay: 0.4s; }
+
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(26px); }
+    to { opacity: 1; transform: none; }
+  }
+
+  /* Hero Ken Burns — slow, cinematic drift */
+  @keyframes kenburns {
+    from { transform: scale(1.08) translate3d(0, 0, 0); }
+    to { transform: scale(1.18) translate3d(-1.5%, -1.5%, 0); }
+  }
+  .kenburns {
+    animation: kenburns 22s ease-out forwards;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html.js [data-reveal],
+    html.js [data-reveal-group].is-visible > * {
+      opacity: 1 !important;
+      transform: none !important;
+      animation: none !important;
+    }
+    .kenburns { animation: none !important; }
   }
 }
 
@@ -66,51 +137,113 @@
     padding-inline: 1.5rem;
   }
 
+  /* Eyebrow — refined gold, with a short lead rule for an editorial feel */
   .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.85rem;
     font-family: var(--font-sans);
     text-transform: uppercase;
-    letter-spacing: 0.22em;
-    font-size: 0.72rem;
+    letter-spacing: 0.28em;
+    font-size: 0.7rem;
     font-weight: 600;
-    color: var(--color-ember-400);
+    color: var(--color-gold-400);
+  }
+  .eyebrow::before {
+    content: "";
+    width: 2rem;
+    height: 1px;
+    background: currentColor;
+    opacity: 0.6;
+  }
+  .eyebrow-center {
+    justify-content: center;
   }
 
   .btn {
+    position: relative;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 0.5rem;
-    padding: 0.85rem 1.6rem;
+    gap: 0.55rem;
+    padding: 0.95rem 1.9rem;
     font-family: var(--font-sans);
     font-weight: 600;
-    font-size: 0.86rem;
-    letter-spacing: 0.04em;
+    font-size: 0.82rem;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
     border-radius: 2px;
-    transition: all 0.25s ease;
+    transition: transform 0.35s var(--ease-lux), background 0.35s var(--ease-lux),
+      color 0.35s var(--ease-lux), border-color 0.35s var(--ease-lux), box-shadow 0.35s var(--ease-lux);
     cursor: pointer;
+    overflow: hidden;
   }
 
   .btn-primary {
-    background: var(--color-ember-600);
+    background: linear-gradient(135deg, var(--color-ember-500), var(--color-ember-600));
     color: var(--color-coal-950);
+    box-shadow: 0 12px 30px -12px color-mix(in srgb, var(--color-ember-600) 65%, transparent);
   }
   .btn-primary:hover {
-    background: var(--color-ember-400);
-    transform: translateY(-1px);
+    background: linear-gradient(135deg, var(--color-ember-400), var(--color-ember-500));
+    transform: translateY(-2px);
+    box-shadow: 0 18px 40px -14px color-mix(in srgb, var(--color-ember-500) 70%, transparent);
   }
 
   .btn-ghost {
-    border: 1px solid var(--color-stone-400);
+    border: 1px solid color-mix(in srgb, var(--color-stone-400) 55%, transparent);
     color: var(--color-stone-100);
+    backdrop-filter: blur(2px);
   }
   .btn-ghost:hover {
-    border-color: var(--color-ember-400);
-    color: var(--color-ember-400);
+    border-color: var(--color-gold-400);
+    color: var(--color-gold-300);
+    transform: translateY(-2px);
+  }
+
+  /* Animated link underline — grows from the left on hover/focus */
+  .link-underline {
+    position: relative;
+    display: inline-block;
+  }
+  .link-underline::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -3px;
+    width: 100%;
+    height: 1px;
+    background: currentColor;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.4s var(--ease-lux);
+  }
+  .link-underline:hover::after,
+  .link-underline:focus-visible::after {
+    transform: scaleX(1);
   }
 
   .hairline {
     border-top: 1px solid color-mix(in srgb, var(--color-stone-400) 22%, transparent);
+  }
+
+  /* Luxury card — depth + refined image reveal on hover */
+  .card-luxe {
+    position: relative;
+    overflow: hidden;
+    border-radius: 3px;
+    box-shadow: var(--shadow-card);
+    transition: transform 0.5s var(--ease-lux), box-shadow 0.5s var(--ease-lux);
+  }
+  .card-luxe:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-luxe);
+  }
+  .card-luxe img {
+    transition: transform 1.2s var(--ease-lux);
+  }
+  .card-luxe:hover img {
+    transform: scale(1.06);
   }
 
   /* Light editorial sections — plan §19.2 warns against excessive black
