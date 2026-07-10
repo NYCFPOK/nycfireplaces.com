@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Motion layer demo · NYC Fireplaces</title>
+<link rel="stylesheet" href="/motion.css">
+<style>
+  body { margin:0; background:#0d0a09; color:#f2e7d8; font-family:system-ui,sans-serif; padding:40px 24px 120px; }
+  h1 { font-weight:400; letter-spacing:.02em; }
+  .note { color:#b3a68e; max-width:60ch; line-height:1.6; }
+  .grid { display:grid; gap:28px; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); margin-top:36px; }
+  figure { margin:0; }
+  figcaption { margin-top:10px; font-size:13px; color:#b3a68e; letter-spacing:.04em; }
+  img { width:100%; border-radius:4px; display:block; }
+  .tag { color:#ffc46b; }
+</style>
+</head>
+<body>
+  <h1>Motion layer &mdash; effect demo</h1>
+  <p class="note">Each tile applies the <span class="tag">data-fx</span> attribute shown in its caption to a real
+  site image. Flames animate the photographed fire (displacement + glow + light-spill), embers rise from the
+  fire region, Ken Burns slowly pushes in, and reveal fades tiles up on scroll. Turn on "reduce motion" in your
+  OS to confirm everything falls back to a static state.</p>
+
+  <div class="grid">
+    <figure>
+      <img src="https://www.nycfireplaces.com/wp-content/uploads/2022/08/Kozy-Heat-fireplace-1.jpg"
+           alt="Kozy Heat firebox" data-fx="flames embers" data-flame-rect="22,40,56,42" data-flame-intensity="high">
+      <figcaption>flames embers &middot; intensity <span class="tag">high</span></figcaption>
+    </figure>
+    <figure>
+      <img src="https://www.nycfireplaces.com/wp-content/uploads/2022/07/nyc-fireplaces-custom-install.jpg"
+           alt="Linear fireplace" data-fx="flames embers" data-flame-rect="3,62,52,7" data-flame-intensity="med">
+      <figcaption>flames embers &middot; intensity <span class="tag">med</span></figcaption>
+    </figure>
+    <figure>
+      <img src="https://www.nycfireplaces.com/wp-content/uploads/2022/08/American-Fyre-Design-Fire-Table.jpg"
+           alt="Fire table" data-fx="flames embers" data-flame-rect="30,40,40,18" data-flame-intensity="low">
+      <figcaption>flames embers &middot; intensity <span class="tag">low</span></figcaption>
+    </figure>
+    <figure>
+      <img src="https://www.nycfireplaces.com/wp-content/uploads/2022/08/Gozney-Pizza-Oven-1.jpg"
+           alt="Pizza oven" data-fx="flames" data-flame-shape="arch" data-flame-rect="33,52,34,18" data-flame-intensity="low">
+      <figcaption>flames &middot; shape <span class="tag">arch</span> &middot; low</figcaption>
+    </figure>
+    <figure>
+      <img src="https://www.nycfireplaces.com/wp-content/uploads/2022/08/stoll-custom-bbq-island.jpg"
+           alt="Outdoor kitchen" data-fx="kenburns">
+      <figcaption>kenburns</figcaption>
+    </figure>
+    <figure>
+      <img src="https://www.nycfireplaces.com/wp-content/uploads/2022/08/Twin-Eagles-Grill.jpg"
+           alt="Grill" data-fx="reveal">
+      <figcaption>reveal</figcaption>
+    </figure>
+  </div>
+
+  <script src="/motion.js" defer></script>
+</body>
+</html>

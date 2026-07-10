@@ -1,6 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
 import ConversionBlock from '../components/ConversionBlock.astro';
+import HeroFire from '../components/scenes/HeroFire.astro';
 import { business } from '../data/business';
 
 const CDN = 'https://www.nycfireplaces.com/wp-content/uploads';
@@ -25,6 +26,9 @@ const paths = [
     img: `${CDN}/2022/08/Kozy-Heat-fireplace-1.jpg`,
     href: '/fireplaces',
     cta: 'Explore fireplaces',
+    fx: 'flames embers',
+    rect: '22,40,56,42', // firebox region of the Kozy Heat photo
+    intensity: 'high',
   },
   {
     title: 'Outdoor Kitchens',
@@ -32,6 +36,9 @@ const paths = [
     img: `${CDN}/2022/08/stoll-custom-bbq-island.jpg`,
     href: '/outdoor-kitchen',
     cta: 'Explore outdoor kitchens',
+    fx: 'kenburns', // no visible flame in this photo
+    rect: '',
+    intensity: 'med',
   },
 ];
 
@@ -47,10 +54,10 @@ const fireplaceTypes = [
 
 // §11.3 selected projects — real project imagery (Portfolio teaser)
 const projects = [
-  { img: `${CDN}/2022/07/nyc-fireplaces-custom-install.jpg`, label: 'Custom fireplace install' },
-  { img: `${CDN}/2022/08/stoll-custom-bbq-island.jpg`, label: 'Custom BBQ island' },
-  { img: `${CDN}/2022/08/American-Fyre-Design-Fire-Table.jpg`, label: 'Fire feature' },
-  { img: `${CDN}/2022/08/Twin-Eagles-Grill.jpg`, label: 'Built-in grill' },
+  { img: `${CDN}/2022/07/nyc-fireplaces-custom-install.jpg`, label: 'Custom fireplace install', fx: 'flames', rect: '3,62,52,7', intensity: 'med' },
+  { img: `${CDN}/2022/08/stoll-custom-bbq-island.jpg`, label: 'Custom BBQ island', fx: '', rect: '', intensity: 'med' },
+  { img: `${CDN}/2022/08/American-Fyre-Design-Fire-Table.jpg`, label: 'Fire feature', fx: 'flames embers', rect: '30,40,40,18', intensity: 'med' },
+  { img: `${CDN}/2022/08/Twin-Eagles-Grill.jpg`, label: 'Built-in grill', fx: '', rect: '', intensity: 'med' },
 ];
 
 const brands = [
@@ -77,52 +84,16 @@ const guides = [
   description={business.description}
   path="/"
 >
-  <!-- 1 — HERO (real project, cinematic) -->
-  <section class="relative flex items-end overflow-hidden min-h-[92vh]">
-    <div class="absolute inset-0 overflow-hidden">
-      <img
-        src={`${CDN}/2022/10/stunning-fireplaces-1-1536x865.jpg`}
-        alt="A completed custom fireplace and living space by NYC Fireplaces & Outdoor Kitchens"
-        class="kenburns h-full w-full object-cover"
-        fetchpriority="high"
-      />
-    </div>
-    <!-- Cinematic depth: bottom fade + directional shade + subtle vignette -->
-    <div class="absolute inset-0 bg-gradient-to-t from-coal-950 via-coal-950/55 to-coal-950/15"></div>
-    <div class="absolute inset-0 bg-gradient-to-r from-coal-950/75 via-transparent to-transparent"></div>
-    <div class="pointer-events-none absolute inset-0 shadow-[inset_0_0_180px_60px_rgba(10,7,4,0.7)]"></div>
-
-    <div class="container-page relative pb-24 pt-36">
-      <p class="eyebrow mb-6 opacity-0 [animation:rise_0.9s_var(--ease-lux)_0.1s_forwards]">
-        Family-owned · NYC · Long Island · New Jersey
-      </p>
-      <h1 class="max-w-5xl text-[2.9rem] leading-[1.02] sm:text-6xl md:text-7xl lg:text-[5.4rem] opacity-0 [animation:rise_1s_var(--ease-lux)_0.24s_forwards]">
-        Fireplaces &amp; outdoor kitchens,<br class="hidden sm:block" />
-        <span class="display-accent">designed around your home.</span>
-      </h1>
-      <p class="mt-7 max-w-xl text-lg leading-relaxed text-stone-300 opacity-0 [animation:rise_1s_var(--ease-lux)_0.4s_forwards]">
-        An in-house team of designers, craftsmen and factory-trained installers — from the first
-        sketch to the final flame, handled under one roof.
-      </p>
-      <div class="mt-10 flex flex-wrap gap-4 opacity-0 [animation:rise_1s_var(--ease-lux)_0.54s_forwards]">
-        <a href="/consultation" class="btn btn-primary text-base">Request a Consultation</a>
-        <a href="/locations" class="btn btn-ghost">Visit a Showroom</a>
-      </div>
-    </div>
-
-    <!-- Scroll cue -->
-    <div class="pointer-events-none absolute bottom-7 left-1/2 hidden -translate-x-1/2 md:block opacity-0 [animation:rise_1s_var(--ease-lux)_0.9s_forwards]">
-      <span class="block h-10 w-[1px] bg-gradient-to-b from-gold-400/80 to-transparent"></span>
-    </div>
-  </section>
+  <!-- 1 — HERO: illustrated "Fire, Perfected" scene with live flames -->
+  <HeroFire />
 
   <!-- 2 — PROOF STRIP (§11.4, approved wording) -->
-  <section class="section-cream border-b border-coal-900/10">
-    <div class="container-page py-6">
-      <ul class="flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-sm font-medium">
+  <section class="border-y border-gold-500/20 bg-coal-900">
+    <div class="container-page py-7">
+      <ul class="flex flex-wrap items-center justify-center gap-x-9 gap-y-3 text-[0.78rem] font-semibold uppercase tracking-[0.16em] text-stone-300">
         {proof.map((p, i) => (
-          <li class="flex items-center gap-8">
-            {i > 0 && <span aria-hidden="true" class="hidden text-ember-600 sm:inline">◆</span>}
+          <li class="flex items-center gap-9">
+            {i > 0 && <span aria-hidden="true" class="hidden text-[0.5rem] text-gold-400 sm:inline">◆</span>}
             <span>{p}</span>
           </li>
         ))}
@@ -141,7 +112,14 @@ const guides = [
         {paths.map((p) => (
           <a href={p.href} class="card-luxe group block">
             <div class="aspect-[16/11] overflow-hidden">
-              <img src={p.img} alt={p.title} class="h-full w-full object-cover" />
+              <img
+                src={p.img}
+                alt={p.title}
+                class="h-full w-full object-cover"
+                data-fx={p.fx || undefined}
+                data-flame-rect={p.rect || undefined}
+                data-flame-intensity={p.intensity}
+              />
             </div>
             <div class="absolute inset-0 bg-gradient-to-t from-coal-950/92 via-coal-950/25 to-transparent"></div>
             <div class="absolute bottom-0 p-8">
@@ -177,7 +155,15 @@ const guides = [
         </div>
       </div>
       <figure class="card-luxe" data-reveal>
-        <img src={`${CDN}/2022/07/nyc-fireplaces-custom-install.jpg`} alt="A custom fireplace installation in a New York home" class="aspect-[4/3] w-full object-cover" loading="lazy" />
+        <img
+          src={`${CDN}/2022/07/nyc-fireplaces-custom-install.jpg`}
+          alt="A linear gas fireplace installation in a New York home"
+          class="aspect-[4/3] w-full object-cover"
+          loading="lazy"
+          data-fx="flames embers"
+          data-flame-rect="3,62,52,7"
+          data-flame-intensity="high"
+        />
       </figure>
     </div>
   </section>
@@ -217,7 +203,15 @@ const guides = [
       <div class="grid grid-cols-2 gap-4 lg:grid-cols-4" data-reveal data-reveal-group>
         {projects.map((p) => (
           <figure class="card-luxe group">
-            <img src={p.img} alt={p.label} class="aspect-[4/5] w-full object-cover" loading="lazy" />
+            <img
+              src={p.img}
+              alt={p.label}
+              class="aspect-[4/5] w-full object-cover"
+              loading="lazy"
+              data-fx={p.fx || undefined}
+              data-flame-rect={p.rect || undefined}
+              data-flame-intensity={p.fx ? p.intensity : undefined}
+            />
             <figcaption class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-coal-950/90 to-transparent p-4 text-xs font-medium uppercase tracking-wider text-stone-100">{p.label}</figcaption>
           </figure>
         ))}
@@ -270,12 +264,15 @@ const guides = [
 
   <!-- 10 — FINANCING -->
   <section class="section-light">
-    <div class="container-page flex flex-col items-start gap-6 py-14 sm:flex-row sm:items-center sm:justify-between">
-      <div>
-        <h2 class="text-3xl">Financing available through Acorn Finance</h2>
-        <p class="mt-2 max-w-xl text-coal-700">Explore monthly-payment options for your fireplace or outdoor-kitchen project.</p>
+    <div class="container-page py-16" data-reveal>
+      <div class="flex flex-col items-start gap-7 rounded-sm border border-gold-500/30 bg-stone-200/60 px-8 py-10 shadow-[var(--shadow-card)] sm:flex-row sm:items-center sm:justify-between md:px-12">
+        <div>
+          <p class="eyebrow mb-3">Make it comfortable</p>
+          <h2 class="text-3xl md:text-4xl">Financing available through <span class="display-accent">Acorn Finance</span></h2>
+          <p class="mt-3 max-w-xl text-coal-700">Explore monthly-payment options for your fireplace or outdoor-kitchen project.</p>
+        </div>
+        <a href="/financing" class="btn btn-primary shrink-0">Explore financing</a>
       </div>
-      <a href="/financing" class="btn btn-primary shrink-0">Explore financing</a>
     </div>
   </section>
 

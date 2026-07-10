@@ -6,34 +6,37 @@
    ========================================================================= */
 
 @theme {
-  /* Brand palette — warm charcoal + ember/copper + stone */
-  --color-coal-950: #120f0b;
-  --color-coal-900: #1b1611;
-  --color-coal-850: #221c15;
-  --color-coal-800: #2a231a;
+  /* Palette — from the client-approved "Fire, Perfected" concept:
+     ink blacks, warm cream, live ember orange, deep maroon, dusk violet */
+  --color-coal-950: #0d0a09; /* ink */
+  --color-coal-900: #161110; /* ink-2 */
+  --color-coal-850: #1c1512;
+  --color-coal-800: #241c17;
   --color-coal-700: #3a3024;
-  --color-stone-100: #f7f3ec;
-  --color-stone-200: #ece5d8;
-  --color-stone-300: #d9cfbd;
-  --color-stone-400: #b8ad97;
-  --color-ember-600: #b5733a;
-  --color-ember-500: #c6843f;
-  --color-ember-400: #d99a52;
+  --color-stone-100: #f2e7d8; /* cream */
+  --color-stone-200: #e8dac5;
+  --color-stone-300: #d5c4a9;
+  --color-stone-400: #b3a68e;
+  --color-ember-600: #e07514; /* ember, deepened for AA on ink */
+  --color-ember-500: #ff8c2e; /* ember */
+  --color-ember-400: #ffc46b; /* ember-hot */
+  --color-maroon-600: #943634;
+  --color-dusk-900: #1a1626;
   --color-ash-600: #6b6253;
 
-  /* Refined gold — used for fine detail: eyebrows, hairlines, flourishes */
-  --color-gold-500: #b9995c;
-  --color-gold-400: #ccae72;
-  --color-gold-300: #e0c891;
+  /* Fine-detail accent (eyebrows, hairlines) — warm ember-gold */
+  --color-gold-500: #d99a52;
+  --color-gold-400: #ecb96f;
+  --color-gold-300: #ffd98c;
 
   /* Depth */
-  --shadow-luxe: 0 30px 60px -25px rgba(0, 0, 0, 0.55), 0 12px 24px -18px rgba(0, 0, 0, 0.5);
-  --shadow-card: 0 20px 45px -25px rgba(20, 14, 8, 0.35);
+  --shadow-luxe: 0 30px 70px -25px rgba(0, 0, 0, 0.65), 0 12px 24px -18px rgba(0, 0, 0, 0.55);
+  --shadow-card: 0 24px 55px -28px rgba(10, 6, 3, 0.55);
   --ease-lux: cubic-bezier(0.22, 1, 0.36, 1);
 
-  /* Typography */
+  /* Typography — concept pairing */
   --font-display: "Cormorant Garamond", "Playfair Display", Georgia, serif;
-  --font-sans: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-sans: "Jost", "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
 }
 
 @layer base {
@@ -63,11 +66,19 @@
     letter-spacing: -0.015em;
   }
 
-  /* Serif italic accent for emphasised words in display headings */
+  /* Serif italic accent — flame-gradient text, the concept's signature */
   .display-accent {
     font-style: italic;
-    font-weight: 400;
-    color: var(--color-gold-300);
+    font-weight: 300;
+    background: linear-gradient(100deg, var(--color-ember-400), var(--color-ember-500) 60%, var(--color-maroon-600));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  /* On cream sections the maroon end keeps contrast; on ink it glows. */
+
+  body {
+    font-weight: 300;
   }
 
   ::selection {

@@ -12,90 +12,85 @@ const {
 ---
 
 <!-- CONVERSION BLOCK — priority order: 1) Call  2) Showroom  3) Lead form -->
-<section aria-labelledby="cta-heading" class="bg-coal-900 border-y border-stone-400/15">
-  <div class="container-page py-16 md:py-20">
-    <div class="max-w-2xl">
-      <p class="eyebrow mb-3">Ready to begin?</p>
-      <h2 id="cta-heading" class="text-3xl md:text-5xl">{heading}</h2>
-      <p class="mt-4 text-stone-300">{sub}</p>
+<section aria-labelledby="cta-heading" class="relative overflow-hidden border-y border-gold-500/15 bg-coal-900">
+  <!-- Ambient warmth behind the CTA -->
+  <div aria-hidden="true" class="pointer-events-none absolute -top-40 left-1/2 h-96 w-[46rem] -translate-x-1/2 rounded-full bg-ember-600/10 blur-3xl"></div>
+
+  <div class="container-page relative py-20 md:py-24">
+    <div class="max-w-2xl" data-reveal>
+      <p class="eyebrow mb-4">Ready to begin?</p>
+      <h2 id="cta-heading" class="text-4xl md:text-5xl lg:text-6xl">
+        Talk to a fireplace &amp; outdoor-kitchen <span class="display-accent">specialist</span>
+      </h2>
+      <p class="mt-5 leading-relaxed text-stone-300">{sub}</p>
     </div>
 
     <!-- TIER 1 — Call first (most prominent) -->
-    <div class="mt-10 grid gap-4 sm:grid-cols-2">
+    <div class="mt-12 grid gap-5 sm:grid-cols-2" data-reveal data-reveal-group>
       {business.locations.map((loc) => (
         <a
           href={`tel:${loc.phone}`}
           data-cta="call"
-          class="group flex items-center gap-4 rounded-sm bg-ember-600 px-6 py-5 text-coal-950 transition-colors hover:bg-ember-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ember-400"
+          class="group relative flex items-center gap-5 overflow-hidden rounded-sm bg-gradient-to-br from-ember-500 to-ember-600 px-7 py-6 text-coal-950 shadow-[0_18px_45px_-18px_rgba(181,115,58,0.55)] transition-all duration-500 hover:-translate-y-1 hover:shadow-[0_26px_60px_-20px_rgba(198,132,63,0.7)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-300"
         >
-          <svg aria-hidden="true" viewBox="0 0 24 24" class="h-8 w-8 shrink-0 fill-current">
-            <path d="M6.6 10.8a15.9 15.9 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.24 11.4 11.4 0 0 0 3.6.58 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1 11.4 11.4 0 0 0 .58 3.6 1 1 0 0 1-.24 1l-2.24 2.2Z" />
-          </svg>
+          <span class="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-coal-950/15 transition-transform duration-500 group-hover:scale-110">
+            <svg aria-hidden="true" viewBox="0 0 24 24" class="h-7 w-7 fill-current">
+              <path d="M6.6 10.8a15.9 15.9 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.24 11.4 11.4 0 0 0 3.6.58 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1 11.4 11.4 0 0 0 .58 3.6 1 1 0 0 1-.24 1l-2.24 2.2Z" />
+            </svg>
+          </span>
           <span class="leading-tight">
-            <span class="block text-xs font-semibold uppercase tracking-wider opacity-80">Call {loc.city} — tap to dial</span>
-            <span class="block text-2xl font-bold">{loc.phoneDisplay}</span>
+            <span class="block text-xs font-bold uppercase tracking-[0.18em] opacity-75">Call {loc.city}</span>
+            <span class="block text-2xl font-bold md:text-[1.7rem]">{loc.phoneDisplay}</span>
           </span>
         </a>
       ))}
     </div>
 
     <!-- TIER 2 — Visit a showroom -->
-    <div class="mt-12">
-      <h3 class="eyebrow mb-4">Or visit a showroom</h3>
-      <div class="grid gap-4 sm:grid-cols-2">
+    <div class="mt-14" data-reveal>
+      <h3 class="eyebrow mb-5">Or visit a showroom</h3>
+      <div class="grid gap-5 sm:grid-cols-2">
         {business.locations.map((loc) => (
-          <div class="rounded-sm border border-stone-400/20 p-6">
-            <div class="flex items-center gap-3">
-              <p class="font-[var(--font-display)] text-xl text-stone-100">{loc.name}</p>
-              {loc.comingSoon && (
-                <span class="rounded-full border border-ember-400/50 px-2.5 py-0.5 text-[0.65rem] font-semibold uppercase tracking-wider text-ember-400">
-                  Coming Soon
-                </span>
-              )}
-            </div>
-            <address class="mt-2 not-italic text-sm text-stone-300">
+          <div class="card-luxe border border-gold-500/15 bg-coal-850 p-7">
+            <p class="font-[var(--font-display)] text-2xl text-stone-100">{loc.name}</p>
+            <address class="mt-2.5 not-italic text-sm leading-relaxed text-stone-300">
               {loc.street}<br />{loc.city}, {loc.region} {loc.postalCode}
             </address>
 
-            {loc.hoursDisplay && (
-              <dl class="mt-4 space-y-1 text-sm">
+            {loc.hoursDisplay ? (
+              <dl class="mt-5 space-y-1.5 border-t border-gold-500/15 pt-4 text-sm">
                 {loc.hoursDisplay.map((h) => (
                   <div class="flex justify-between gap-4 text-stone-300">
-                    <dt>{h.label}</dt>
+                    <dt class="uppercase tracking-wider text-xs pt-0.5 text-stone-400">{h.label}</dt>
                     <dd class={h.value === 'Closed' ? 'text-stone-400' : 'text-stone-200'}>{h.value}</dd>
                   </div>
                 ))}
               </dl>
+            ) : (
+              <p class="mt-5 border-t border-gold-500/15 pt-4 text-sm text-stone-400">
+                Call <a href={`tel:${loc.phone}`} data-cta="call" class="link-underline font-semibold text-gold-300">{loc.phoneDisplay}</a> to confirm hours
+              </p>
             )}
 
-            {loc.comingSoon ? (
-              <a
-                href={`tel:${loc.phone}`}
-                data-cta="call"
-                class="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-ember-400 hover:text-ember-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ember-400"
-              >
-                Call for Long Island service — {loc.phoneDisplay}
-              </a>
-            ) : (
-              <a
-                href={mapsUrl(loc.mapQuery)}
-                target="_blank"
-                rel="noopener"
-                class="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-ember-400 hover:text-ember-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ember-400"
-              >
-                Get directions
-                <span aria-hidden="true">→</span>
-              </a>
-            )}
+            <a
+              href={mapsUrl(loc.mapQuery)}
+              target="_blank"
+              rel="noopener"
+              class="link-underline mt-5 inline-flex items-center gap-1.5 text-sm font-semibold uppercase tracking-wider text-gold-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-300"
+            >
+              Get directions <span aria-hidden="true">→</span>
+            </a>
           </div>
         ))}
       </div>
     </div>
 
     <!-- TIER 3 — Lead form -->
-    <div class="hairline mt-12 pt-8 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-      <p class="text-stone-300">Prefer we reach out to you? Send a few details and our design team will follow up.</p>
-      <a href="/consultation" class="btn btn-ghost shrink-0">Request a consultation</a>
+    <div class="mt-14 flex flex-col gap-4 border-t border-gold-500/15 pt-9 sm:flex-row sm:items-center sm:justify-between" data-reveal>
+      <p class="max-w-xl leading-relaxed text-stone-300">
+        Prefer we reach out to you? Send a few details and our design team will follow up.
+      </p>
+      <a href="/quote" class="btn btn-ghost shrink-0">Request a Consultation</a>
     </div>
   </div>
 </section>

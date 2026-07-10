@@ -1,0 +1,304 @@
+---
+// Scene 1 from the approved "Fire, Perfected" concept: an illustrated living
+// room gathered around a lit gas fireplace, with layered animated flames.
+// Copy is registry-approved (30 years = team experience; no dealer claims).
+import { business } from '../../data/business';
+---
+
+<section id="hero" class="scene-hero" aria-label="A living room gathered around a lit gas fireplace">
+  <div class="room" aria-hidden="true">
+    <div class="panels"></div>
+    <div class="floor"></div>
+  </div>
+  <div class="fireglow" aria-hidden="true"></div>
+
+  <div class="silhouette sofa" aria-hidden="true"></div>
+  <div class="silhouette lamp" aria-hidden="true"></div>
+
+  <div class="fp" aria-hidden="true">
+    <div class="surround">
+      <div class="mantel"></div>
+      <div class="plate">Gas &nbsp;·&nbsp; Direct Vent</div>
+      <div class="firebox">
+        <div class="flames" data-flames data-count="7" data-spread="30" data-hmin="55" data-hmax="95"></div>
+        <div class="logs"></div>
+        <div class="glass"></div>
+      </div>
+      <div class="reflection"></div>
+    </div>
+  </div>
+
+  <div class="copy">
+    <p class="eyebrow scene-eyebrow">Family-owned · NYC · Long Island · New Jersey</p>
+    <h1>The room gathers<br />around <em class="display-accent">the fire.</em></h1>
+    <p class="lede">
+      Gas, electric, water-vapor and wood fireplaces — designed, supplied and installed by a
+      family-owned team with more than 30 years of fireplace and outdoor-living experience.
+    </p>
+    <div class="brandline" aria-hidden="true"><span>Design</span><span>Venting &amp; Spec</span><span>Installation</span></div>
+    <div class="ctas">
+      <a href={`tel:${business.primaryPhone}`} data-cta="call" class="scene-cta cta-fill">
+        Call {business.primaryPhoneDisplay}
+      </a>
+      <a href="/quote" class="scene-cta">Design your fireplace</a>
+    </div>
+  </div>
+
+  <div class="scrollhint" aria-hidden="true">Scroll</div>
+</section>
+
+<style is:global>
+  .scene-hero {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    background:
+      radial-gradient(120% 90% at 78% 88%, rgba(255, 120, 30, 0.16), transparent 55%),
+      linear-gradient(to bottom, #0b0908 0%, #141009 62%, #1a120a 100%);
+  }
+  .scene-hero .copy {
+    position: relative;
+    z-index: 10;
+    max-width: 620px;
+    padding: 14vh 6vw 8vh;
+    margin-right: auto;
+  }
+  .scene-hero h1 {
+    font-size: clamp(44px, 6.4vw, 86px);
+    font-weight: 400;
+    line-height: 1.04;
+    letter-spacing: 0.01em;
+  }
+  .scene-hero .lede {
+    margin-top: 26px;
+    font-size: 16.5px;
+    line-height: 1.75;
+    color: rgba(242, 231, 216, 0.62);
+    max-width: 46ch;
+  }
+  .scene-hero .brandline {
+    margin-top: 30px;
+    display: flex;
+    gap: 28px;
+    flex-wrap: wrap;
+    font-size: 12px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: rgba(242, 231, 216, 0.45);
+  }
+  .scene-hero .ctas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  .scene-cta {
+    display: inline-block;
+    margin-top: 40px;
+    padding: 15px 42px;
+    border: 1px solid rgba(255, 140, 46, 0.55);
+    color: var(--color-ember-400);
+    text-decoration: none;
+    font-size: 12.5px;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    transition: background 0.4s, color 0.4s, box-shadow 0.4s;
+  }
+  .scene-cta:hover,
+  .scene-cta:focus-visible {
+    background: rgba(255, 140, 46, 0.12);
+    box-shadow: 0 0 34px rgba(255, 140, 46, 0.28);
+    color: #fff;
+  }
+  .scene-cta.cta-fill {
+    background: linear-gradient(135deg, var(--color-ember-500), var(--color-ember-600));
+    border-color: transparent;
+    color: var(--color-coal-950);
+    font-weight: 600;
+  }
+  .scene-cta.cta-fill:hover,
+  .scene-cta.cta-fill:focus-visible {
+    box-shadow: 0 0 44px rgba(255, 140, 46, 0.45);
+    color: var(--color-coal-950);
+  }
+  .scene-eyebrow {
+    margin-bottom: 22px;
+  }
+
+  /* room */
+  .scene-hero .room { position: absolute; inset: 0; z-index: 1; }
+  .scene-hero .panels {
+    position: absolute; inset: 0;
+    background: repeating-linear-gradient(90deg, transparent 0 220px, rgba(242, 231, 216, 0.035) 220px 221px);
+    mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.9), transparent 78%);
+  }
+  .scene-hero .floor {
+    position: absolute; left: 0; right: 0; bottom: 0; height: 24vh;
+    background: linear-gradient(to bottom, #1b130b, #241609);
+    box-shadow: inset 0 30px 60px rgba(0, 0, 0, 0.6);
+  }
+  .scene-hero .floor::after {
+    content: ""; position: absolute; inset: 0;
+    background: repeating-linear-gradient(90deg, transparent 0 140px, rgba(0, 0, 0, 0.25) 140px 142px);
+    transform: perspective(400px) rotateX(30deg);
+    transform-origin: top;
+  }
+
+  /* fireplace assembly */
+  .scene-hero .fp {
+    position: absolute; right: 7vw; bottom: 24vh;
+    width: min(560px, 44vw); z-index: 2;
+  }
+  .scene-hero .surround {
+    position: relative;
+    background: linear-gradient(160deg, #231d1a, #171310 65%);
+    border: 1px solid rgba(242, 231, 216, 0.07);
+    padding: 9% 9% 11%;
+    box-shadow: 0 40px 90px rgba(0, 0, 0, 0.7);
+  }
+  .scene-hero .mantel {
+    position: absolute; top: -16px; left: -5%; right: -5%; height: 16px;
+    background: linear-gradient(to bottom, #3a2e26, #241c16);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.55);
+  }
+  .scene-hero .plate {
+    position: absolute; top: 7%; left: 0; right: 0;
+    text-align: center;
+    font-size: 10px; letter-spacing: 0.5em; text-transform: uppercase;
+    color: rgba(242, 231, 216, 0.28);
+  }
+  .scene-hero .firebox {
+    position: relative;
+    aspect-ratio: 16 / 9.2;
+    background: radial-gradient(90% 120% at 50% 100%, #31150a 0%, #120705 55%, #060302 100%);
+    border: 2px solid #2c2320;
+    outline: 1px solid rgba(255, 150, 60, 0.12);
+    overflow: hidden;
+    box-shadow: inset 0 0 60px rgba(0, 0, 0, 0.85);
+  }
+  .scene-hero .logs {
+    position: absolute; bottom: 6%; left: 10%; right: 10%; height: 16%;
+    background: linear-gradient(to bottom, #241511, #0d0605);
+    border-radius: 40% 40% 10% 10% / 80% 80% 20% 20%;
+    box-shadow: 0 -4px 14px rgba(255, 110, 20, 0.35);
+  }
+  .scene-hero .logs::before,
+  .scene-hero .logs::after {
+    content: ""; position: absolute; height: 60%; border-radius: 50px;
+    background: linear-gradient(to bottom, #2d1a12, #120906);
+    box-shadow: inset 0 2px 3px rgba(255, 140, 50, 0.25);
+  }
+  .scene-hero .logs::before { left: 6%; right: 38%; top: -45%; transform: rotate(-3deg); }
+  .scene-hero .logs::after { left: 40%; right: 8%; top: -55%; transform: rotate(2.5deg); }
+  .scene-hero .glass {
+    position: absolute; inset: 0;
+    background: linear-gradient(115deg, rgba(255, 255, 255, 0.07) 0%, transparent 24%, transparent 70%, rgba(255, 255, 255, 0.04) 100%);
+    pointer-events: none;
+  }
+  .scene-hero .fireglow {
+    position: absolute; right: 2vw; bottom: 10vh;
+    width: 60vw; height: 70vh;
+    background: radial-gradient(50% 50% at 60% 70%, rgba(255, 120, 30, 0.22), transparent 70%);
+    animation: glowpulse 3.2s ease-in-out infinite;
+    z-index: 1; pointer-events: none;
+  }
+  @keyframes glowpulse { 0%, 100% { opacity: 0.85; } 50% { opacity: 1.15; } }
+  .scene-hero .reflection {
+    position: absolute; left: 9%; right: 9%; top: 100%; height: 80px;
+    background: linear-gradient(to bottom, rgba(255, 130, 40, 0.18), transparent);
+    filter: blur(10px);
+    transform: scaleY(-1);
+  }
+
+  /* furniture silhouettes */
+  .scene-hero .silhouette {
+    position: absolute; bottom: 22vh; z-index: 1;
+    background: #0a0706; filter: blur(1px); opacity: 0.9;
+  }
+  .scene-hero .sofa { left: 4vw; width: 26vw; max-width: 340px; height: 12vh; border-radius: 18px 60px 6px 6px; }
+  .scene-hero .sofa::after {
+    content: ""; position: absolute; left: -6%; bottom: -2vh;
+    width: 112%; height: 2vh; background: #080505; border-radius: 8px;
+  }
+  .scene-hero .lamp { left: 31vw; width: 3px; height: 26vh; background: #0a0706; }
+  .scene-hero .lamp::before {
+    content: ""; position: absolute; top: -9vh; left: 50%; transform: translateX(-50%);
+    width: 70px; height: 9vh;
+    background: linear-gradient(to bottom, #1c130c, #0e0806);
+    clip-path: polygon(18% 0, 82% 0, 100% 100%, 0 100%);
+  }
+  .scene-hero .lamp::after {
+    content: ""; position: absolute; top: -8vh; left: 50%; transform: translateX(-50%);
+    width: 54px; height: 7vh;
+    background: radial-gradient(at 50% 20%, rgba(255, 190, 110, 0.35), transparent 70%);
+    filter: blur(6px);
+  }
+
+  .scene-hero .scrollhint {
+    position: absolute; bottom: 34px; left: 50%; transform: translateX(-50%);
+    z-index: 11;
+    font-size: 10.5px; letter-spacing: 0.4em; text-transform: uppercase;
+    color: rgba(242, 231, 216, 0.4);
+    animation: hintdrift 2.6s ease-in-out infinite;
+  }
+  @keyframes hintdrift { 0%, 100% { transform: translate(-50%, 0); } 50% { transform: translate(-50%, 8px); } }
+
+  /* layered flames (shared by hero + oven scenes) */
+  .flames { position: absolute; left: 0; right: 0; bottom: 10%; height: 88%; filter: blur(1.5px); }
+  .flame {
+    position: absolute; bottom: 0;
+    border-radius: 50% 50% 42% 42% / 72% 72% 30% 30%;
+    transform-origin: 50% 100%;
+    mix-blend-mode: screen;
+    animation: lick 1.6s ease-in-out infinite;
+  }
+  .flame.deep { background: radial-gradient(at 50% 90%, #c22e08, #5e0f03 75%, transparent); filter: blur(7px); }
+  .flame.mid { background: radial-gradient(at 50% 92%, #ff7a1a, #c23807 70%, transparent); filter: blur(4px); }
+  .flame.hot { background: radial-gradient(at 50% 95%, #ffc46b, #ff8c2e 60%, transparent); filter: blur(2.5px); }
+  .flame.core { background: radial-gradient(at 50% 100%, #fff3d6, #ffc46b 55%, transparent); filter: blur(1.5px); }
+  @keyframes lick {
+    0%, 100% { transform: scaleY(1) scaleX(1) skewX(0deg); }
+    25% { transform: scaleY(1.14) scaleX(0.94) skewX(2.4deg); }
+    50% { transform: scaleY(0.9) scaleX(1.05) skewX(-2deg); }
+    75% { transform: scaleY(1.08) scaleX(0.97) skewX(1.2deg); }
+  }
+
+  @media (max-width: 900px) {
+    .scene-hero .copy { padding-top: 16vh; padding-bottom: 54vh; }
+    .scene-hero .fp { right: 50%; transform: translateX(50%); bottom: 12vh; width: min(480px, 86vw); }
+    .scene-hero .silhouette { display: none; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .flame, .scene-hero .fireglow, .scene-hero .scrollhint { animation: none; }
+  }
+</style>
+
+<script is:inline>
+  // Build layered flames inside any [data-flames] container.
+  (function () {
+    function buildFlames(el) {
+      var count = +el.dataset.count || 6;
+      var spread = +el.dataset.spread || 30;
+      var hMin = +el.dataset.hmin || 55;
+      var hMax = +el.dataset.hmax || 95;
+      var layers = ['deep', 'mid', 'hot', 'core'];
+      layers.forEach(function (layer, li) {
+        var n = Math.max(2, count - li);
+        for (var i = 0; i < n; i++) {
+          var f = document.createElement('div');
+          f.className = 'flame ' + layer;
+          var w = (spread / n) * (0.9 + Math.random() * 0.5) * (1 - li * 0.14);
+          var h = (hMin + Math.random() * (hMax - hMin)) * (1 - li * 0.16);
+          f.style.width = w + '%';
+          f.style.height = h + '%';
+          f.style.left = 4 + (i / (n - 0.5)) * (92 - w) + '%';
+          f.style.animationDuration = (1.2 + Math.random() * 1.1).toFixed(2) + 's';
+          f.style.animationDelay = (-Math.random() * 2).toFixed(2) + 's';
+          el.appendChild(f);
+        }
+      });
+    }
+    document.querySelectorAll('[data-flames]').forEach(buildFlames);
+  })();
+</script>

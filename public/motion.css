@@ -1,0 +1,156 @@
+/* =========================================================================
+   motion.css  ·  Cinematic motion layer for nycfireplaces.com
+   Self-contained, zero-dependency. Opt-in per image via data-fx attributes.
+   All comments use hyphens, not em dashes (per spec).
+   ========================================================================= */
+
+/* Wrapper injected by motion.js around any tagged image. Preserves the
+   image's aspect ratio so overlays never cause layout shift. */
+.fx-wrap {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  isolation: isolate;
+}
+.fx-wrap > img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* ---- Flame region overlay -------------------------------------------- */
+.fx-flames {
+  position: absolute;
+  pointer-events: none;
+  z-index: 2;
+  /* feathered edges so the overlay blends into the photo */
+  -webkit-mask-image: radial-gradient(120% 120% at 50% 60%, #000 55%, transparent 88%);
+  mask-image: radial-gradient(120% 120% at 50% 60%, #000 55%, transparent 88%);
+}
+.fx-flames[data-shape="arch"] {
+  -webkit-mask-image: none;
+  mask-image: none;
+  clip-path: path("M0,100 L0,45 Q0,0 50,0 Q100,0 100,45 L100,100 Z");
+}
+
+/* Displacement slice: a copy of the photo's flame region, wobbled by the
+   shared SVG filter. Hidden until motion.js confirms capability. */
+.fx-slice {
+  position: absolute;
+  inset: -8%;
+  background-repeat: no-repeat;
+  will-change: filter;
+  opacity: 0;
+  transition: opacity 0.6s ease;
+}
+.fx-wrap.fx-ready .fx-slice {
+  opacity: 0.85;
+}
+
+/* Warm core + amber glow, flickering on odd cycles so it never loops visibly */
+.fx-glow,
+.fx-glow-outer {
+  position: absolute;
+  inset: 0;
+  mix-blend-mode: screen;
+  pointer-events: none;
+}
+.fx-glow {
+  background: radial-gradient(60% 70% at 50% 78%, rgba(232, 100, 27, 0.55), transparent 72%);
+  animation: fx-flick-a 1.7s ease-in-out infinite;
+}
+.fx-glow-outer {
+  background: radial-gradient(50% 60% at 50% 82%, rgba(255, 196, 107, 0.4), transparent 78%);
+  animation: fx-flick-b 2.3s ease-in-out infinite;
+}
+
+/* Light-spill: bleeds past the firebox onto surrounding stone. This sells it. */
+.fx-spill {
+  position: absolute;
+  pointer-events: none;
+  z-index: 1;
+  mix-blend-mode: screen;
+  background: radial-gradient(circle at 50% 60%, rgba(255, 140, 46, 0.28), transparent 70%);
+  animation: fx-flick-c 3.1s ease-in-out infinite;
+}
+
+.fx-intensity-low .fx-glow { opacity: 0.6; }
+.fx-intensity-low .fx-spill { opacity: 0.5; }
+.fx-intensity-high .fx-glow { opacity: 1; }
+.fx-intensity-high .fx-spill { opacity: 1; }
+
+@keyframes fx-flick-a {
+  0%, 100% { opacity: 0.85; transform: scale(1); }
+  40% { opacity: 1; transform: scale(1.03); }
+  70% { opacity: 0.72; transform: scale(0.99); }
+}
+@keyframes fx-flick-b {
+  0%, 100% { opacity: 0.7; transform: scale(1.02); }
+  50% { opacity: 1; transform: scale(0.98); }
+}
+@keyframes fx-flick-c {
+  0%, 100% { opacity: 0.8; }
+  33% { opacity: 1; }
+  66% { opacity: 0.65; }
+}
+
+/* ---- Ember particle canvas ------------------------------------------- */
+.fx-embers-canvas {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  mix-blend-mode: screen;
+}
+
+/* ---- Heat shimmer ---------------------------------------------------- */
+.fx-shimmer {
+  position: absolute;
+  z-index: 2;
+  pointer-events: none;
+  -webkit-backdrop-filter: blur(0.6px);
+  backdrop-filter: blur(0.6px);
+  animation: fx-shimmer 2.6s ease-in-out infinite;
+}
+@keyframes fx-shimmer {
+  0%, 100% { transform: translateY(0) scaleY(1); opacity: 0.5; }
+  50% { transform: translateY(-2px) scaleY(1.04); opacity: 0.8; }
+}
+
+/* ---- Ken Burns ------------------------------------------------------- */
+.fx-kenburns {
+  animation: fx-kenburns 26s ease-in-out infinite alternate;
+  transform-origin: center;
+}
+.fx-kenburns.fx-kb-rev { animation-direction: alternate-reverse; }
+@keyframes fx-kenburns {
+  from { transform: scale(1) translate3d(0, 0, 0); }
+  to { transform: scale(1.08) translate3d(-1.2%, -1%, 0); }
+}
+
+/* ---- Scroll reveal --------------------------------------------------- */
+[data-fx~="reveal"] {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+}
+[data-fx~="reveal"].fx-in {
+  opacity: 1;
+  transform: none;
+}
+
+/* ---- Accessibility + graceful degradation ---------------------------- */
+.no-js [data-fx] { opacity: 1 !important; transform: none !important; }
+
+@media (prefers-reduced-motion: reduce) {
+  .fx-slice,
+  .fx-shimmer,
+  .fx-kenburns { animation: none !important; transition: none !important; }
+  .fx-glow,
+  .fx-glow-outer,
+  .fx-spill { animation: none !important; opacity: 0.5 !important; } /* static glow allowed */
+  .fx-embers-canvas { display: none !important; }
+  [data-fx~="reveal"] { opacity: 1 !important; transform: none !important; }
+  .fx-kenburns { transform: none !important; }
+}
