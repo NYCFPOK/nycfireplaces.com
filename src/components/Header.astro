@@ -1,0 +1,37 @@
+---
+const nav = [
+  { label: 'Fireplaces', href: '/fireplaces' },
+  { label: 'Outdoor Kitchens', href: '/outdoor-kitchens' },
+  { label: 'Stoves', href: '/stoves' },
+  { label: 'Brands', href: '/brands' },
+  { label: 'Installations', href: '/installations' },
+  { label: 'About', href: '/about' },
+];
+---
+
+<header class="sticky top-0 z-50 bg-coal-950/85 backdrop-blur-md border-b border-stone-400/15">
+  <div class="container-page flex items-center justify-between h-20">
+    <a href="/" class="flex flex-col leading-none">
+      <span class="font-[var(--font-display)] text-2xl text-stone-100 tracking-tight">NYC Fireplaces</span>
+      <span class="eyebrow text-[0.6rem] mt-1">&amp; Outdoor Kitchens</span>
+    </a>
+
+    <nav class="hidden lg:flex items-center gap-8" aria-label="Primary">
+      {nav.map((item) => (
+        <a
+          href={item.href}
+          class="text-sm font-medium text-stone-300 hover:text-ember-400 transition-colors"
+        >
+          {item.label}
+        </a>
+      ))}
+    </nav>
+
+    <div class="flex items-center gap-4">
+      <a href="tel:+17183264328" class="hidden md:inline text-sm font-semibold text-stone-100 hover:text-ember-400 transition-colors">
+        (718) 326-4328
+      </a>
+      <a href="/consultation" class="btn btn-primary text-xs px-4 py-2.5">Book a Consultation</a>
+    </div>
+  </div>
+</header>

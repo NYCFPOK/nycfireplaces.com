@@ -1,0 +1,72 @@
+---
+const columns = [
+  {
+    title: 'Indoor',
+    links: [
+      { label: 'Fireplaces', href: '/fireplaces' },
+      { label: 'Fireboxes', href: '/fireplaces' },
+      { label: 'Wood & Gas Stoves', href: '/stoves' },
+      { label: 'Mantels', href: '/fireplaces' },
+      { label: 'Fireplace Doors', href: '/fireplaces' },
+    ],
+  },
+  {
+    title: 'Outdoor',
+    links: [
+      { label: 'Outdoor Kitchens', href: '/outdoor-kitchens' },
+      { label: 'Outdoor Fireplaces', href: '/outdoor-kitchens' },
+      { label: 'Grills & Burners', href: '/outdoor-kitchens' },
+      { label: 'Fire Tables', href: '/outdoor-kitchens' },
+      { label: 'Outdoor Living', href: '/outdoor-kitchens' },
+    ],
+  },
+  {
+    title: 'Company',
+    links: [
+      { label: 'About Us', href: '/about' },
+      { label: 'Installations', href: '/installations' },
+      { label: 'Builders & Architects', href: '/about' },
+      { label: 'Financing', href: '/consultation' },
+      { label: 'Consultation & Design', href: '/consultation' },
+    ],
+  },
+];
+---
+
+<footer class="bg-coal-900 border-t border-stone-400/15 mt-24">
+  <div class="container-page py-16">
+    <div class="grid gap-12 lg:grid-cols-[1.4fr_1fr_1fr_1fr]">
+      <div>
+        <span class="font-[var(--font-display)] text-2xl text-stone-100">NYC Fireplaces &amp; Outdoor Kitchens</span>
+        <p class="mt-4 max-w-sm text-sm text-stone-400 leading-relaxed">
+          Family-owned, with an in-house team of craftsmen, installers, technicians and designers —
+          over 30 years bringing warmth to homes across the New York metro area.
+        </p>
+        <div class="mt-6 space-y-1 text-sm text-stone-300">
+          <p><a href="tel:+17183264328" class="hover:text-ember-400">(718) 326-4328</a></p>
+          <p><a href="tel:+15165001095" class="hover:text-ember-400">(516) 500-1095</a></p>
+        </div>
+      </div>
+
+      {columns.map((col) => (
+        <div>
+          <h4 class="eyebrow mb-4">{col.title}</h4>
+          <ul class="space-y-2.5">
+            {col.links.map((link) => (
+              <li>
+                <a href={link.href} class="text-sm text-stone-400 hover:text-ember-400 transition-colors">
+                  {link.label}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
+    </div>
+
+    <div class="hairline mt-14 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <p class="text-xs text-stone-400">© {new Date().getFullYear()} NYC Fireplaces &amp; Outdoor Kitchens. All rights reserved.</p>
+      <p class="text-xs text-stone-400">Showroom &amp; design studio · Serving the NY metro area</p>
+    </div>
+  </div>
+</footer>

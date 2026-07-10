@@ -1,0 +1,101 @@
+---
+import { business, mapsUrl } from '../data/business';
+
+interface Props {
+  heading?: string;
+  sub?: string;
+}
+const {
+  heading = 'Talk to a fireplace & outdoor-kitchen specialist',
+  sub = 'The fastest way to start is a quick call — our in-house team answers your questions and books your design consultation.',
+} = Astro.props;
+---
+
+<!-- CONVERSION BLOCK — priority order: 1) Call  2) Showroom  3) Lead form -->
+<section aria-labelledby="cta-heading" class="bg-coal-900 border-y border-stone-400/15">
+  <div class="container-page py-16 md:py-20">
+    <div class="max-w-2xl">
+      <p class="eyebrow mb-3">Ready to begin?</p>
+      <h2 id="cta-heading" class="text-3xl md:text-5xl">{heading}</h2>
+      <p class="mt-4 text-stone-300">{sub}</p>
+    </div>
+
+    <!-- TIER 1 — Call first (most prominent) -->
+    <div class="mt-10 grid gap-4 sm:grid-cols-2">
+      {business.locations.map((loc) => (
+        <a
+          href={`tel:${loc.phone}`}
+          data-cta="call"
+          class="group flex items-center gap-4 rounded-sm bg-ember-600 px-6 py-5 text-coal-950 transition-colors hover:bg-ember-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ember-400"
+        >
+          <svg aria-hidden="true" viewBox="0 0 24 24" class="h-8 w-8 shrink-0 fill-current">
+            <path d="M6.6 10.8a15.9 15.9 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.24 11.4 11.4 0 0 0 3.6.58 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1 11.4 11.4 0 0 0 .58 3.6 1 1 0 0 1-.24 1l-2.24 2.2Z" />
+          </svg>
+          <span class="leading-tight">
+            <span class="block text-xs font-semibold uppercase tracking-wider opacity-80">Call {loc.city} — tap to dial</span>
+            <span class="block text-2xl font-bold">{loc.phoneDisplay}</span>
+          </span>
+        </a>
+      ))}
+    </div>
+
+    <!-- TIER 2 — Visit a showroom -->
+    <div class="mt-12">
+      <h3 class="eyebrow mb-4">Or visit a showroom</h3>
+      <div class="grid gap-4 sm:grid-cols-2">
+        {business.locations.map((loc) => (
+          <div class="rounded-sm border border-stone-400/20 p-6">
+            <div class="flex items-center gap-3">
+              <p class="font-[var(--font-display)] text-xl text-stone-100">{loc.name}</p>
+              {loc.comingSoon && (
+                <span class="rounded-full border border-ember-400/50 px-2.5 py-0.5 text-[0.65rem] font-semibold uppercase tracking-wider text-ember-400">
+                  Coming Soon
+                </span>
+              )}
+            </div>
+            <address class="mt-2 not-italic text-sm text-stone-300">
+              {loc.street}<br />{loc.city}, {loc.region} {loc.postalCode}
+            </address>
+
+            {loc.hoursDisplay && (
+              <dl class="mt-4 space-y-1 text-sm">
+                {loc.hoursDisplay.map((h) => (
+                  <div class="flex justify-between gap-4 text-stone-300">
+                    <dt>{h.label}</dt>
+                    <dd class={h.value === 'Closed' ? 'text-stone-400' : 'text-stone-200'}>{h.value}</dd>
+                  </div>
+                ))}
+              </dl>
+            )}
+
+            {loc.comingSoon ? (
+              <a
+                href={`tel:${loc.phone}`}
+                data-cta="call"
+                class="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-ember-400 hover:text-ember-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ember-400"
+              >
+                Call for Long Island service — {loc.phoneDisplay}
+              </a>
+            ) : (
+              <a
+                href={mapsUrl(loc.mapQuery)}
+                target="_blank"
+                rel="noopener"
+                class="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-ember-400 hover:text-ember-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ember-400"
+              >
+                Get directions
+                <span aria-hidden="true">→</span>
+              </a>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <!-- TIER 3 — Lead form -->
+    <div class="hairline mt-12 pt-8 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+      <p class="text-stone-300">Prefer we reach out to you? Send a few details and our design team will follow up.</p>
+      <a href="/consultation" class="btn btn-ghost shrink-0">Request a consultation</a>
+    </div>
+  </div>
+</section>

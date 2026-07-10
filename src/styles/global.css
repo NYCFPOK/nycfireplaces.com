@@ -1,0 +1,182 @@
+@import "tailwindcss";
+
+/* =========================================================================
+   NYC Fireplaces & Outdoor Kitchens — Design System
+   Fresh, original design. Warm, editorial, premium hearth aesthetic.
+   ========================================================================= */
+
+@theme {
+  /* Brand palette — warm charcoal + ember/copper + stone */
+  --color-coal-950: #14110d;
+  --color-coal-900: #1d1812;
+  --color-coal-800: #2a231a;
+  --color-coal-700: #3a3024;
+  --color-stone-100: #f6f2ea;
+  --color-stone-200: #ece5d8;
+  --color-stone-300: #d9cfbd;
+  --color-stone-400: #b8ad97;
+  --color-ember-600: #b5733a;
+  --color-ember-500: #c6843f;
+  --color-ember-400: #d99a52;
+  --color-ash-600: #6b6253;
+
+  /* Typography */
+  --font-display: "Cormorant Garamond", "Playfair Display", Georgia, serif;
+  --font-sans: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+@layer base {
+  :root {
+    color-scheme: dark;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    background-color: var(--color-coal-950);
+    color: var(--color-stone-200);
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    line-height: 1.65;
+  }
+
+  h1, h2, h3, h4 {
+    font-family: var(--font-display);
+    font-weight: 500;
+    line-height: 1.08;
+    color: var(--color-stone-100);
+    letter-spacing: -0.01em;
+  }
+
+  ::selection {
+    background: var(--color-ember-600);
+    color: var(--color-coal-950);
+  }
+}
+
+@layer components {
+  .container-page {
+    width: 100%;
+    max-width: 80rem;
+    margin-inline: auto;
+    padding-inline: 1.5rem;
+  }
+
+  .eyebrow {
+    font-family: var(--font-sans);
+    text-transform: uppercase;
+    letter-spacing: 0.22em;
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--color-ember-400);
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.85rem 1.6rem;
+    font-family: var(--font-sans);
+    font-weight: 600;
+    font-size: 0.86rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    border-radius: 2px;
+    transition: all 0.25s ease;
+    cursor: pointer;
+  }
+
+  .btn-primary {
+    background: var(--color-ember-600);
+    color: var(--color-coal-950);
+  }
+  .btn-primary:hover {
+    background: var(--color-ember-400);
+    transform: translateY(-1px);
+  }
+
+  .btn-ghost {
+    border: 1px solid var(--color-stone-400);
+    color: var(--color-stone-100);
+  }
+  .btn-ghost:hover {
+    border-color: var(--color-ember-400);
+    color: var(--color-ember-400);
+  }
+
+  .hairline {
+    border-top: 1px solid color-mix(in srgb, var(--color-stone-400) 22%, transparent);
+  }
+}
+
+/* =========================================================================
+   Accessibility (WCAG 2.1 AA)
+   ========================================================================= */
+@layer base {
+  /* Visible keyboard focus on every interactive element */
+  a:focus-visible,
+  button:focus-visible,
+  input:focus-visible,
+  textarea:focus-visible,
+  select:focus-visible,
+  [tabindex]:focus-visible {
+    outline: 2px solid var(--color-ember-400);
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+
+  /* Skip-to-content link — first focusable element */
+  .skip-link {
+    position: absolute;
+    left: 1rem;
+    top: -3rem;
+    z-index: 100;
+    background: var(--color-ember-500);
+    color: var(--color-coal-950);
+    padding: 0.6rem 1rem;
+    font-weight: 600;
+    border-radius: 2px;
+    transition: top 0.18s ease;
+  }
+  .skip-link:focus {
+    top: 1rem;
+  }
+
+  /* Screen-reader-only text */
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  /* Honor reduced-motion preferences */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+
+  /* Ensure minimum target size for touch (WCAG 2.5.5 / 2.5.8) */
+  @media (pointer: coarse) {
+    a[data-cta],
+    .btn {
+      min-height: 44px;
+    }
+  }
+}

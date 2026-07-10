@@ -1,0 +1,200 @@
+---
+import Base from '../layouts/Base.astro';
+import ConversionBlock from '../components/ConversionBlock.astro';
+import { business } from '../data/business';
+
+const CDN = 'https://www.nycfireplaces.com/wp-content/uploads';
+
+const categories = [
+  {
+    title: 'Indoor Fireplaces',
+    copy: 'Gas, wood, electric and bio-ethanol — fireboxes, inserts, wall-mounted and custom builds.',
+    img: `${CDN}/2022/08/Kozy-Heat-fireplace-1.jpg`,
+    href: '/fireplaces',
+  },
+  {
+    title: 'Outdoor Kitchens',
+    copy: 'Built-in grills, power burners, pizza ovens and stainless cabinetry designed for the way you live outside.',
+    img: `${CDN}/2022/08/stoll-custom-bbq-island.jpg`,
+    href: '/outdoor-kitchens',
+  },
+  {
+    title: 'Stoves & Hearth',
+    copy: 'Wood, pellet, gas and propane stoves, plus mantels, doors and hearth accessories.',
+    img: `${CDN}/2022/07/nyc-fireplaces-custom-install.jpg`,
+    href: '/stoves',
+  },
+];
+
+const collections = [
+  'The Waterplace™',
+  'Optimyst® Series',
+  'GreenSmart Electric',
+  'Orion® Series',
+  'E-One Electric',
+  'Astound Series',
+];
+
+const brands = [
+  'Alfa Forni',
+  'Modern Flames',
+  'Kozy Heat®',
+  'Danver',
+  'Hestan',
+  'Twin Eagles',
+  'American Fyre',
+  'Gozney',
+];
+
+const steps = [
+  { n: '01', title: 'Consultation', copy: 'We learn your space, your style and how you live — in our showroom or on-site.' },
+  { n: '02', title: 'Design', copy: 'Our in-house designers craft a build tailored to your home, with real product and material selections.' },
+  { n: '03', title: 'Installation', copy: 'Our own licensed craftsmen and technicians install it right — no subcontractors.' },
+];
+---
+
+<Base
+  title="Fireplaces & Outdoor Kitchens in the NY Metro Area"
+  description={business.description}
+  path="/"
+>
+  <!-- HERO -->
+  <section class="relative min-h-[88vh] flex items-end overflow-hidden">
+    <img
+      src={`${CDN}/2022/10/stunning-fireplaces-1-1536x865.jpg`}
+      alt="A custom NYC Fireplaces installation"
+      class="absolute inset-0 w-full h-full object-cover"
+      fetchpriority="high"
+    />
+    <div class="absolute inset-0 bg-gradient-to-t from-coal-950 via-coal-950/70 to-coal-950/30"></div>
+    <div class="absolute inset-0 bg-gradient-to-r from-coal-950/80 to-transparent"></div>
+
+    <div class="container-page relative pb-20 pt-40">
+      <p class="eyebrow mb-5">Family-owned · 30+ years of team experience · NYC &amp; Long Island</p>
+      <h1 class="text-5xl md:text-7xl max-w-4xl">
+        Designed for the way<br />you live with fire.
+      </h1>
+      <p class="mt-6 max-w-xl text-lg text-stone-300">
+        An elite, in-house team of craftsmen, installers, technicians and designers —
+        building fireplaces and outdoor kitchens that become the heart of the home.
+      </p>
+      <div class="mt-9 flex flex-wrap gap-4">
+        <a href={`tel:${business.primaryPhone}`} data-cta="call" class="btn btn-primary text-base">
+          <svg aria-hidden="true" viewBox="0 0 24 24" class="h-5 w-5 fill-current"><path d="M6.6 10.8a15.9 15.9 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.24 11.4 11.4 0 0 0 3.6.58 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1 11.4 11.4 0 0 0 .58 3.6 1 1 0 0 1-.24 1l-2.24 2.2Z"/></svg>
+          Call {business.primaryPhoneDisplay}
+        </a>
+        <a href="/consultation" class="btn btn-ghost">Book a Consultation</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- STATS / INTRO -->
+  <section class="container-page py-20">
+    <div class="grid gap-12 lg:grid-cols-[1.3fr_1fr] items-center">
+      <div>
+        <p class="eyebrow mb-4">Who we are</p>
+        <h2 class="text-4xl md:text-5xl max-w-2xl">
+          Warmth, craft and design — under one roof.
+        </h2>
+        <p class="mt-6 max-w-xl text-stone-300">
+          NYC Fireplaces &amp; Outdoor Kitchens is a family-owned company whose team brings more than
+          30 years of fireplace, outdoor-living, design, construction and installation experience.
+          From the first sketch to the final flame, the work is handled by our own in-house,
+          factory-trained team — not generic subcontracted crews.
+        </p>
+      </div>
+      <div class="grid grid-cols-2 gap-6">
+        {[
+          { k: '30+', v: 'Years of team experience' },
+          { k: '300+', v: 'Five-star Google reviews' },
+          { k: '2', v: 'Showrooms — Queens & Long Island' },
+          { k: 'In-house', v: 'Factory-trained install team' },
+        ].map((s) => (
+          <div class="border border-stone-400/15 bg-coal-900 p-6">
+            <div class="font-[var(--font-display)] text-4xl text-ember-400">{s.k}</div>
+            <div class="mt-2 text-sm text-stone-400">{s.v}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- CATEGORIES -->
+  <section class="container-page py-12">
+    <div class="flex items-end justify-between mb-10">
+      <div>
+        <p class="eyebrow mb-3">What we build</p>
+        <h2 class="text-4xl md:text-5xl">Explore the collection</h2>
+      </div>
+    </div>
+    <div class="grid gap-6 md:grid-cols-3">
+      {categories.map((c) => (
+        <a href={c.href} class="group relative overflow-hidden border border-stone-400/15">
+          <div class="aspect-[4/5] overflow-hidden">
+            <img
+              src={c.img}
+              alt={c.title}
+              class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+            />
+            <div class="absolute inset-0 bg-gradient-to-t from-coal-950 via-coal-950/30 to-transparent"></div>
+          </div>
+          <div class="absolute bottom-0 p-7">
+            <h3 class="text-2xl">{c.title}</h3>
+            <p class="mt-2 text-sm text-stone-300 max-w-xs">{c.copy}</p>
+            <span class="mt-4 inline-block text-sm font-semibold text-ember-400 group-hover:translate-x-1 transition-transform">
+              Discover →
+            </span>
+          </div>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <!-- CURATED COLLECTIONS -->
+  <section class="container-page py-20">
+    <div class="hairline pt-16">
+      <p class="eyebrow mb-3">Curated collections</p>
+      <h2 class="text-4xl md:text-5xl max-w-2xl">Signature series, hand-selected by our designers</h2>
+      <div class="mt-10 grid gap-px bg-stone-400/15 sm:grid-cols-2 lg:grid-cols-3 border border-stone-400/15">
+        {collections.map((name) => (
+          <div class="bg-coal-950 p-8 hover:bg-coal-900 transition-colors">
+            <span class="font-[var(--font-display)] text-2xl text-stone-100">{name}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- PROCESS -->
+  <section class="bg-coal-900 border-y border-stone-400/15">
+    <div class="container-page py-20">
+      <p class="eyebrow mb-3">How it works</p>
+      <h2 class="text-4xl md:text-5xl">From idea to installed — without the handoffs</h2>
+      <div class="mt-12 grid gap-10 md:grid-cols-3">
+        {steps.map((s) => (
+          <div>
+            <div class="font-[var(--font-display)] text-5xl text-ember-600">{s.n}</div>
+            <h3 class="mt-4 text-2xl">{s.title}</h3>
+            <p class="mt-3 text-stone-300">{s.copy}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- BRANDS -->
+  <section class="container-page py-20">
+    <p class="eyebrow mb-3 text-center">The names we carry</p>
+    <h2 class="text-4xl md:text-5xl text-center">Trusted brands, expertly installed</h2>
+    <div class="mt-12 flex flex-wrap justify-center gap-x-12 gap-y-8">
+      {brands.map((b) => (
+        <span class="font-[var(--font-display)] text-2xl md:text-3xl text-stone-400 hover:text-stone-100 transition-colors">
+          {b}
+        </span>
+      ))}
+    </div>
+  </section>
+
+  <!-- CONVERSION — call first, showroom second, form third -->
+  <ConversionBlock />
+</Base>

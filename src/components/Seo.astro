@@ -1,0 +1,129 @@
+---
+import { business } from '../data/business';
+
+interface Breadcrumb {
+  name: string;
+  path: string;
+}
+
+interface Props {
+  title?: string;
+  description?: string;
+  path?: string; // canonical path, e.g. "/fireplaces"
+  ogImage?: string;
+  noindex?: boolean;
+  breadcrumbs?: Breadcrumb[];
+  /** Extra JSON-LD nodes for the @graph (Service, FAQPage, etc.) */
+  schema?: object[];
+}
+
+const {
+  title,
+  description = business.description,
+  path = '/',
+  ogImage = `${business.url}/og-default.jpg`,
+  noindex = false,
+  breadcrumbs = [],
+  schema = [],
+} = Astro.props;
+
+const fullTitle = title
+  ? `${title} | ${business.shortName}`
+  : `${business.name} — Fireplaces & Outdoor Kitchens`;
+const canonical = new URL(path, business.url).href;
+
+// --- Structured data graph (SEO + AI/GEO) ----------------------------------
+const orgId = `${business.url}/#organization`;
+
+const localBusinessNodes = business.locations.map((loc) => ({
+  '@type': 'HomeAndConstructionBusiness',
+  '@id': `${business.url}/#${loc.id}`,
+  name: `${business.name} — ${loc.city}`,
+  parentOrganization: { '@id': orgId },
+  url: business.url,
+  telephone: loc.phone,
+  image: ogImage,
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: loc.street,
+    addressLocality: loc.city,
+    addressRegion: loc.region,
+    postalCode: loc.postalCode,
+    addressCountry: loc.country,
+  },
+  areaServed: business.areasServed.map((a) => ({ '@type': 'Place', name: a })),
+  priceRange: '$$$',
+  ...(loc.hours
+    ? {
+        openingHoursSpecification: loc.hours.map((h) => ({
+          '@type': 'OpeningHoursSpecification',
+          dayOfWeek: h.day,
+          opens: h.opens,
+          closes: h.closes,
+        })),
+      }
+    : {}),
+}));
+
+const graph = [
+  {
+    '@type': 'Organization',
+    '@id': orgId,
+    name: business.name,
+    legalName: business.legalName,
+    url: business.url,
+    description: business.description,
+    foundingDate: String(new Date().getFullYear() - business.foundingYears),
+    telephone: business.primaryPhone,
+    email: business.email,
+    sameAs: business.socials,
+    slogan: business.tagline,
+  },
+  {
+    '@type': 'WebSite',
+    '@id': `${business.url}/#website`,
+    url: business.url,
+    name: business.name,
+    publisher: { '@id': orgId },
+  },
+  ...localBusinessNodes,
+  ...(breadcrumbs.length
+    ? [
+        {
+          '@type': 'BreadcrumbList',
+          itemListElement: breadcrumbs.map((b, i) => ({
+            '@type': 'ListItem',
+            position: i + 1,
+            name: b.name,
+            item: new URL(b.path, business.url).href,
+          })),
+        },
+      ]
+    : []),
+  ...schema,
+];
+
+const jsonLd = { '@context': 'https://schema.org', '@graph': graph };
+---
+
+<title>{fullTitle}</title>
+<meta name="description" content={description} />
+<link rel="canonical" href={canonical} />
+{noindex && <meta name="robots" content="noindex, nofollow" />}
+
+<!-- Open Graph -->
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content={business.name} />
+<meta property="og:title" content={fullTitle} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonical} />
+<meta property="og:image" content={ogImage} />
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={fullTitle} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={ogImage} />
+
+<!-- Structured data for search engines + AI assistants -->
+<script type="application/ld+json" set:html={JSON.stringify(jsonLd)} is:inline />
