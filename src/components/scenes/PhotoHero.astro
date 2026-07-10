@@ -1,0 +1,132 @@
+---
+// Full-bleed cinematic PHOTO hero with multiple animated fire regions.
+// Built for the dusk outdoor-kitchen scene: two fire bowls + a background
+// fireplace (data-flame-rects) and glowing infrared heaters (data-glow-rects).
+// Drop the image at public/images/hero-outdoor-kitchen.jpg and it lights up.
+import { business } from '../../data/business';
+
+interface Props {
+  image?: string;
+  alt?: string;
+  eyebrow?: string;
+  flameRects?: string; // "x,y,w,h,intensity; ..." percentages of the image
+  glowRects?: string; // "x,y,w,h; ..." heater hotspots
+}
+
+const {
+  image = '/images/hero-outdoor-kitchen.jpg',
+  alt = 'A dusk backyard with a covered outdoor kitchen, fire bowls at the pool, and a lit fireplace',
+  eyebrow = 'Outdoor Kitchen Season · NYC · Long Island · New Jersey',
+  // Estimated regions for the shared reference photo; see NEEDS_CALIBRATION.md
+  flameRects = '25,63,13,17,high; 15,55,7,9,med; 6,51,13,6,med',
+  glowRects = '50,17,10,5; 85,9,9,4',
+} = Astro.props;
+---
+
+<section class="photo-hero" aria-label="Outdoor kitchen at dusk with live fire">
+  <div class="ph-media">
+    <img
+      src={image}
+      alt={alt}
+      fetchpriority="high"
+      data-fx="flames embers"
+      data-flame-rects={flameRects}
+      data-glow-rects={glowRects}
+      data-flame-intensity="high"
+    />
+    <!-- Cinematic grade: dusk cool up top, warm glow low, vignette -->
+    <div class="ph-grade" aria-hidden="true"></div>
+  </div>
+
+  <div class="container-page ph-copy">
+    <p class="eyebrow scene-eyebrow">{eyebrow}</p>
+    <h1>Your backyard, <span class="display-accent">lit for the season.</span></h1>
+    <p class="lede">
+      Custom outdoor kitchens, fire pits, fire features and fireplaces — designed, supplied and
+      installed by a family-owned team with more than 30 years of outdoor-living experience.
+    </p>
+    <div class="ctas">
+      <a href={`tel:${business.primaryPhone}`} data-cta="call" class="scene-cta cta-fill">
+        Call {business.primaryPhoneDisplay}
+      </a>
+      <a href="/free-3d-outdoor-kitchen-design" class="scene-cta">Get a Free 3D Design</a>
+    </div>
+  </div>
+
+  <div class="scrollhint" aria-hidden="true">Scroll</div>
+</section>
+
+<style>
+  .photo-hero {
+    position: relative;
+    min-height: 92vh;
+    display: flex;
+    align-items: flex-end;
+    overflow: hidden;
+    background: #0d0a09;
+  }
+  .ph-media,
+  .ph-media > :global(.fx-wrap),
+  .ph-media :global(img) {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+  .ph-media :global(img) {
+    object-fit: cover;
+  }
+  .ph-grade {
+    position: absolute;
+    inset: 0;
+    z-index: 4;
+    pointer-events: none;
+    background:
+      linear-gradient(to top, rgba(13, 10, 9, 0.92) 0%, rgba(13, 10, 9, 0.35) 34%, rgba(13, 10, 9, 0.05) 60%),
+      radial-gradient(120% 80% at 30% 92%, rgba(255, 120, 30, 0.16), transparent 55%);
+    box-shadow: inset 0 0 200px 60px rgba(8, 5, 3, 0.7);
+  }
+  .ph-copy {
+    position: relative;
+    z-index: 10;
+    padding-bottom: 12vh;
+    padding-top: 30vh;
+    max-width: 760px;
+  }
+  .photo-hero h1 {
+    font-size: clamp(44px, 6.4vw, 88px);
+    font-weight: 400;
+    line-height: 1.02;
+    max-width: 16ch;
+  }
+  .photo-hero .lede {
+    margin-top: 24px;
+    max-width: 48ch;
+    font-size: 16.5px;
+    line-height: 1.75;
+    color: rgba(242, 231, 216, 0.72);
+  }
+  .photo-hero .ctas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  .photo-hero .scrollhint {
+    position: absolute;
+    bottom: 26px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 11;
+    font-size: 10.5px;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: rgba(242, 231, 216, 0.4);
+    animation: hintdrift 2.6s ease-in-out infinite;
+  }
+  @media (max-width: 700px) {
+    .ph-copy { padding-top: 24vh; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .photo-hero .scrollhint { animation: none; }
+  }
+</style>

@@ -104,6 +104,20 @@
   mix-blend-mode: screen;
 }
 
+/* ---- Infrared heater glow (glow-only hotspot, no flames) ------------- */
+.fx-heater {
+  position: absolute;
+  z-index: 2;
+  pointer-events: none;
+  mix-blend-mode: screen;
+  background: radial-gradient(60% 50% at 50% 50%, rgba(255, 90, 40, 0.5), rgba(255, 60, 30, 0.2) 55%, transparent 75%);
+  animation: fx-heater 3.4s ease-in-out infinite;
+}
+@keyframes fx-heater {
+  0%, 100% { opacity: 0.65; }
+  50% { opacity: 1; }
+}
+
 /* ---- Heat shimmer ---------------------------------------------------- */
 .fx-shimmer {
   position: absolute;
@@ -149,7 +163,8 @@
   .fx-kenburns { animation: none !important; transition: none !important; }
   .fx-glow,
   .fx-glow-outer,
-  .fx-spill { animation: none !important; opacity: 0.5 !important; } /* static glow allowed */
+  .fx-spill,
+  .fx-heater { animation: none !important; opacity: 0.5 !important; } /* static glow allowed */
   .fx-embers-canvas { display: none !important; }
   [data-fx~="reveal"] { opacity: 1 !important; transform: none !important; }
   .fx-kenburns { transform: none !important; }

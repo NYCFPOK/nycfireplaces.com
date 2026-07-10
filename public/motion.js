@@ -52,15 +52,29 @@
     return w;
   }
 
-  // ---- Effect: flames ----------------------------------------------------
-  function initFlames(img, fx) {
-    var wrapEl = wrap(img);
-    var rect = parseRect(img);
-    var intensity = img.getAttribute('data-flame-intensity') || 'med';
-    var shape = img.getAttribute('data-flame-shape') || 'rect';
+  // Parse one or many flame regions. Supports:
+  //   data-flame-rect ="x,y,w,h"                         (single)
+  //   data-flame-rects="x,y,w,h,intensity; x,y,w,h; ..."  (multiple)
+  function parseRects(img, defaultIntensity) {
+    var multi = img.getAttribute('data-flame-rects');
+    if (multi) {
+      return multi.split(';').map(function (chunk) {
+        var v = chunk.trim().split(',');
+        return {
+          x: parseFloat(v[0]), y: parseFloat(v[1]), w: parseFloat(v[2]), h: parseFloat(v[3]),
+          intensity: (v[4] || defaultIntensity).trim(), guessed: false,
+        };
+      }).filter(function (r) { return !isNaN(r.x) && !isNaN(r.w); });
+    }
+    var r = parseRect(img);
+    r.intensity = defaultIntensity;
+    return [r];
+  }
 
+  // ---- Effect: flames (one or many regions per image) --------------------
+  function buildRegion(wrapEl, img, rect, shape) {
     var region = document.createElement('div');
-    region.className = 'fx-flames fx-intensity-' + intensity;
+    region.className = 'fx-flames fx-intensity-' + rect.intensity;
     if (shape === 'arch') region.setAttribute('data-shape', 'arch');
     region.style.left = rect.x + '%';
     region.style.top = rect.y + '%';
@@ -79,43 +93,70 @@
       slice.style.filter = 'url(#fx-flame-filter) saturate(1.15) brightness(1.05)';
       region.appendChild(slice);
     }
-
     var glow = document.createElement('div'); glow.className = 'fx-glow';
     var glowOuter = document.createElement('div'); glowOuter.className = 'fx-glow-outer';
     region.appendChild(glow);
     region.appendChild(glowOuter);
     wrapEl.appendChild(region);
 
-    // Light-spill onto surrounding surfaces (larger than the firebox).
+    // Light-spill onto surrounding surfaces (larger than the fire).
     var spill = document.createElement('div');
-    spill.className = 'fx-spill fx-intensity-' + intensity;
+    spill.className = 'fx-spill fx-intensity-' + rect.intensity;
     var pad = 14;
     spill.style.left = Math.max(0, rect.x - pad) + '%';
     spill.style.top = Math.max(0, rect.y - pad) + '%';
     spill.style.width = Math.min(100, rect.w + pad * 2) + '%';
     spill.style.height = Math.min(100, rect.h + pad * 2) + '%';
     wrapEl.insertBefore(spill, wrapEl.firstChild.nextSibling);
+  }
 
-    // Reveal the slice only once the image has decoded (avoids a flash).
+  // Glow-only hotspots (e.g. infrared patio heaters): pulsing, no flames.
+  function buildGlowSpots(wrapEl, img) {
+    var spec = img.getAttribute('data-glow-rects');
+    if (!spec) return;
+    spec.split(';').forEach(function (chunk) {
+      var v = chunk.trim().split(',').map(parseFloat);
+      if (v.length < 4 || isNaN(v[0])) return;
+      var g = document.createElement('div');
+      g.className = 'fx-heater';
+      g.style.left = v[0] + '%'; g.style.top = v[1] + '%';
+      g.style.width = v[2] + '%'; g.style.height = v[3] + '%';
+      wrapEl.appendChild(g);
+    });
+  }
+
+  function initFlames(img, fx) {
+    var wrapEl = wrap(img);
+    var defaultIntensity = img.getAttribute('data-flame-intensity') || 'med';
+    var shape = img.getAttribute('data-flame-shape') || 'rect';
+    var rects = parseRects(img, defaultIntensity);
+
+    rects.forEach(function (rect) { buildRegion(wrapEl, img, rect, shape); });
+    buildGlowSpots(wrapEl, img);
+
+    // Reveal slices only once the image has decoded (avoids a flash).
     if (img.complete) wrapEl.classList.add('fx-ready');
     else img.addEventListener('load', function () { wrapEl.classList.add('fx-ready'); }, { once: true });
 
-    if (fx.indexOf('embers') !== -1) initEmbers(wrapEl, rect, intensity);
+    if (fx.indexOf('embers') !== -1) initEmbers(wrapEl, rects, defaultIntensity);
     return wrapEl;
   }
 
-  // ---- Effect: embers (canvas per tagged image) --------------------------
-  function initEmbers(wrapEl, rect, intensity) {
+  // ---- Effect: embers (one canvas per image, emits from every region) ----
+  function initEmbers(wrapEl, rects, intensity) {
     if (REDUCED) return;
+    if (!Array.isArray(rects)) rects = [rects];
     var canvas = document.createElement('canvas');
     canvas.className = 'fx-embers-canvas';
     wrapEl.appendChild(canvas);
     var ctx = canvas.getContext('2d');
-    var cap = intensity === 'high' ? 25 : intensity === 'low' ? 10 : 18;
+    var per = intensity === 'high' ? 25 : intensity === 'low' ? 10 : 18;
+    var cap = per * rects.length; // scale to number of fires
     var parts = [], W = 0, H = 0, raf = null, onscreen = false;
 
     function size() { W = canvas.width = wrapEl.clientWidth; H = canvas.height = wrapEl.clientHeight; }
     function spawn() {
+      var rect = rects[(Math.random() * rects.length) | 0];
       return {
         x: (rect.x + Math.random() * rect.w) / 100 * W,
         y: (rect.y + rect.h) / 100 * H,
