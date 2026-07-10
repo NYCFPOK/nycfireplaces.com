@@ -1,7 +1,11 @@
-// Single source of truth for business facts.
-// Used by JSON-LD schema, footer, conversion CTAs, llms.txt, sitemap.
+// Structural business data (locations, contacts, socials) used by JSON-LD
+// schema, footer, conversion CTAs, llms.txt, sitemap.
+// CLAIMS and WORDING live in registry.ts (Business Fact Registry, plan §4) —
+// import from there for any statement the site makes about the business.
 // NOTE: `hours` is intentionally null until the owner confirms real showroom
 // hours — we never fabricate hours for structured data.
+
+import { identity } from './registry';
 
 export interface Location {
   id: string;
@@ -40,9 +44,10 @@ export const business = {
   legalName: 'NYC Fireplaces & Outdoor Kitchens',
   url: 'https://www.nycfireplaces.com',
   tagline: 'Designed for the way you live with fire.',
+  // Approved company-history wording (plan §4.2) + verified showroom facts.
   description:
-    'Family-owned, with an in-house team of craftsmen, installers, technicians and designers — over 30 years designing, supplying and installing fireplaces and outdoor kitchens across the New York metro area.',
-  foundingYears: 30,
+    identity.companyHistory.value +
+    ' Two showrooms: Queens (Maspeth) and Long Island (Greenvale).',
   primaryPhone: '+17183264328',
   primaryPhoneDisplay: '(718) 326-4328',
   email: 'info@nycfireplaces.com',

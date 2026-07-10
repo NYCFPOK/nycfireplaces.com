@@ -73,7 +73,8 @@ const graph = [
     legalName: business.legalName,
     url: business.url,
     description: business.description,
-    foundingDate: String(new Date().getFullYear() - business.foundingYears),
+    // No foundingDate: founding year is [[NEEDS CONFIRMATION]] (plan §2.3/§4.2)
+    // — the "30+ years" fact belongs to team experience, not company age.
     telephone: business.primaryPhone,
     email: business.email,
     sameAs: business.socials,
