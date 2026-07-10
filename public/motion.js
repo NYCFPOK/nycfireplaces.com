@@ -19,11 +19,15 @@
     svg.setAttribute('height', '0');
     svg.setAttribute('aria-hidden', 'true');
     svg.style.cssText = 'position:absolute;width:0;height:0';
+    // Fine vertical-biased turbulence, animated seed + baseFrequency so the
+    // flames lick and never loop visibly. Low displacement scale = subtle,
+    // realistic movement rather than a smeary wobble.
     svg.innerHTML =
-      '<filter id="fx-flame-filter" x="-20%" y="-20%" width="140%" height="140%">' +
-      '<feTurbulence type="fractalNoise" baseFrequency="0.02 0.06" numOctaves="2" seed="2" result="n">' +
-      '<animate attributeName="seed" values="2;9;2" dur="6s" repeatCount="indefinite"/></feTurbulence>' +
-      '<feDisplacementMap in="SourceGraphic" in2="n" scale="10" xChannelSelector="R" yChannelSelector="G"/>' +
+      '<filter id="fx-flame-filter" x="-10%" y="-10%" width="120%" height="120%" color-interpolation-filters="sRGB">' +
+      '<feTurbulence type="fractalNoise" baseFrequency="0.012 0.03" numOctaves="2" seed="4" result="n">' +
+      '<animate attributeName="baseFrequency" dur="7s" values="0.012 0.03;0.016 0.045;0.012 0.03" repeatCount="indefinite"/>' +
+      '<animate attributeName="seed" values="4;14;4" dur="5s" repeatCount="indefinite"/></feTurbulence>' +
+      '<feDisplacementMap in="SourceGraphic" in2="n" scale="7" xChannelSelector="R" yChannelSelector="G"/>' +
       '</filter>';
     document.body.appendChild(svg);
   }
@@ -81,18 +85,9 @@
     region.style.width = rect.w + '%';
     region.style.height = rect.h + '%';
 
-    // Displacement slice: a copy of the photo's flame region, wobbled.
-    if (!REDUCED && !LOW_POWER) {
-      var slice = document.createElement('div');
-      slice.className = 'fx-slice';
-      var src = img.currentSrc || img.src;
-      slice.style.backgroundImage = 'url("' + src + '")';
-      slice.style.backgroundSize = (10000 / rect.w) + '% ' + (10000 / rect.h) + '%';
-      slice.style.backgroundPosition =
-        (rect.x / (100 - rect.w) * 100) + '% ' + (rect.y / (100 - rect.h) * 100) + '%';
-      slice.style.filter = 'url(#fx-flame-filter) saturate(1.15) brightness(1.05)';
-      region.appendChild(slice);
-    }
+    // Two flicker glows over the REAL photographed flames. We deliberately do
+    // NOT distort a slice of the photo (that reads as blurry). The photo stays
+    // crisp; the glows just make its fire pulse with warm light.
     var glow = document.createElement('div'); glow.className = 'fx-glow';
     var glowOuter = document.createElement('div'); glowOuter.className = 'fx-glow-outer';
     region.appendChild(glow);
@@ -125,12 +120,33 @@
     });
   }
 
+  // Full-resolution live-flame layer: an exact copy of the photo, wobbled by a
+  // gentle turbulence displacement, masked to ONLY the fire regions. Native
+  // resolution (no upscaled crop) so the moving fire stays crisp.
+  function buildLiveFlame(wrapEl, img, rects) {
+    if (REDUCED || LOW_POWER) return;
+    var layer = document.createElement('div');
+    layer.className = 'fx-liveflame';
+    var src = img.currentSrc || img.src;
+    layer.style.backgroundImage = 'url("' + src + '")';
+    var mask = rects.map(function (r) {
+      var cx = (r.x + r.w / 2).toFixed(1), cy = (r.y + r.h / 2).toFixed(1);
+      // Radius a touch larger than the rect, feathered out to transparent.
+      return 'radial-gradient(' + (r.w * 0.62).toFixed(1) + '% ' + (r.h * 0.62).toFixed(1) +
+        '% at ' + cx + '% ' + cy + '%, #000 55%, transparent 100%)';
+    }).join(', ');
+    layer.style.webkitMaskImage = mask;
+    layer.style.maskImage = mask;
+    wrapEl.insertBefore(layer, wrapEl.firstChild.nextSibling);
+  }
+
   function initFlames(img, fx) {
     var wrapEl = wrap(img);
     var defaultIntensity = img.getAttribute('data-flame-intensity') || 'med';
     var shape = img.getAttribute('data-flame-shape') || 'rect';
     var rects = parseRects(img, defaultIntensity);
 
+    buildLiveFlame(wrapEl, img, rects);
     rects.forEach(function (rect) { buildRegion(wrapEl, img, rect, shape); });
     buildGlowSpots(wrapEl, img);
 

@@ -34,65 +34,78 @@
   clip-path: path("M0,100 L0,45 Q0,0 50,0 Q100,0 100,45 L100,100 Z");
 }
 
-/* Displacement slice: a copy of the photo's flame region, wobbled by the
-   shared SVG filter. Hidden until motion.js confirms capability. */
-.fx-slice {
+/* Live-flame layer: full-resolution copy of the photo, masked to the fire
+   regions and wobbled by the shared turbulence filter. Native res = no blur. */
+.fx-liveflame {
   position: absolute;
-  inset: -8%;
+  inset: 0;
+  z-index: 2;
+  background-size: cover;
+  background-position: center;
   background-repeat: no-repeat;
+  filter: url(#fx-flame-filter);
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  pointer-events: none;
   will-change: filter;
   opacity: 0;
-  transition: opacity 0.6s ease;
+  transition: opacity 0.5s ease;
 }
-.fx-wrap.fx-ready .fx-slice {
-  opacity: 0.85;
+.fx-wrap.fx-ready .fx-liveflame {
+  opacity: 1;
 }
 
-/* Warm core + amber glow, flickering on odd cycles so it never loops visibly */
+/* Warm light pulse over the real flames. Tight, hugging the fire, flickering
+   on odd cycles so it never visibly loops. No image distortion = no blur. */
 .fx-glow,
 .fx-glow-outer {
   position: absolute;
   inset: 0;
   mix-blend-mode: screen;
   pointer-events: none;
+  transform-origin: 50% 90%;
 }
 .fx-glow {
-  background: radial-gradient(60% 70% at 50% 78%, rgba(232, 100, 27, 0.55), transparent 72%);
-  animation: fx-flick-a 1.7s ease-in-out infinite;
+  background: radial-gradient(46% 60% at 50% 82%, rgba(255, 150, 60, 0.42), transparent 66%);
+  animation: fx-flick-a 2.9s ease-in-out infinite;
 }
 .fx-glow-outer {
-  background: radial-gradient(50% 60% at 50% 82%, rgba(255, 196, 107, 0.4), transparent 78%);
-  animation: fx-flick-b 2.3s ease-in-out infinite;
+  background: radial-gradient(38% 46% at 50% 88%, rgba(255, 210, 130, 0.35), transparent 62%);
+  animation: fx-flick-b 3.7s ease-in-out infinite;
 }
 
-/* Light-spill: bleeds past the firebox onto surrounding stone. This sells it. */
+/* Light-spill: a soft warm wash onto surrounding surfaces. Kept subtle. */
 .fx-spill {
   position: absolute;
   pointer-events: none;
   z-index: 1;
   mix-blend-mode: screen;
-  background: radial-gradient(circle at 50% 60%, rgba(255, 140, 46, 0.28), transparent 70%);
-  animation: fx-flick-c 3.1s ease-in-out infinite;
+  background: radial-gradient(circle at 50% 62%, rgba(255, 140, 46, 0.16), transparent 68%);
+  animation: fx-flick-c 4.3s ease-in-out infinite;
 }
 
-.fx-intensity-low .fx-glow { opacity: 0.6; }
-.fx-intensity-low .fx-spill { opacity: 0.5; }
-.fx-intensity-high .fx-glow { opacity: 1; }
-.fx-intensity-high .fx-spill { opacity: 1; }
+.fx-intensity-low .fx-glow { opacity: 0.5; }
+.fx-intensity-low .fx-spill { opacity: 0.35; }
+.fx-intensity-high .fx-glow { opacity: 0.9; }
+.fx-intensity-high .fx-spill { opacity: 0.7; }
 
+/* Subtle luminance flicker (opacity only) so the fire "breathes" without
+   the glow visibly growing/shrinking like a balloon. */
 @keyframes fx-flick-a {
-  0%, 100% { opacity: 0.85; transform: scale(1); }
-  40% { opacity: 1; transform: scale(1.03); }
-  70% { opacity: 0.72; transform: scale(0.99); }
+  0%, 100% { opacity: 0.78; }
+  30% { opacity: 0.95; }
+  55% { opacity: 0.68; }
+  80% { opacity: 0.88; }
 }
 @keyframes fx-flick-b {
-  0%, 100% { opacity: 0.7; transform: scale(1.02); }
-  50% { opacity: 1; transform: scale(0.98); }
+  0%, 100% { opacity: 0.62; }
+  45% { opacity: 0.9; }
+  75% { opacity: 0.55; }
 }
 @keyframes fx-flick-c {
-  0%, 100% { opacity: 0.8; }
-  33% { opacity: 1; }
-  66% { opacity: 0.65; }
+  0%, 100% { opacity: 0.6; }
+  40% { opacity: 0.85; }
+  70% { opacity: 0.5; }
 }
 
 /* ---- Ember particle canvas ------------------------------------------- */
