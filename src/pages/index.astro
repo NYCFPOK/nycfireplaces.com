@@ -5,168 +5,234 @@ import { business } from '../data/business';
 
 const CDN = 'https://www.nycfireplaces.com/wp-content/uploads';
 
-const categories = [
+// Homepage follows plan §11.3 section order. Copy uses ONLY approved facts
+// (§4.5 / §11.4). Imagery is the client's own project photography.
+
+// §11.4 proof strip — qualified wording only
+const proof = [
+  'Family-owned',
+  '30+ years of team experience',
+  '300+ five-star Google reviews',
+  'Two showrooms — Queens & Long Island',
+  'In-house, factory-trained install team',
+];
+
+// §11.3 fireplace + outdoor-kitchen decision paths
+const paths = [
   {
-    title: 'Indoor Fireplaces',
-    copy: 'Gas, wood, electric and bio-ethanol — fireboxes, inserts, wall-mounted and custom builds.',
+    title: 'Fireplaces',
+    copy: 'Gas, electric, wood, water-vapor and ethanol — fireboxes, inserts, stoves, mantels and media walls, designed and installed by our own team.',
     img: `${CDN}/2022/08/Kozy-Heat-fireplace-1.jpg`,
     href: '/fireplaces',
+    cta: 'Explore fireplaces',
   },
   {
     title: 'Outdoor Kitchens',
-    copy: 'Built-in grills, power burners, pizza ovens and stainless cabinetry designed for the way you live outside.',
+    copy: 'Custom islands, built-in grills, power burners, pizza ovens and stainless cabinetry — from a free 3D design to a finished build.',
     img: `${CDN}/2022/08/stoll-custom-bbq-island.jpg`,
-    href: '/outdoor-kitchens',
-  },
-  {
-    title: 'Stoves & Hearth',
-    copy: 'Wood, pellet, gas and propane stoves, plus mantels, doors and hearth accessories.',
-    img: `${CDN}/2022/07/nyc-fireplaces-custom-install.jpg`,
-    href: '/stoves',
+    href: '/outdoor-kitchen',
+    cta: 'Explore outdoor kitchens',
   },
 ];
 
-const collections = [
-  'The Waterplace™',
-  'Optimyst® Series',
-  'GreenSmart Electric',
-  'Orion® Series',
-  'E-One Electric',
-  'Astound Series',
+// §11.3 "Add a fireplace to almost any home" — fuel/type routes
+const fireplaceTypes = [
+  { label: 'Gas & propane', href: '/fireplaces' },
+  { label: 'Electric', href: '/fireplaces' },
+  { label: 'Water-vapor', href: '/fireplaces' },
+  { label: 'Wood-burning', href: '/fireplaces' },
+  { label: 'Inserts', href: '/fireplaces' },
+  { label: 'Stoves', href: '/stoves' },
+];
+
+// §11.3 selected projects — real project imagery (Portfolio teaser)
+const projects = [
+  { img: `${CDN}/2022/07/nyc-fireplaces-custom-install.jpg`, label: 'Custom fireplace install' },
+  { img: `${CDN}/2022/08/stoll-custom-bbq-island.jpg`, label: 'Custom BBQ island' },
+  { img: `${CDN}/2022/08/American-Fyre-Design-Fire-Table.jpg`, label: 'Fire feature' },
+  { img: `${CDN}/2022/08/Twin-Eagles-Grill.jpg`, label: 'Built-in grill' },
 ];
 
 const brands = [
-  'Alfa Forni',
-  'Modern Flames',
-  'Kozy Heat®',
-  'Danver',
-  'Hestan',
-  'Twin Eagles',
-  'American Fyre',
-  'Gozney',
+  'Alfa Forni', 'Modern Flames', 'Kozy Heat', 'Danver', 'Hestan',
+  'Twin Eagles', 'American Fyre', 'Gozney', 'Napoleon', 'Delta Heat',
 ];
 
 const steps = [
   { n: '01', title: 'Consultation', copy: 'We learn your space, your style and how you live — in our showroom or on-site.' },
   { n: '02', title: 'Design', copy: 'Our in-house designers craft a build tailored to your home, with real product and material selections.' },
-  { n: '03', title: 'Installation', copy: 'Our own licensed craftsmen and technicians install it right — no subcontractors.' },
+  { n: '03', title: 'Installation', copy: 'Our own factory-trained team installs it — not generic subcontracted crews.' },
+];
+
+// §11.3 helpful guides — real published articles
+const guides = [
+  { title: '3 Reasons Adding a Fireplace Can Increase Your Home’s Value', href: '/3-reasons-why-adding-a-fireplace-can-increase-your-homes-value' },
+  { title: 'Build an Outdoor Bar: Expert Design & Construction Tips', href: '/build-an-outdoor-bar' },
+  { title: 'Trends to Expand Your Outdoor Living Space', href: '/trends-to-expand-your-outdoor-living-space' },
 ];
 ---
 
 <Base
-  title="Fireplaces & Outdoor Kitchens in the NY Metro Area"
+  title="Fireplaces & Outdoor Kitchens in NYC & Long Island"
   description={business.description}
   path="/"
 >
-  <!-- HERO -->
-  <section class="relative min-h-[88vh] flex items-end overflow-hidden">
+  <!-- 1 — HERO (real project) -->
+  <section class="relative flex items-end overflow-hidden min-h-[82vh]">
     <img
       src={`${CDN}/2022/10/stunning-fireplaces-1-1536x865.jpg`}
-      alt="A custom NYC Fireplaces installation"
-      class="absolute inset-0 w-full h-full object-cover"
+      alt="A completed custom fireplace and living space by NYC Fireplaces & Outdoor Kitchens"
+      class="absolute inset-0 h-full w-full object-cover"
       fetchpriority="high"
     />
-    <div class="absolute inset-0 bg-gradient-to-t from-coal-950 via-coal-950/70 to-coal-950/30"></div>
-    <div class="absolute inset-0 bg-gradient-to-r from-coal-950/80 to-transparent"></div>
-
-    <div class="container-page relative pb-20 pt-40">
-      <p class="eyebrow mb-5">Family-owned · 30+ years of team experience · NYC &amp; Long Island</p>
-      <h1 class="text-5xl md:text-7xl max-w-4xl">
-        Designed for the way<br />you live with fire.
-      </h1>
+    <div class="absolute inset-0 bg-gradient-to-t from-coal-950 via-coal-950/65 to-coal-950/25"></div>
+    <div class="container-page relative pb-20 pt-32">
+      <p class="eyebrow mb-5">Family-owned · Serving NYC, Long Island &amp; New Jersey</p>
+      <h1 class="max-w-4xl text-5xl md:text-7xl">Fireplaces &amp; outdoor kitchens, designed around your home.</h1>
       <p class="mt-6 max-w-xl text-lg text-stone-300">
-        An elite, in-house team of craftsmen, installers, technicians and designers —
-        building fireplaces and outdoor kitchens that become the heart of the home.
+        An in-house team of designers, craftsmen and factory-trained installers — from the first
+        sketch to the final flame, handled under one roof.
       </p>
       <div class="mt-9 flex flex-wrap gap-4">
-        <a href={`tel:${business.primaryPhone}`} data-cta="call" class="btn btn-primary text-base">
-          <svg aria-hidden="true" viewBox="0 0 24 24" class="h-5 w-5 fill-current"><path d="M6.6 10.8a15.9 15.9 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.24 11.4 11.4 0 0 0 3.6.58 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1 11.4 11.4 0 0 0 .58 3.6 1 1 0 0 1-.24 1l-2.24 2.2Z"/></svg>
-          Call {business.primaryPhoneDisplay}
-        </a>
-        <a href="/consultation" class="btn btn-ghost">Book a Consultation</a>
+        <a href="/consultation" class="btn btn-primary text-base">Request a Consultation</a>
+        <a href="/locations" class="btn btn-ghost">Visit a Showroom</a>
       </div>
     </div>
   </section>
 
-  <!-- STATS / INTRO -->
-  <section class="container-page py-20">
-    <div class="grid gap-12 lg:grid-cols-[1.3fr_1fr] items-center">
+  <!-- 2 — PROOF STRIP (§11.4, approved wording) -->
+  <section class="section-cream border-b border-coal-900/10">
+    <div class="container-page py-6">
+      <ul class="flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-sm font-medium">
+        {proof.map((p, i) => (
+          <li class="flex items-center gap-8">
+            {i > 0 && <span aria-hidden="true" class="hidden text-ember-600 sm:inline">◆</span>}
+            <span>{p}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- 3 — DECISION PATHS -->
+  <section class="section-light">
+    <div class="container-page py-20">
+      <div class="max-w-2xl">
+        <p class="eyebrow mb-3">Where would you like to begin?</p>
+        <h2 class="text-4xl md:text-5xl">Two ways we bring fire to your home</h2>
+      </div>
+      <div class="mt-10 grid gap-6 md:grid-cols-2">
+        {paths.map((p) => (
+          <a href={p.href} class="group relative overflow-hidden rounded-sm">
+            <div class="aspect-[16/10] overflow-hidden">
+              <img src={p.img} alt={p.title} class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" />
+              <div class="absolute inset-0 bg-gradient-to-t from-coal-950/90 via-coal-950/30 to-transparent"></div>
+            </div>
+            <div class="absolute bottom-0 p-7">
+              <h3 class="text-3xl text-stone-100">{p.title}</h3>
+              <p class="mt-2 max-w-md text-sm text-stone-200">{p.copy}</p>
+              <span class="mt-4 inline-block text-sm font-semibold text-ember-400 transition-transform group-hover:translate-x-1">{p.cta} →</span>
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- 4 — ADD A FIREPLACE TO ALMOST ANY HOME -->
+  <section class="section-cream">
+    <div class="container-page grid gap-12 py-20 lg:grid-cols-[1fr_1.1fr] lg:items-center">
       <div>
-        <p class="eyebrow mb-4">Who we are</p>
-        <h2 class="text-4xl md:text-5xl max-w-2xl">
-          Warmth, craft and design — under one roof.
-        </h2>
-        <p class="mt-6 max-w-xl text-stone-300">
-          NYC Fireplaces &amp; Outdoor Kitchens is a family-owned company whose team brings more than
-          30 years of fireplace, outdoor-living, design, construction and installation experience.
-          From the first sketch to the final flame, the work is handled by our own in-house,
-          factory-trained team — not generic subcontracted crews.
+        <p class="eyebrow mb-3">For almost any room</p>
+        <h2 class="text-4xl md:text-5xl">Add a fireplace to almost any home</h2>
+        <p class="mt-5 max-w-lg text-coal-700">
+          Chimney or no chimney, co-op or single-family — modern venting and electric, water-vapor
+          and ethanol options make it possible to add a fireplace to rooms that never had one.
+          We help you choose what actually fits your space and approvals.
         </p>
+        <div class="mt-7 flex flex-wrap gap-2.5">
+          {fireplaceTypes.map((t) => (
+            <a href={t.href} class="rounded-full border border-coal-900/20 px-4 py-2 text-sm font-medium text-coal-800 transition-colors hover:border-ember-600 hover:text-ember-600">
+              {t.label}
+            </a>
+          ))}
+        </div>
       </div>
-      <div class="grid grid-cols-2 gap-6">
-        {[
-          { k: '30+', v: 'Years of team experience' },
-          { k: '300+', v: 'Five-star Google reviews' },
-          { k: '2', v: 'Showrooms — Queens & Long Island' },
-          { k: 'In-house', v: 'Factory-trained install team' },
-        ].map((s) => (
-          <div class="border border-stone-400/15 bg-coal-900 p-6">
-            <div class="font-[var(--font-display)] text-4xl text-ember-400">{s.k}</div>
-            <div class="mt-2 text-sm text-stone-400">{s.v}</div>
-          </div>
+      <div class="overflow-hidden rounded-sm">
+        <img src={`${CDN}/2022/07/nyc-fireplaces-custom-install.jpg`} alt="A custom fireplace installation in a New York home" class="aspect-[4/3] w-full object-cover" loading="lazy" />
+      </div>
+    </div>
+  </section>
+
+  <!-- 5 — OUTDOOR KITCHEN DESIGN/BUILD + FREE 3D -->
+  <section class="relative overflow-hidden">
+    <img src={`${CDN}/2022/08/stoll-custom-bbq-island.jpg`} alt="" aria-hidden="true" class="absolute inset-0 h-full w-full object-cover" loading="lazy" />
+    <div class="absolute inset-0 bg-coal-950/82"></div>
+    <div class="container-page relative py-20">
+      <div class="max-w-2xl">
+        <p class="eyebrow mb-3">Designed, supplied, built &amp; installed</p>
+        <h2 class="text-4xl md:text-5xl">Outdoor kitchens, from a free 3D design</h2>
+        <p class="mt-5 text-stone-300">
+          See your outdoor kitchen before it’s built. With a qualifying purchase, our designers
+          produce a free 3D design — grills, power burners, pizza ovens, refrigeration and stainless
+          cabinetry — then our team builds and installs it.
+        </p>
+        <div class="mt-7 flex flex-wrap gap-4">
+          <a href="/free-3d-outdoor-kitchen-design" class="btn btn-primary">Get a Free 3D Design</a>
+          <a href="/outdoor-kitchen" class="btn btn-ghost">Explore outdoor kitchens</a>
+        </div>
+        <p class="mt-4 text-xs text-stone-400">Free 3D outdoor-kitchen design with qualifying purchase.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6 — SELECTED PROJECTS -->
+  <section class="section-light">
+    <div class="container-page py-20">
+      <div class="mb-10 flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <p class="eyebrow mb-3">Recent work</p>
+          <h2 class="text-4xl md:text-5xl">Selected projects</h2>
+        </div>
+        <a href="/installations" class="btn btn-ghost !border-coal-900/30 !text-coal-800 hover:!border-ember-600 hover:!text-ember-600">View the portfolio</a>
+      </div>
+      <div class="grid grid-cols-2 gap-4 lg:grid-cols-4">
+        {projects.map((p) => (
+          <figure class="group relative overflow-hidden rounded-sm">
+            <img src={p.img} alt={p.label} class="aspect-[4/5] w-full object-cover transition-transform duration-700 group-hover:scale-105" loading="lazy" />
+            <figcaption class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-coal-950/85 to-transparent p-4 text-xs font-medium text-stone-100">{p.label}</figcaption>
+          </figure>
         ))}
       </div>
     </div>
   </section>
 
-  <!-- CATEGORIES -->
-  <section class="container-page py-12">
-    <div class="flex items-end justify-between mb-10">
-      <div>
-        <p class="eyebrow mb-3">What we build</p>
-        <h2 class="text-4xl md:text-5xl">Explore the collection</h2>
+  <!-- 7 — SHOWROOM EXPERIENCE + 8 BRANDS -->
+  <section class="section-cream">
+    <div class="container-page py-20">
+      <div class="max-w-2xl">
+        <p class="eyebrow mb-3">See it, feel the heat, plan it</p>
+        <h2 class="text-4xl md:text-5xl">The showroom experience</h2>
+        <p class="mt-5 text-coal-700">
+          Live displays let you compare flames, finishes and sizes in person — and plan your project
+          with a specialist. Two showrooms serve the metro area: Queens and Long Island.
+        </p>
+        <a href="/locations" class="mt-6 inline-block btn btn-primary">See It in a Showroom</a>
       </div>
-    </div>
-    <div class="grid gap-6 md:grid-cols-3">
-      {categories.map((c) => (
-        <a href={c.href} class="group relative overflow-hidden border border-stone-400/15">
-          <div class="aspect-[4/5] overflow-hidden">
-            <img
-              src={c.img}
-              alt={c.title}
-              class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-            />
-            <div class="absolute inset-0 bg-gradient-to-t from-coal-950 via-coal-950/30 to-transparent"></div>
-          </div>
-          <div class="absolute bottom-0 p-7">
-            <h3 class="text-2xl">{c.title}</h3>
-            <p class="mt-2 text-sm text-stone-300 max-w-xs">{c.copy}</p>
-            <span class="mt-4 inline-block text-sm font-semibold text-ember-400 group-hover:translate-x-1 transition-transform">
-              Discover →
-            </span>
-          </div>
-        </a>
-      ))}
-    </div>
-  </section>
-
-  <!-- CURATED COLLECTIONS -->
-  <section class="container-page py-20">
-    <div class="hairline pt-16">
-      <p class="eyebrow mb-3">Curated collections</p>
-      <h2 class="text-4xl md:text-5xl max-w-2xl">Signature series, hand-selected by our designers</h2>
-      <div class="mt-10 grid gap-px bg-stone-400/15 sm:grid-cols-2 lg:grid-cols-3 border border-stone-400/15">
-        {collections.map((name) => (
-          <div class="bg-coal-950 p-8 hover:bg-coal-900 transition-colors">
-            <span class="font-[var(--font-display)] text-2xl text-stone-100">{name}</span>
-          </div>
-        ))}
+      <div class="mt-12 border-t border-coal-900/15 pt-10">
+        <p class="mb-6 text-sm font-semibold uppercase tracking-wider text-coal-700">Trusted brands, expertly installed</p>
+        <div class="flex flex-wrap items-center gap-x-10 gap-y-4">
+          {brands.map((b) => (
+            <span class="font-[var(--font-display)] text-2xl text-coal-900/55 transition-colors hover:text-coal-900">{b}</span>
+          ))}
+          <a href="/brands" class="text-sm font-semibold text-ember-600 hover:text-ember-500">All brands →</a>
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- PROCESS -->
-  <section class="bg-coal-900 border-y border-stone-400/15">
+  <!-- 9 — PROCESS -->
+  <section class="border-y border-stone-400/15 bg-coal-900">
     <div class="container-page py-20">
       <p class="eyebrow mb-3">How it works</p>
       <h2 class="text-4xl md:text-5xl">From idea to installed — without the handoffs</h2>
@@ -182,19 +248,71 @@ const steps = [
     </div>
   </section>
 
-  <!-- BRANDS -->
-  <section class="container-page py-20">
-    <p class="eyebrow mb-3 text-center">The names we carry</p>
-    <h2 class="text-4xl md:text-5xl text-center">Trusted brands, expertly installed</h2>
-    <div class="mt-12 flex flex-wrap justify-center gap-x-12 gap-y-8">
-      {brands.map((b) => (
-        <span class="font-[var(--font-display)] text-2xl md:text-3xl text-stone-400 hover:text-stone-100 transition-colors">
-          {b}
-        </span>
-      ))}
+  <!-- 10 — FINANCING -->
+  <section class="section-light">
+    <div class="container-page flex flex-col items-start gap-6 py-14 sm:flex-row sm:items-center sm:justify-between">
+      <div>
+        <h2 class="text-3xl">Financing available through Acorn Finance</h2>
+        <p class="mt-2 max-w-xl text-coal-700">Explore monthly-payment options for your fireplace or outdoor-kitchen project.</p>
+      </div>
+      <a href="/financing" class="btn btn-primary shrink-0">Explore financing</a>
     </div>
   </section>
 
-  <!-- CONVERSION — call first, showroom second, form third -->
+  <!-- 11 — TRADE PROFESSIONALS -->
+  <section class="section-cream">
+    <div class="container-page grid gap-10 py-20 lg:grid-cols-[1.1fr_1fr] lg:items-center">
+      <div class="overflow-hidden rounded-sm">
+        <img src={`${CDN}/2022/08/Twin-Eagles-Grill.jpg`} alt="Built-in grill installation for a trade project" class="aspect-[16/10] w-full object-cover" loading="lazy" />
+      </div>
+      <div>
+        <p class="eyebrow mb-3">For the trade</p>
+        <h2 class="text-4xl md:text-5xl">Builders, architects &amp; designers</h2>
+        <p class="mt-5 max-w-lg text-coal-700">
+          Plan review, product specifications, rough-opening and venting coordination, submittals,
+          and supply-only or supply-and-install options — with a dedicated point of contact for
+          your projects.
+        </p>
+        <a href="/builders-architects" class="mt-6 inline-block btn btn-primary">Work with our trade team</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 12 — REVIEWS (§16.3 static, §4.11 no fabricated quotes) -->
+  <section class="section-light">
+    <div class="container-page py-16 text-center">
+      <div class="flex items-center justify-center gap-1 text-ember-500" aria-hidden="true">
+        {[0, 1, 2, 3, 4].map(() => (
+          <svg viewBox="0 0 24 24" class="h-6 w-6 fill-current"><path d="m12 2 3 6.9 7.5.6-5.7 4.9 1.8 7.3L12 17.8 5.4 21.7l1.8-7.3L1.5 9.5 9 8.9 12 2Z"/></svg>
+        ))}
+      </div>
+      <p class="mt-4 font-[var(--font-display)] text-3xl md:text-4xl text-coal-900">More than 300 five-star Google reviews</p>
+      <p class="mx-auto mt-3 max-w-xl text-coal-700">Homeowners, builders and designers across the New York metro area trust our in-house team.</p>
+      <a href="https://www.google.com/search?q=NYC+Fireplaces+%26+Outdoor+Kitchens+reviews" target="_blank" rel="noopener" class="mt-6 inline-block btn btn-primary">Read our Google reviews</a>
+    </div>
+  </section>
+
+  <!-- 13 + 14 — TWO-SHOWROOM BLOCK + FINAL CTA -->
   <ConversionBlock />
+
+  <!-- 15 — HELPFUL GUIDES -->
+  <section class="section-cream">
+    <div class="container-page py-20">
+      <div class="mb-10 flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <p class="eyebrow mb-3">Plan with confidence</p>
+          <h2 class="text-4xl md:text-5xl">Helpful guides</h2>
+        </div>
+        <a href="/blogs" class="text-sm font-semibold text-ember-600 hover:text-ember-500">All guides &amp; articles →</a>
+      </div>
+      <div class="grid gap-6 md:grid-cols-3">
+        {guides.map((g) => (
+          <a href={g.href} class="group rounded-sm border border-coal-900/15 bg-stone-100 p-7 transition-colors hover:border-ember-600">
+            <h3 class="text-xl text-coal-900">{g.title}</h3>
+            <span class="mt-4 inline-block text-sm font-semibold text-ember-600 transition-transform group-hover:translate-x-1">Read the guide →</span>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
 </Base>

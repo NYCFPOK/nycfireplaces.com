@@ -112,6 +112,29 @@
   .hairline {
     border-top: 1px solid color-mix(in srgb, var(--color-stone-400) 22%, transparent);
   }
+
+  /* Light editorial sections — plan §19.2 warns against excessive black
+     backgrounds; cream/stone sections carry most of the page. */
+  .section-light {
+    background: var(--color-stone-100);
+    color: var(--color-coal-700);
+  }
+  .section-light :is(h1, h2, h3, h4) {
+    color: var(--color-coal-900);
+  }
+  .section-light .eyebrow {
+    color: var(--color-ember-600);
+  }
+  .section-cream {
+    background: var(--color-stone-200);
+    color: var(--color-coal-700);
+  }
+  .section-cream :is(h1, h2, h3, h4) {
+    color: var(--color-coal-900);
+  }
+  .section-cream .eyebrow {
+    color: var(--color-ember-600);
+  }
 }
 
 /* =========================================================================

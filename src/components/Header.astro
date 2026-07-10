@@ -1,37 +1,92 @@
 ---
+// Header per plan §8.1 (max 7 primary items) + §11.3 utility bar with both
+// showrooms and financing. Slugs preserve live-site URLs where the plan
+// requires it (/outdoor-kitchen singular §8.3, /builders-architects §8.5).
+import { business } from '../data/business';
+
 const nav = [
   { label: 'Fireplaces', href: '/fireplaces' },
-  { label: 'Outdoor Kitchens', href: '/outdoor-kitchens' },
-  { label: 'Stoves', href: '/stoves' },
-  { label: 'Brands', href: '/brands' },
-  { label: 'Installations', href: '/installations' },
-  { label: 'About', href: '/about' },
+  { label: 'Outdoor Kitchens', href: '/outdoor-kitchen' },
+  { label: 'Outdoor Living', href: '/outdoor-living' },
+  { label: 'Portfolio', href: '/installations' },
+  { label: 'Trade Professionals', href: '/builders-architects' },
+  { label: 'Showrooms', href: '/locations' },
 ];
+const [queens, longIsland] = business.locations;
 ---
 
-<header class="sticky top-0 z-50 bg-coal-950/85 backdrop-blur-md border-b border-stone-400/15">
-  <div class="container-page flex items-center justify-between h-20">
-    <a href="/" class="flex flex-col leading-none">
+<!-- Utility bar — both showrooms + financing (§11.3) -->
+<div class="bg-coal-900 text-stone-300 text-xs border-b border-stone-400/10">
+  <div class="container-page flex items-center justify-between gap-4 h-9">
+    <p class="flex items-center gap-4 min-w-0">
+      <a href={`tel:${queens.phone}`} data-cta="call" class="hover:text-ember-400 whitespace-nowrap truncate">
+        <span class="font-semibold text-stone-200">Queens:</span> {queens.phoneDisplay}
+      </a>
+      <a href={`tel:${longIsland.phone}`} data-cta="call" class="hidden sm:inline hover:text-ember-400 whitespace-nowrap">
+        <span class="font-semibold text-stone-200">Long Island:</span> {longIsland.phoneDisplay}
+      </a>
+    </p>
+    <a href="/financing" class="hover:text-ember-400 whitespace-nowrap font-medium">Financing available</a>
+  </div>
+</div>
+
+<header class="sticky top-0 z-50 bg-coal-950/92 backdrop-blur-md border-b border-stone-400/15">
+  <div class="container-page flex items-center justify-between gap-4 h-20">
+    <a href="/" class="flex flex-col leading-none shrink-0">
       <span class="font-[var(--font-display)] text-2xl text-stone-100 tracking-tight">NYC Fireplaces</span>
       <span class="eyebrow text-[0.6rem] mt-1">&amp; Outdoor Kitchens</span>
     </a>
 
-    <nav class="hidden lg:flex items-center gap-8" aria-label="Primary">
+    <nav class="hidden xl:flex items-center gap-7" aria-label="Primary">
       {nav.map((item) => (
         <a
           href={item.href}
-          class="text-sm font-medium text-stone-300 hover:text-ember-400 transition-colors"
+          class="text-sm font-medium text-stone-300 hover:text-ember-400 transition-colors whitespace-nowrap"
         >
           {item.label}
         </a>
       ))}
     </nav>
 
-    <div class="flex items-center gap-4">
-      <a href="tel:+17183264328" class="hidden md:inline text-sm font-semibold text-stone-100 hover:text-ember-400 transition-colors">
-        (718) 326-4328
+    <div class="flex items-center gap-3 shrink-0">
+      <a
+        href={`tel:${queens.phone}`}
+        data-cta="call"
+        class="hidden md:inline-flex items-center gap-2 text-sm font-semibold text-stone-100 hover:text-ember-400 transition-colors"
+      >
+        <svg aria-hidden="true" viewBox="0 0 24 24" class="h-4 w-4 fill-current"><path d="M6.6 10.8a15.9 15.9 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.24 11.4 11.4 0 0 0 3.6.58 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1 11.4 11.4 0 0 0 .58 3.6 1 1 0 0 1-.24 1l-2.24 2.2Z"/></svg>
+        {queens.phoneDisplay}
       </a>
-      <a href="/consultation" class="btn btn-primary text-xs px-4 py-2.5">Book a Consultation</a>
+      <a href="/quote" class="btn btn-primary text-xs px-4 py-2.5">Get a Quote</a>
+
+      <!-- Mobile menu — native disclosure, keyboard accessible (§20) -->
+      <details class="xl:hidden relative">
+        <summary
+          class="list-none cursor-pointer flex h-11 w-11 items-center justify-center rounded-sm border border-stone-400/30 text-stone-100 [&::-webkit-details-marker]:hidden"
+          aria-label="Open menu"
+        >
+          <svg aria-hidden="true" viewBox="0 0 24 24" class="h-5 w-5 fill-current"><path d="M3 6h18v2H3V6Zm0 5h18v2H3v-2Zm0 5h18v2H3v-2Z"/></svg>
+        </summary>
+        <nav
+          aria-label="Mobile"
+          class="absolute right-0 top-[calc(100%+0.75rem)] w-64 border border-stone-400/20 bg-coal-900 p-2 shadow-xl"
+        >
+          {nav.map((item) => (
+            <a
+              href={item.href}
+              class="block rounded-sm px-4 py-3 text-sm font-medium text-stone-200 hover:bg-coal-800 hover:text-ember-400"
+            >
+              {item.label}
+            </a>
+          ))}
+          <a
+            href="/quote"
+            class="mt-1 block rounded-sm bg-ember-600 px-4 py-3 text-center text-sm font-bold uppercase tracking-wide text-coal-950"
+          >
+            Get a Quote
+          </a>
+        </nav>
+      </details>
     </div>
   </div>
 </header>
