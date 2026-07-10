@@ -1,7 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
 import ConversionBlock from '../components/ConversionBlock.astro';
-import HeroFire from '../components/scenes/HeroFire.astro';
+import PhotoHero from '../components/scenes/PhotoHero.astro';
 import { business } from '../data/business';
 
 const CDN = 'https://www.nycfireplaces.com/wp-content/uploads';
@@ -84,8 +84,8 @@ const guides = [
   description={business.description}
   path="/"
 >
-  <!-- 1 — HERO: illustrated "Fire, Perfected" scene with live flames -->
-  <HeroFire />
+  <!-- 1 — HERO: real rooftop outdoor-kitchen photo with live fire + heater glow -->
+  <PhotoHero />
 
   <!-- 2 — PROOF STRIP (§11.4, approved wording) -->
   <section class="border-y border-gold-500/20 bg-coal-900">

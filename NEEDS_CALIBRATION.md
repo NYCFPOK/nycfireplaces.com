@@ -1,5 +1,16 @@
 # Flame-rect calibration
 
+## HERO (live): `manhattan-outdoor-hero.webp`
+`src/components/scenes/PhotoHero.astro` — real rooftop-kitchen photo, animated.
+- `data-flame-rects="82,50,13,7,high; 29,80,5,9,low"` — fireplace (right) + candle lanterns (foreground)
+- `data-glow-rects="57,13,10,6; 77,6,9,5"` — two infrared pergola heaters
+- These are eyeball estimates against the photo; nudge the percentages to sit
+  exactly on the fireplace flames / lanterns / heater panels.
+- `nyc-firepit.webp` is also downloaded for a future fire-bowl section.
+
+---
+
+
 The motion layer overlays living fire on real photos. Each flame overlay is
 positioned with `data-flame-rect="x%,y%,w%,h%"` (percent of the image box).
 I estimated these by examining each image file directly. They render well, but
