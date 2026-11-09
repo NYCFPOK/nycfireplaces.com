@@ -1,0 +1,31 @@
+---
+import { getCollection, render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import CtaBand from '../../components/CtaBand.astro';
+export async function getStaticPaths() {
+  return (await getCollection('guides')).map((guide) => ({ params: { id: guide.id }, props: { guide } }));
+}
+const { guide } = Astro.props;
+const { Content } = await render(guide);
+const NEXT = { 'new-fireplace': ['/fireplaces/new/', 'Add a new fireplace'], 'existing-fireplace': ['/fireplaces/upgrade-existing/', 'Upgrade an existing fireplace'], 'outdoor-kitchen': ['/outdoor-kitchens/', 'Plan an outdoor kitchen'], 'outdoor-living': ['/outdoor-living/', 'Outdoor fire and heating'] } as const;
+const next = guide.data.path ? NEXT[guide.data.path] : ['/showroom/', 'Visit our showroom'];
+---
+<Base title={guide.data.title} description={guide.data.description}>
+  <article class="section">
+    <div class="wrap wrap-narrow">
+      <nav aria-label="Breadcrumb" class="crumbs"><a href="/">Home</a> / <a href="/guides/">Buying Guides</a></nav>
+      <h1>{guide.data.title}</h1>
+      <p class="lede">{guide.data.description}</p>
+      <div class="prose"><Content /></div>
+      <p class="next"><a class="btn btn-secondary" href={next[0]}>Next: {next[1]}</a></p>
+    </div>
+  </article>
+  <CtaBand placement="guide_band" />
+</Base>
+<style>
+  .crumbs { font-size: 0.9rem; color: var(--color-ink-3); margin-bottom: 1rem; }
+  .crumbs a { text-decoration: underline; }
+  h1 { margin-bottom: 1rem; }
+  .prose { margin-top: 2rem; font-size: 1.1rem; }
+  .next { margin-top: 2.5rem; }
+</style>

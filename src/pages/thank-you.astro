@@ -1,0 +1,49 @@
+---
+import Base from '../layouts/Base.astro';
+import { site, showroom, telHref, hoursRows } from '../data/site';
+---
+<Base title="We Received Your Message" description="Thank you. Your message reached NYC Fireplaces & Outdoor Kitchens." noindex>
+  <section class="section">
+    <div class="wrap wrap-narrow">
+      <p class="eyebrow">Message received</p>
+      <h1>Thank you. Your message reached our team.</h1>
+      <div class="next" data-kind-copy>
+        <p class="lede" data-for="default">A member of our team will read it and get back to you using the contact details you gave, to talk through next steps. No appointment has been booked yet.</p>
+        <p class="lede" data-for="service" hidden>Our service team will review the request and contact you. No visit has been scheduled yet.</p>
+        <p class="lede" data-for="parts" hidden>We will look into the part and contact you with what we find.</p>
+      </div>
+      <div class="card box">
+        <h2>Need to reach us sooner?</h2>
+        <p><a class="phone" href={telHref} data-track="phone_click" data-placement="thank_you">{site.phone.display}</a></p>
+        <dl>{hoursRows.map((r) => (<><dt>{r.label}</dt><dd>{r.value}</dd></>))}</dl>
+        <p class="muted">Outside those hours, we will pick up your message when the showroom reopens.</p>
+      </div>
+      <div class="card box">
+        <h2>Thinking of visiting the showroom?</h2>
+        <p>{showroom.street}, {showroom.city}, {showroom.region} {showroom.postalCode}</p>
+        <p class="acts"><a class="btn btn-secondary" href={showroom.directionsUrl} target="_blank" rel="noopener" data-track="directions_click" data-placement="thank_you">Get Directions</a> <a class="link link-arrow" href="/projects/">Browse completed projects</a></p>
+      </div>
+    </div>
+  </section>
+</Base>
+<script>
+  import { track } from '../lib/client';
+  const kind = new URLSearchParams(location.search).get('kind') || 'project';
+  const box = document.querySelector('[data-kind-copy]')!;
+  const specific = box.querySelector<HTMLElement>(`[data-for="${CSS.escape(kind)}"]`);
+  if (specific) { box.querySelector<HTMLElement>('[data-for="default"]')!.hidden = true; specific.hidden = false; }
+  // Fires once per confirmed submission. Carries the form type only, never personal details.
+  if (!sessionStorage.getItem('lead_tracked_' + history.length)) {
+    sessionStorage.setItem('lead_tracked_' + history.length, '1');
+    track('lead_form_received', { form_kind: kind });
+  }
+</script>
+<style>
+  h1 { margin-block: 0.6rem 1rem; }
+  .box { padding: 1.5rem; margin-top: 1.5rem; display: grid; gap: 0.6rem; }
+  .box h2 { font-size: 1.35rem; }
+  .phone { font-family: var(--font-display); font-size: 2rem; color: var(--color-ember); text-decoration: none; }
+  dl { display: grid; grid-template-columns: auto 1fr; gap: 0.15rem 1.25rem; }
+  dt { font-weight: 650; }
+  .acts { display: flex; flex-wrap: wrap; gap: 0.8rem 1.25rem; align-items: center; }
+</style>

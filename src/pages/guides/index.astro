@@ -1,0 +1,38 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import FaqList from '../../components/FaqList.astro';
+import CtaBand from '../../components/CtaBand.astro';
+const guides = (await getCollection('guides')).sort((a, b) => a.data.order - b.data.order);
+---
+<Base title="Buying Guides & Common Questions" description="Short, plain-English guides to choosing a fireplace or planning an outdoor kitchen, plus answers to the questions we hear most.">
+  <section class="section">
+    <div class="wrap">
+      <p class="eyebrow">Buying guides</p>
+      <h1>Short guides, in plain English</h1>
+      <p class="lede">Read these if you like to understand the options first. You do not need to read anything before calling us.</p>
+      <div class="grid">
+        {guides.map((g) => (
+          <a class="card card-link" href={`/guides/${g.id}/`}><div class="card-body"><h2>{g.data.title}</h2><p>{g.data.description}</p><span class="link link-arrow">Read the guide</span></div></a>
+        ))}
+      </div>
+    </div>
+  </section>
+  <section class="section section-tint">
+    <div class="wrap wrap-narrow">
+      <h2 id="fireplaces">Fireplace questions</h2><div class="gap"><FaqList group="fireplaces" /></div>
+      <h2 id="outdoor-kitchens" class="mt">Outdoor kitchen questions</h2><div class="gap"><FaqList group="outdoor-kitchens" /></div>
+    </div>
+  </section>
+  <CtaBand placement="guides_band" />
+</Base>
+<style>
+  h1 { margin-block: 0.6rem 1rem; }
+  .grid { display: grid; gap: 1.5rem; margin-top: 2.25rem; }
+  @media (min-width: 760px) { .grid { grid-template-columns: 1fr 1fr; } }
+  .card-body { display: grid; gap: 0.6rem; }
+  .card-body h2 { font-size: 1.4rem; }
+  .card-body p { color: var(--color-ink-2); }
+  .gap { margin-top: 1.25rem; }
+  .mt { margin-top: 3.5rem; }
+</style>

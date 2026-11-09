@@ -1,0 +1,8 @@
+---
+import ProjectIndex from '../../../components/ProjectIndex.astro';
+export function getStaticPaths() {
+  return ['fireplaces', 'outdoor-kitchens', 'outdoor-living'].map((type) => ({ params: { type } }));
+}
+const { type } = Astro.params;
+---
+<ProjectIndex filter={type as any} />

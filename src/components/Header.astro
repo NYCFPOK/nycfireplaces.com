@@ -1,92 +1,106 @@
 ---
-// Header per plan §8.1 (max 7 primary items) + §11.3 utility bar with both
-// showrooms and financing. Slugs preserve live-site URLs where the plan
-// requires it (/outdoor-kitchen singular §8.3, /builders-architects §8.5).
-import { business } from '../data/business';
+import { Image } from 'astro:assets';
+import logo from '../assets/logo.png';
+import { site, telHref, helpHref, hoursClientData } from '../data/site';
 
-const nav = [
-  { label: 'Fireplaces', href: '/fireplaces' },
-  { label: 'Outdoor Kitchens', href: '/outdoor-kitchen' },
-  { label: 'Outdoor Living', href: '/outdoor-living' },
-  { label: 'Portfolio', href: '/installations' },
-  { label: 'Trade Professionals', href: '/builders-architects' },
-  { label: 'Showrooms', href: '/locations' },
+const primary = [
+  { label: 'Start Here', href: '/start-here/' },
+  { label: 'Fireplaces', href: '/fireplaces/' },
+  { label: 'Outdoor Kitchens', href: '/outdoor-kitchens/' },
+  { label: 'Our Projects', href: '/projects/' },
+  { label: 'Visit Our Showroom', href: '/showroom/' },
 ];
-const [queens, longIsland] = business.locations;
+const secondary = [
+  { label: 'Designers & Builders', href: '/designers-builders/' },
+  { label: 'Service & Parts', href: '/service-parts/' },
+  { label: 'About Our Team', href: '/about/' },
+  { label: 'Buying Guides', href: '/guides/' },
+];
+const path = Astro.url.pathname;
+const isCurrent = (href: string) => path === href || (href !== '/' && path.startsWith(href));
 ---
-
-<!-- Utility bar — both showrooms + financing (§11.3) -->
-<div class="bg-coal-900 text-stone-300 text-xs border-b border-stone-400/10">
-  <div class="container-page flex items-center justify-between gap-4 h-9">
-    <p class="flex items-center gap-4 min-w-0">
-      <a href={`tel:${queens.phone}`} data-cta="call" class="hover:text-ember-400 whitespace-nowrap truncate">
-        <span class="font-semibold text-stone-200">Queens:</span> {queens.phoneDisplay}
+<header class="site-header">
+  <div class="utility">
+    <div class="wrap utility-inner">
+      <a href="/showroom/" class="utility-showroom" data-track="showroom_info_click" data-placement="header">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12Z"/><circle cx="12" cy="10" r="2.6"/></svg>
+        <span>{site.showroom.area} · <u>Address &amp; Hours</u></span>
       </a>
-      <a href={`tel:${longIsland.phone}`} data-cta="call" class="hidden sm:inline hover:text-ember-400 whitespace-nowrap">
-        <span class="font-semibold text-stone-200">Long Island:</span> {longIsland.phoneDisplay}
-      </a>
-    </p>
-    <a href="/financing" class="hover:text-ember-400 whitespace-nowrap font-medium">Financing available</a>
+      <span class="utility-status" data-open-status={hoursClientData} hidden></span>
+      <nav class="utility-links" aria-label="More">
+        {secondary.map((l) => <a href={l.href}>{l.label}</a>)}
+        <a href={site.shopOnline.url} rel="noopener" data-track="shop_online_click" data-placement="header">Shop Online <span aria-hidden="true">↗</span><span class="sr-only"> (opens our separate online store)</span></a>
+      </nav>
+    </div>
   </div>
-</div>
-
-<header class="sticky top-0 z-50 bg-coal-950/92 backdrop-blur-md border-b border-stone-400/15">
-  <div class="container-page flex items-center justify-between gap-4 h-20">
-    <a href="/" class="flex flex-col leading-none shrink-0">
-      <span class="font-[var(--font-display)] text-2xl text-stone-100 tracking-tight">NYC Fireplaces</span>
-      <span class="eyebrow text-[0.6rem] mt-1">&amp; Outdoor Kitchens</span>
+  <div class="wrap main-row">
+    <a href="/" class="logo" aria-label={`${site.name} home`}>
+      <Image src={logo} alt={site.name} width={232} height={40} loading="eager" />
     </a>
-
-    <nav class="hidden xl:flex items-center gap-7" aria-label="Primary">
-      {nav.map((item) => (
-        <a
-          href={item.href}
-          class="text-sm font-medium text-stone-300 hover:text-ember-400 transition-colors whitespace-nowrap"
-        >
-          {item.label}
-        </a>
-      ))}
+    <nav class="primary" aria-label="Primary">
+      {primary.map((l) => <a href={l.href} aria-current={isCurrent(l.href) ? 'page' : undefined}>{l.label}</a>)}
     </nav>
-
-    <div class="flex items-center gap-3 shrink-0">
-      <a
-        href={`tel:${queens.phone}`}
-        data-cta="call"
-        class="hidden md:inline-flex items-center gap-2 text-sm font-semibold text-stone-100 hover:text-ember-400 transition-colors"
-      >
-        <svg aria-hidden="true" viewBox="0 0 24 24" class="h-4 w-4 fill-current"><path d="M6.6 10.8a15.9 15.9 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.24 11.4 11.4 0 0 0 3.6.58 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1 11.4 11.4 0 0 0 .58 3.6 1 1 0 0 1-.24 1l-2.24 2.2Z"/></svg>
-        {queens.phoneDisplay}
+    <div class="actions">
+      <a href={telHref} class="phone" data-track="phone_click" data-placement="header">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11.4 11.4 0 0 0 3.6.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1.02l-2.2 2.21Z"/></svg>
+        <span><span class="sr-only">Call </span>{site.phone.display}</span>
       </a>
-      <a href="/quote" class="btn btn-primary text-xs px-4 py-2.5">Get a Quote</a>
-
-      <!-- Mobile menu — native disclosure, keyboard accessible (§20) -->
-      <details class="xl:hidden relative">
-        <summary
-          class="list-none cursor-pointer flex h-11 w-11 items-center justify-center rounded-sm border border-stone-400/30 text-stone-100 [&::-webkit-details-marker]:hidden"
-          aria-label="Open menu"
-        >
-          <svg aria-hidden="true" viewBox="0 0 24 24" class="h-5 w-5 fill-current"><path d="M3 6h18v2H3V6Zm0 5h18v2H3v-2Zm0 5h18v2H3v-2Z"/></svg>
-        </summary>
-        <nav
-          aria-label="Mobile"
-          class="absolute right-0 top-[calc(100%+0.75rem)] w-64 border border-stone-400/20 bg-coal-900 p-2 shadow-xl"
-        >
-          {nav.map((item) => (
-            <a
-              href={item.href}
-              class="block rounded-sm px-4 py-3 text-sm font-medium text-stone-200 hover:bg-coal-800 hover:text-ember-400"
-            >
-              {item.label}
-            </a>
-          ))}
-          <a
-            href="/quote"
-            class="mt-1 block rounded-sm bg-ember-600 px-4 py-3 text-center text-sm font-bold uppercase tracking-wide text-coal-950"
-          >
-            Get a Quote
-          </a>
+      <a href={helpHref} class="btn btn-primary help" data-track="help_cta_click" data-placement="header">{site.cta.helpShort}</a>
+      <details class="menu">
+        <summary aria-label="Menu"><span class="bars" aria-hidden="true"></span><span class="menu-label">Menu</span></summary>
+        <nav class="menu-panel" aria-label="Mobile">
+          {primary.map((l) => <a href={l.href} class="menu-primary">{l.label}</a>)}
+          <hr />
+          {secondary.map((l) => <a href={l.href}>{l.label}</a>)}
+          <a href={site.shopOnline.url} rel="noopener">Shop Online ↗ <small>separate online store</small></a>
         </nav>
       </details>
     </div>
   </div>
 </header>
+
+<style>
+  .site-header { position: sticky; top: 0; z-index: 50; background: var(--color-paper); border-bottom: 1px solid var(--color-line); }
+  .utility { background: var(--color-char); color: #eadfce; font-size: 0.875rem; }
+  .utility-inner { display: flex; align-items: center; gap: 1.25rem; min-height: 2.25rem; }
+  .utility a { text-decoration: none; }
+  .utility a:hover { color: #fff; text-decoration: underline; }
+  .utility-showroom { display: inline-flex; align-items: center; gap: 0.4rem; font-weight: 600; padding-block: 0.45rem; }
+  .utility-status { color: #cdbfae; }
+  .utility-status[data-state='open']::before { content: '● '; color: #7fce93; }
+  .utility-links { margin-left: auto; display: none; gap: 1.35rem; }
+  .main-row { display: flex; align-items: center; gap: 1rem; min-height: 4rem; }
+  .logo { flex: 0 1 auto; min-width: 0; display: block; }
+  .logo img { width: 150px; max-width: 100%; height: auto; display: block; }
+  .primary { display: none; gap: 1.5rem; margin-inline: auto; }
+  .primary a { text-decoration: none; font-weight: 650; font-size: 0.98rem; padding-block: 0.5rem; border-bottom: 2px solid transparent; white-space: nowrap; }
+  .primary a:hover, .primary a[aria-current='page'] { border-bottom-color: var(--color-ember); }
+  .actions { margin-left: auto; display: flex; align-items: center; gap: 0.5rem; flex: none; }
+  .phone { display: inline-flex; align-items: center; gap: 0.4rem; font-weight: 800; text-decoration: none; white-space: nowrap; min-height: 2.75rem; padding-inline: 0.35rem; color: var(--color-ink); font-size: 1rem; }
+  .phone svg { color: var(--color-ember); }
+  .phone:hover { color: var(--color-ember-dark); }
+  .help { display: none; min-height: 2.75rem; padding-block: 0.5rem; white-space: nowrap; }
+  .menu { position: static; }
+  .menu summary { list-style: none; display: inline-flex; align-items: center; gap: 0.5rem; min-height: 2.75rem; padding: 0 0.8rem; border: 1.5px solid var(--color-ink); border-radius: 999px; font-weight: 700; font-size: 0.95rem; }
+  .menu summary::-webkit-details-marker { display: none; }
+  .bars { width: 16px; height: 2px; background: currentColor; box-shadow: 0 -5px 0 currentColor, 0 5px 0 currentColor; }
+  .menu-panel { position: absolute; left: 0; right: 0; top: 100%; background: var(--color-paper); border-bottom: 1px solid var(--color-line); box-shadow: 0 24px 40px -24px rgb(0 0 0 / 0.4); padding: 0.75rem 1.25rem 1.25rem; display: grid; max-height: calc(100dvh - 10rem); overflow-y: auto; }
+  .menu-panel a { text-decoration: none; padding: 0.7rem 0; font-weight: 600; }
+  .menu-panel a.menu-primary { font-family: var(--font-display); font-size: 1.3rem; }
+  .menu-panel small { color: var(--color-ink-3); font-weight: 400; }
+  .menu-panel hr { border: 0; border-top: 1px solid var(--color-line); margin: 0.5rem 0; }
+  @media (max-width: 479px) { .menu-label { display: none; } .menu summary { padding: 0 0.75rem; } .main-row { gap: 0.6rem; } }
+  @media (max-width: 479px) { .utility-status { display: none; } }
+  @media (min-width: 640px) { .logo img { width: 200px; } .help { display: inline-flex; } }
+  @media (min-width: 1100px) {
+    .utility-links { display: flex; }
+    .primary { display: flex; gap: 1.15rem; }
+    .menu { display: none; }
+    .logo img { width: 200px; }
+  }
+  @media (min-width: 1280px) {
+    .primary { gap: 1.6rem; }
+    .logo img { width: 232px; }
+    .phone { font-size: 1.1rem; }
+  }
+</style>

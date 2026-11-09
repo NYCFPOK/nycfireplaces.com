@@ -1,0 +1,60 @@
+{
+  "name": "NYC Fireplaces & Outdoor Kitchens",
+  "shortName": "NYC Fireplaces",
+  "url": "https://www.nycfireplaces.com",
+  "phone": { "e164": "+17183264328", "display": "718-326-4328" },
+  "email": "info@nycfireplaces.com",
+  "shopOnline": { "label": "Shop Online", "url": "https://nycfireplaceshop.com/", "note": "Our separate online store for grills, parts and accessories" },
+  "teamStatement": "A family-owned business with an in-house team of designers, installers, craftsmen and technicians with over 30 years of experience.",
+  "googleReviewsUrl": "",
+  "showroom": {
+    "id": "maspeth",
+    "name": "Maspeth Showroom",
+    "area": "Maspeth, Queens",
+    "street": "58-30 Maspeth Ave",
+    "city": "Maspeth",
+    "region": "NY",
+    "postalCode": "11378",
+    "status": "open",
+    "directionsUrl": "https://www.google.com/maps/dir/?api=1&destination=NYC+Fireplaces+and+Outdoor+Kitchens%2C+58-30+Maspeth+Ave%2C+Maspeth%2C+NY+11378",
+    "mapEmbedUrl": "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d96743.79766345929!2d-74.02362172455533!3d40.73466333284877!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c25e950b1f132b%3A0x2b88702df0e6c87e!2sNYC%20Fireplaces%20and%20Outdoor%20Kitchens!5e0!3m2!1sen!2sus!4v1658358421062!5m2!1sen!2sus",
+    "hours": [
+      { "days": [1, 2, 3, 4, 5], "label": "Monday–Friday", "open": "09:00", "close": "17:00" },
+      { "days": [6], "label": "Saturday", "open": "10:00", "close": "15:00" },
+      { "days": [0], "label": "Sunday", "open": null, "close": null }
+    ],
+    "holidayOverrides": [],
+    "appointments": "",
+    "parking": "",
+    "accessibility": ""
+  },
+  "otherLocations": [
+    {
+      "id": "greenvale",
+      "name": "Greenvale, Long Island",
+      "street": "13 Glen Cove Rd",
+      "city": "Greenvale",
+      "region": "NY",
+      "postalCode": "11548",
+      "status": "coming-soon",
+      "publicNote": "Coming soon. Call us for an update before planning a visit."
+    }
+  ],
+  "serviceAreas": {
+    "intro": "Our showroom is in Maspeth, Queens. Installation and service coverage depends on the project, so tell us where the project is and we will confirm.",
+    "installation": ["Manhattan", "Queens", "Brooklyn", "The Bronx", "Staten Island", "Nassau County", "Suffolk County"],
+    "installationByProject": ["Westchester County", "Northern New Jersey (Bergen, Hudson, Essex and Union counties)", "Greenwich and Stamford, Connecticut"]
+  },
+  "social": [
+    { "label": "Instagram", "url": "https://www.instagram.com/nycfireplaces_outdoor_kitchens/" },
+    { "label": "Facebook", "url": "https://www.facebook.com/NYCFireplacesOutdoorKitchens/" },
+    { "label": "YouTube", "url": "https://www.youtube.com/user/NYCFireplace" },
+    { "label": "Houzz", "url": "https://www.houzz.com/professionals/fireplace-sales-and-installation/nyc-fireplaces-and-outdoor-kitchens-pfvwus-pf" }
+  ],
+  "cta": {
+    "call": "Call 718-326-4328",
+    "help": "Get Help With My Project",
+    "helpShort": "Get Project Help",
+    "visit": "Visit Our Maspeth Showroom"
+  }
+}

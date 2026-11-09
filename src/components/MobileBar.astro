@@ -1,0 +1,19 @@
+---
+import { site, telHref, helpHref } from '../data/site';
+---
+<div class="mobile-bar" role="region" aria-label="Contact">
+  <a href={telHref} class="btn btn-secondary" data-track="phone_click" data-placement="mobile_bar">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11.4 11.4 0 0 0 3.6.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1.02l-2.2 2.21Z"/></svg>
+    Call
+  </a>
+  <a href={helpHref} class="btn btn-primary" data-track="help_cta_click" data-placement="mobile_bar">{site.cta.helpShort}</a>
+</div>
+<style>
+  .mobile-bar {
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 40; display: grid; grid-template-columns: 1fr 1.6fr; gap: 0.6rem;
+    padding: 0.6rem 0.9rem calc(0.6rem + env(safe-area-inset-bottom)); background: var(--color-paper);
+    border-top: 1px solid var(--color-line); box-shadow: 0 -10px 24px -18px rgb(0 0 0 / 0.5);
+  }
+  .mobile-bar .btn { min-height: 3rem; padding-inline: 0.75rem; }
+  @media (min-width: 768px) { .mobile-bar { display: none; } }
+</style>

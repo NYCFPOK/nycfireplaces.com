@@ -1,0 +1,36 @@
+---
+import Base from '../layouts/Base.astro';
+import CtaBand from '../components/CtaBand.astro';
+import { site, addressLine } from '../data/site';
+const a = site.serviceAreas;
+---
+<Base title="Areas We Serve" description="Our showroom is in Maspeth, Queens. See where we install fireplaces and outdoor kitchens, and how showroom visits, installation and online orders differ.">
+  <section class="section">
+    <div class="wrap wrap-narrow">
+      <p class="eyebrow">Areas we serve</p>
+      <h1>Where we work</h1>
+      <p class="lede">{a.intro}</p>
+      <div class="blocks">
+        <div id="showroom"><h2>Showroom</h2><p>{addressLine}. Everyone is welcome, wherever your project is. <a class="link" href="/showroom/">Address, hours and directions</a></p></div>
+        <div id="installation"><h2>Design and installation</h2>
+          <p>We regularly install in:</p>
+          <ul class="areas">{a.installation.map((x) => <li id={x.toLowerCase().replace(/[^a-z]+/g, '-')}>{x}</li>)}</ul>
+          <p>Depending on the project, we also work in:</p>
+          <ul class="areas">{a.installationByProject.map((x) => <li>{x}</li>)}</ul>
+          <p class="muted">Coverage depends on the type and size of the job. Send us the project ZIP code and we will confirm before you spend time planning.</p>
+        </div>
+        <div id="supply"><h2>Supply only</h2><p>Working with your own contractor? We can supply equipment and specifications for your team to install.</p></div>
+        <div id="online"><h2>Online orders</h2><p>Shipping for items bought from our separate online store is handled there, under that store’s policies. <a class="link" href={site.shopOnline.url} rel="noopener">Shop Online at nycfireplaceshop.com ↗</a></p></div>
+      </div>
+    </div>
+  </section>
+  <CtaBand placement="areas_band" heading="Not sure whether we cover your area?" text="Call or send the project ZIP code. It takes a minute to check." />
+</Base>
+<style>
+  h1 { margin-block: 0.6rem 1rem; }
+  .blocks { display: grid; gap: 2.25rem; margin-top: 2.5rem; }
+  .blocks h2 { font-size: 1.5rem; margin-bottom: 0.5rem; }
+  .blocks p + p, .blocks ul + p { margin-top: 0.8rem; }
+  .areas { list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.6rem; }
+  .areas li { padding: 0.3rem 0.9rem; border-radius: 999px; background: var(--color-paper-2); border: 1px solid var(--color-line); font-weight: 600; scroll-margin-top: 8rem; }
+</style>

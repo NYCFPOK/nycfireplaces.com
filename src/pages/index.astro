@@ -1,335 +1,243 @@
 ---
+import { Image } from 'astro:assets';
+import { getCollection, getEntry } from 'astro:content';
 import Base from '../layouts/Base.astro';
-import ConversionBlock from '../components/ConversionBlock.astro';
-import PhotoHero from '../components/scenes/PhotoHero.astro';
-import { business } from '../data/business';
+import OptionCard from '../components/OptionCard.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+import Process from '../components/Process.astro';
+import Reviews from '../components/Reviews.astro';
+import FaqList from '../components/FaqList.astro';
+import ShowroomInfo from '../components/ShowroomInfo.astro';
+import LeadForm from '../components/LeadForm.astro';
+import { site, telHref, helpHref } from '../data/site';
+import showroomWide from '../assets/showroom/showroom-158.jpg';
+import showroomDetail from '../assets/showroom/showroom-145.jpg';
 
-const CDN = 'https://www.nycfireplaces.com/wp-content/uploads';
-
-// Homepage follows plan §11.3 section order. Copy uses ONLY approved facts
-// (§4.5 / §11.4). Imagery is the client's own project photography.
-
-// §11.4 proof strip — qualified wording only
-const proof = [
-  'Family-owned',
-  '30+ years of team experience',
-  '300+ five-star Google reviews',
-  'Two showrooms — Queens & Long Island',
-  'In-house, factory-trained install team',
-];
-
-// §11.3 fireplace + outdoor-kitchen decision paths
+const heroFire = (await getEntry('projects', 'stylish-napoleon-56-linear-gas-fireplace'))!;
+const heroKitchen = (await getEntry('projects', 'sleek-outdoor-kitchen-with-firepit'))!;
+const pathImages = {
+  new: (await getEntry('projects', 'modern-fireplace'))!.data.images[0],
+  existing: (await getEntry('projects', 'wood-to-gas-fireplace-conversion'))!.data.images[0],
+  kitchen: (await getEntry('projects', 'xo-42-gas-grill-and-gozney-dome-dual-fuel-pizza-oven-with-challenger-o'))!.data.images[0],
+};
 const paths = [
-  {
-    title: 'Fireplaces',
-    copy: 'Gas, electric, wood, water-vapor and ethanol — fireboxes, inserts, stoves, mantels and media walls, designed and installed by our own team.',
-    img: `${CDN}/2022/08/Kozy-Heat-fireplace-1.jpg`,
-    href: '/fireplaces',
-    cta: 'Explore fireplaces',
-    fx: 'flames embers',
-    rect: '22,40,56,42', // firebox region of the Kozy Heat photo
-    intensity: 'high',
-  },
-  {
-    title: 'Outdoor Kitchens',
-    copy: 'Custom islands, built-in grills, power burners, pizza ovens and stainless cabinetry — from a free 3D design to a finished build.',
-    img: `${CDN}/2022/08/stoll-custom-bbq-island.jpg`,
-    href: '/outdoor-kitchen',
-    cta: 'Explore outdoor kitchens',
-    fx: 'kenburns', // no visible flame in this photo
-    rect: '',
-    intensity: 'med',
-  },
+  { title: 'Add a new fireplace', text: 'For new spaces, renovations and new construction.', href: '/fireplaces/new/', image: pathImages.new, alt: 'Linear fireplace built into a stone media wall in a bright living room' },
+  { title: 'Upgrade an existing fireplace', text: 'For inserts, conversions and improving the opening you already have.', href: '/fireplaces/upgrade-existing/', image: pathImages.existing, alt: 'Existing fireplace converted to gas with a log set and glass doors' },
+  { title: 'Plan an outdoor kitchen', text: 'For grills, cabinetry, refrigeration, layout and outdoor cooking.', href: '/outdoor-kitchens/', image: pathImages.kitchen, alt: 'L-shaped outdoor kitchen with white cabinetry, a built-in grill and a pizza oven' },
 ];
 
-// §11.3 "Add a fireplace to almost any home" — fuel/type routes
-const fireplaceTypes = [
-  { label: 'Gas & propane', href: '/fireplaces' },
-  { label: 'Electric', href: '/fireplaces' },
-  { label: 'Water-vapor', href: '/fireplaces' },
-  { label: 'Wood-burning', href: '/fireplaces' },
-  { label: 'Inserts', href: '/fireplaces' },
-  { label: 'Stoves', href: '/stoves' },
-];
+const order = ['new-fireplace', 'existing-fireplace', 'outdoor-kitchen'];
+const options = (await getCollection('options'))
+  .filter((o) => o.data.homepage)
+  .sort((a, b) => order.indexOf(a.data.path) - order.indexOf(b.data.path) || a.data.order - b.data.order)
+  .slice(0, 6);
 
-// §11.3 selected projects — real project imagery (Portfolio teaser)
-const projects = [
-  { img: `${CDN}/2022/07/nyc-fireplaces-custom-install.jpg`, label: 'Custom fireplace install', fx: 'flames', rect: '3,62,52,7', intensity: 'med' },
-  { img: `${CDN}/2022/08/stoll-custom-bbq-island.jpg`, label: 'Custom BBQ island', fx: '', rect: '', intensity: 'med' },
-  { img: `${CDN}/2022/08/American-Fyre-Design-Fire-Table.jpg`, label: 'Fire feature', fx: 'flames embers', rect: '30,40,40,18', intensity: 'med' },
-  { img: `${CDN}/2022/08/Twin-Eagles-Grill.jpg`, label: 'Built-in grill', fx: '', rect: '', intensity: 'med' },
-];
-
-const brands = [
-  'Alfa Forni', 'Modern Flames', 'Kozy Heat', 'Danver', 'Hestan',
-  'Twin Eagles', 'American Fyre', 'Gozney', 'Napoleon', 'Delta Heat',
-];
-
-const steps = [
-  { n: '01', title: 'Consultation', copy: 'We learn your space, your style and how you live — in our showroom or on-site.' },
-  { n: '02', title: 'Design', copy: 'Our in-house designers craft a build tailored to your home, with real product and material selections.' },
-  { n: '03', title: 'Installation', copy: 'Our own factory-trained team installs it — not generic subcontracted crews.' },
-];
-
-// §11.3 helpful guides — real published articles
-const guides = [
-  { title: '3 Reasons Adding a Fireplace Can Increase Your Home’s Value', href: '/3-reasons-why-adding-a-fireplace-can-increase-your-homes-value' },
-  { title: 'Build an Outdoor Bar: Expert Design & Construction Tips', href: '/build-an-outdoor-bar' },
-  { title: 'Trends to Expand Your Outdoor Living Space', href: '/trends-to-expand-your-outdoor-living-space' },
-];
+const projects = (await getCollection('projects', (p) => p.data.featured && !p.data.draft)).sort((a, b) => a.data.order - b.data.order).slice(0, 3);
 ---
-
 <Base
-  title="Fireplaces & Outdoor Kitchens in NYC & Long Island"
-  description={business.description}
-  path="/"
+  title="Fireplaces & Outdoor Kitchens in NYC — Showroom, Design & Installation | NYC Fireplaces & Outdoor Kitchens"
+  description="Find the right fireplace or outdoor kitchen with expert help. Visit our Maspeth, Queens showroom or call 718-326-4328. You don't need a model number to get started."
 >
-  <!-- 1 — HERO: real rooftop outdoor-kitchen photo with live fire + heater glow -->
-  <PhotoHero />
-
-  <!-- 2 — PROOF STRIP (§11.4, approved wording) -->
-  <section class="border-y border-gold-500/20 bg-coal-900">
-    <div class="container-page py-7">
-      <ul class="flex flex-wrap items-center justify-center gap-x-9 gap-y-3 text-[0.78rem] font-semibold uppercase tracking-[0.16em] text-stone-300">
-        {proof.map((p, i) => (
-          <li class="flex items-center gap-9">
-            {i > 0 && <span aria-hidden="true" class="hidden text-[0.5rem] text-gold-400 sm:inline">◆</span>}
-            <span>{p}</span>
-          </li>
-        ))}
-      </ul>
+  <!-- A. Hero: one message, phone first -->
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div class="hero-copy">
+        <h1>Find the right fireplace or outdoor kitchen, with expert help.</h1>
+        <p class="lede">Tell us about your room, renovation or backyard. Our team will help you narrow the options and plan the next step.</p>
+        <div class="acts">
+          <a class="btn btn-primary btn-lg" href={telHref} data-track="phone_click" data-placement="hero">{site.cta.call}</a>
+          <a class="btn btn-secondary btn-lg" href={helpHref} data-track="help_cta_click" data-placement="hero">{site.cta.help}</a>
+        </div>
+        <p class="reassure">You don’t need a model number or a finished plan to get started.</p>
+        <p><a class="link link-arrow" href="/showroom/" data-track="showroom_info_click" data-placement="hero">{site.cta.visit}</a></p>
+      </div>
+      <div class="hero-media">
+        <div class="hm-main"><Image src={heroFire.data.images[0]} alt="Linear gas fireplace we installed in a wood-slat feature wall" widths={[400, 640, 812]} sizes="(min-width: 900px) 520px, 92vw" width={812} height={640} fit="cover" loading="eager" fetchpriority="high" /></div>
+        <div class="hm-inset"><Image src={heroKitchen.data.images[0]} alt="Outdoor kitchen and fire pit under a pergola, one of our completed projects" widths={[240, 400, 560]} sizes="(min-width: 900px) 280px, 46vw" width={560} height={420} fit="cover" loading="eager" /></div>
+        <p class="hm-cap muted">Completed projects by our team</p>
+      </div>
     </div>
   </section>
 
-  <!-- 3 — DECISION PATHS -->
-  <section class="section-light">
-    <div class="container-page py-20">
-      <div class="max-w-2xl" data-reveal>
-        <p class="eyebrow mb-4">Where would you like to begin?</p>
-        <h2 class="text-4xl md:text-5xl lg:text-6xl">Two ways we bring <span class="display-accent">fire</span> to your home</h2>
-      </div>
-      <div class="mt-12 grid gap-7 md:grid-cols-2" data-reveal data-reveal-group>
+  <!-- C. Three starting paths -->
+  <section class="section" aria-labelledby="paths-h">
+    <div class="wrap">
+      <p class="eyebrow">Start here</p>
+      <h2 id="paths-h">What are you planning?</h2>
+      <div class="paths">
         {paths.map((p) => (
-          <a href={p.href} class="card-luxe group block">
-            <div class="aspect-[16/11] overflow-hidden">
-              <img
-                src={p.img}
-                alt={p.title}
-                class="h-full w-full object-cover"
-                data-fx={p.fx || undefined}
-                data-flame-rect={p.rect || undefined}
-                data-flame-intensity={p.intensity}
-              />
-            </div>
-            <div class="absolute inset-0 bg-gradient-to-t from-coal-950/92 via-coal-950/25 to-transparent"></div>
-            <div class="absolute bottom-0 p-8">
-              <h3 class="text-3xl text-stone-100 md:text-4xl">{p.title}</h3>
-              <p class="mt-2.5 max-w-md text-sm leading-relaxed text-stone-200">{p.copy}</p>
-              <span class="mt-5 inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-wider text-gold-300 transition-transform duration-500 group-hover:translate-x-1.5">
-                {p.cta} <span aria-hidden="true">→</span>
-              </span>
+          <a class="card card-link path" href={p.href} data-track="path_click" data-placement={p.href}>
+            <div class="media"><Image src={p.image} alt={p.alt} widths={[360, 560, 760]} sizes="(min-width: 900px) 370px, 100vw" width={760} height={520} fit="cover" /></div>
+            <div class="card-body">
+              <h3>{p.title}</h3>
+              <p>{p.text}</p>
+              <span class="link link-arrow">Start here</span>
             </div>
           </a>
         ))}
       </div>
+      <p class="escape">Not sure which fits? <a class="link" href={telHref} data-track="phone_click" data-placement="paths">Call us at {site.phone.display}</a> and we’ll help you start, or <a class="link" href="/start-here/">answer three quick questions</a>.</p>
+      <p class="secondary-paths muted">Also planning a <a href="/outdoor-living/">fire pit, patio heating or pizza oven</a>? We help with those too.</p>
     </div>
   </section>
 
-  <!-- 4 — ADD A FIREPLACE TO ALMOST ANY HOME -->
-  <section class="section-cream">
-    <div class="container-page grid gap-12 py-24 lg:grid-cols-[1fr_1.1fr] lg:items-center">
-      <div data-reveal>
-        <p class="eyebrow mb-4">For almost any room</p>
-        <h2 class="text-4xl md:text-5xl lg:text-6xl">Add a fireplace to <span class="display-accent">almost any home</span></h2>
-        <p class="mt-5 max-w-lg text-coal-700">
-          Chimney or no chimney, co-op or single-family — modern venting and electric, water-vapor
-          and ethanol options make it possible to add a fireplace to rooms that never had one.
-          We help you choose what actually fits your space and approvals.
-        </p>
-        <div class="mt-7 flex flex-wrap gap-2.5">
-          {fireplaceTypes.map((t) => (
-            <a href={t.href} class="rounded-full border border-coal-900/20 px-4 py-2 text-sm font-medium text-coal-800 transition-colors hover:border-ember-600 hover:text-ember-600">
-              {t.label}
-            </a>
-          ))}
-        </div>
+  <!-- D. Curated core selection -->
+  <section class="section section-tint" aria-labelledby="options-h">
+    <div class="wrap">
+      <p class="eyebrow">Featured solutions</p>
+      <h2 id="options-h">Start with these options</h2>
+      <p class="lede">Six of the directions we most often help customers plan. Each one explains what it is and who it suits, so you can rule things in or out quickly.</p>
+      <div class="grid3">
+        {options.map((o) => <OptionCard option={o} />)}
       </div>
-      <figure class="card-luxe" data-reveal>
-        <img
-          src={`${CDN}/2022/07/nyc-fireplaces-custom-install.jpg`}
-          alt="A linear gas fireplace installation in a New York home"
-          class="aspect-[4/3] w-full object-cover"
-          loading="lazy"
-          data-fx="flames embers"
-          data-flame-rect="3,62,52,7"
-          data-flame-intensity="high"
-        />
-      </figure>
+      <p class="after">Looking for something specific? <a class="link" href="/products/">Explore more models and product types</a>, or <a class="link" href={telHref} data-track="phone_click" data-placement="options">ask us about a model</a>.</p>
     </div>
   </section>
 
-  <!-- 5 — OUTDOOR KITCHEN DESIGN/BUILD + FREE 3D -->
-  <section class="relative overflow-hidden">
-    <img src={`${CDN}/2022/08/stoll-custom-bbq-island.jpg`} alt="" aria-hidden="true" class="absolute inset-0 h-full w-full object-cover" loading="lazy" />
-    <div class="absolute inset-0 bg-gradient-to-r from-coal-950/92 via-coal-950/80 to-coal-950/60"></div>
-    <div class="container-page relative py-28">
-      <div class="max-w-2xl" data-reveal>
-        <p class="eyebrow mb-3">Designed, supplied, built &amp; installed</p>
-        <h2 class="text-4xl md:text-5xl">Outdoor kitchens, from a free 3D design</h2>
-        <p class="mt-5 text-stone-300">
-          See your outdoor kitchen before it’s built. With a qualifying purchase, our designers
-          produce a free 3D design — grills, power burners, pizza ovens, refrigeration and stainless
-          cabinetry — then our team builds and installs it.
-        </p>
-        <div class="mt-7 flex flex-wrap gap-4">
-          <a href="/free-3d-outdoor-kitchen-design" class="btn btn-primary">Get a Free 3D Design</a>
-          <a href="/outdoor-kitchen" class="btn btn-ghost">Explore outdoor kitchens</a>
-        </div>
-        <p class="mt-4 text-xs text-stone-400">Free 3D outdoor-kitchen design with qualifying purchase.</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- 6 — SELECTED PROJECTS -->
-  <section class="section-light">
-    <div class="container-page py-20">
-      <div class="mb-12 flex flex-wrap items-end justify-between gap-4" data-reveal>
-        <div>
-          <p class="eyebrow mb-4">Recent work</p>
-          <h2 class="text-4xl md:text-5xl lg:text-6xl">Selected <span class="display-accent">projects</span></h2>
-        </div>
-        <a href="/installations" class="btn btn-ghost !border-coal-900/30 !text-coal-800 hover:!border-ember-600 hover:!text-ember-600">View the portfolio</a>
-      </div>
-      <div class="grid grid-cols-2 gap-4 lg:grid-cols-4" data-reveal data-reveal-group>
-        {projects.map((p) => (
-          <figure class="card-luxe group">
-            <img
-              src={p.img}
-              alt={p.label}
-              class="aspect-[4/5] w-full object-cover"
-              loading="lazy"
-              data-fx={p.fx || undefined}
-              data-flame-rect={p.rect || undefined}
-              data-flame-intensity={p.fx ? p.intensity : undefined}
-            />
-            <figcaption class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-coal-950/90 to-transparent p-4 text-xs font-medium uppercase tracking-wider text-stone-100">{p.label}</figcaption>
-          </figure>
-        ))}
-      </div>
-    </div>
-  </section>
-
-  <!-- 7 — SHOWROOM EXPERIENCE + 8 BRANDS -->
-  <section class="section-cream">
-    <div class="container-page py-20">
-      <div class="max-w-2xl" data-reveal>
-        <p class="eyebrow mb-4">See it, feel the heat, plan it</p>
-        <h2 class="text-4xl md:text-5xl lg:text-6xl">The <span class="display-accent">showroom</span> experience</h2>
-        <p class="mt-5 text-coal-700">
-          Live displays let you compare flames, finishes and sizes in person — and plan your project
-          with a specialist. Two showrooms serve the metro area: Queens and Long Island.
-        </p>
-        <a href="/locations" class="mt-6 inline-block btn btn-primary">See It in a Showroom</a>
-      </div>
-      <div class="mt-12 border-t border-coal-900/15 pt-10">
-        <p class="mb-6 text-sm font-semibold uppercase tracking-wider text-coal-700">Trusted brands, expertly installed</p>
-        <div class="flex flex-wrap items-center gap-x-10 gap-y-4">
-          {brands.map((b) => (
-            <span class="font-[var(--font-display)] text-2xl text-coal-900/55 transition-colors hover:text-coal-900">{b}</span>
-          ))}
-          <a href="/brands" class="text-sm font-semibold text-ember-600 hover:text-ember-500">All brands →</a>
+  <!-- E. Process -->
+  <section class="section" aria-labelledby="process-h">
+    <div class="wrap">
+      <p class="eyebrow">How it works</p>
+      <h2 id="process-h">Three steps from idea to plan</h2>
+      <div class="gap"><Process /></div>
+      <div class="scopes">
+        <h3>Choosing the appliance is one part of the project</h3>
+        <p class="muted">We can help with as much or as little as you need. Each of these is a conversation and a written quote, not a fixed package.</p>
+        <div class="grid3 scope-grid">
+          <div><h4>Product selection</h4><p>Help choosing the right appliance for the space and how you will use it.</p></div>
+          <div><h4>Complete setup</h4><p>The appliance plus the confirmed compatible components, such as venting, trim, doors or cabinetry, so nothing is missed.</p></div>
+          <div><h4>Design and installation</h4><p>An agreed scope for eligible projects, coordinated with your contractor or designer where needed.</p></div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- 9 — PROCESS -->
-  <section class="border-y border-stone-400/15 bg-coal-900">
-    <div class="container-page py-24">
-      <div data-reveal>
-        <p class="eyebrow mb-4">How it works</p>
-        <h2 class="text-4xl md:text-5xl lg:text-6xl">From idea to installed — <span class="display-accent">without the handoffs</span></h2>
+  <!-- F. Proof -->
+  <section class="section section-tint" aria-labelledby="proof-h">
+    <div class="wrap">
+      <p class="eyebrow">Our work</p>
+      <h2 id="proof-h">Real projects, from our own job sites</h2>
+      <p class="lede">These are photos from completed projects, not catalog images.</p>
+      <div class="grid3">
+        {projects.map((p) => <ProjectCard project={p} />)}
       </div>
-      <div class="mt-14 grid gap-10 md:grid-cols-3" data-reveal data-reveal-group>
-        {steps.map((s) => (
-          <div class="relative border-t border-gold-500/25 pt-6">
-            <div class="font-[var(--font-display)] text-6xl text-gold-400/90">{s.n}</div>
-            <h3 class="mt-4 text-2xl">{s.title}</h3>
-            <p class="mt-3 text-stone-300 leading-relaxed">{s.copy}</p>
-          </div>
-        ))}
-      </div>
+      <p class="after"><a class="link link-arrow" href="/projects/">See more completed projects</a></p>
+      <div class="gap"><Reviews limit={3} /></div>
     </div>
   </section>
 
-  <!-- 10 — FINANCING -->
-  <section class="section-light">
-    <div class="container-page py-16" data-reveal>
-      <div class="flex flex-col items-start gap-7 rounded-sm border border-gold-500/30 bg-stone-200/60 px-8 py-10 shadow-[var(--shadow-card)] sm:flex-row sm:items-center sm:justify-between md:px-12">
-        <div>
-          <p class="eyebrow mb-3">Make it comfortable</p>
-          <h2 class="text-3xl md:text-4xl">Financing available through <span class="display-accent">Acorn Finance</span></h2>
-          <p class="mt-3 max-w-xl text-coal-700">Explore monthly-payment options for your fireplace or outdoor-kitchen project.</p>
+  <!-- G. Showroom as a destination -->
+  <section class="section section-dark" aria-labelledby="showroom-h" id="showroom">
+    <div class="wrap showroom">
+      <div>
+        <p class="eyebrow">{site.showroom.area}</p>
+        <h2 id="showroom-h">See the options in person. Leave with a clearer plan.</h2>
+        <p class="lede">Working fireplaces look and feel different in person than in a photo. Stand in front of the flame, compare sizes side by side, and ask us anything.</p>
+        <div class="bring">
+          <h3>Helpful to bring, if you have them</h3>
+          <ul class="ticks">
+            <li>Photos of the space</li>
+            <li>Approximate dimensions</li>
+            <li>Inspiration images</li>
+            <li>Plans or drawings</li>
+          </ul>
+          <p class="muted">Don’t have any of that yet? Come in or call anyway. If you want to see a particular model, call ahead and we’ll confirm it is on display.</p>
         </div>
-        <a href="/financing" class="btn btn-primary shrink-0">Explore financing</a>
+        <ShowroomInfo placement="home_showroom" heading="Where to find us" />
+        <p class="more"><a class="link link-arrow" href="/showroom/">More about visiting</a></p>
+      </div>
+      <div class="showroom-media">
+        <Image src={showroomWide} alt="Inside our Maspeth showroom: working fireplace displays around a seating area" widths={[480, 720, 1000]} sizes="(min-width: 900px) 540px, 100vw" />
+        <Image src={showroomDetail} alt="Traditional and linear fireplace displays in the Maspeth showroom" widths={[480, 720, 1000]} sizes="(min-width: 900px) 540px, 100vw" />
       </div>
     </div>
   </section>
 
-  <!-- 11 — TRADE PROFESSIONALS -->
-  <section class="section-cream">
-    <div class="container-page grid gap-10 py-20 lg:grid-cols-[1.1fr_1fr] lg:items-center">
-      <figure class="card-luxe" data-reveal>
-        <img src={`${CDN}/2022/08/Twin-Eagles-Grill.jpg`} alt="Built-in grill installation for a trade project" class="aspect-[16/10] w-full object-cover" loading="lazy" />
-      </figure>
-      <div data-reveal>
-        <p class="eyebrow mb-4">For the trade</p>
-        <h2 class="text-4xl md:text-5xl lg:text-6xl">Builders, architects &amp; <span class="display-accent">designers</span></h2>
-        <p class="mt-5 max-w-lg text-coal-700">
-          Plan review, product specifications, rough-opening and venting coordination, submittals,
-          and supply-only or supply-and-install options — with a dedicated point of contact for
-          your projects.
-        </p>
-        <a href="/builders-architects" class="mt-6 inline-block btn btn-primary">Work with our trade team</a>
+  <!-- H. Designers and builders -->
+  <section class="section" aria-labelledby="trade-h">
+    <div class="wrap trade">
+      <div>
+        <p class="eyebrow">For the trade</p>
+        <h2 id="trade-h">A practical partner for designers and builders.</h2>
+        <p class="lede">Help with product selection, specifications, planning and coordination, from early drawings through installation. Supply-only is fine too.</p>
+      </div>
+      <div class="acts">
+        <a class="btn btn-primary" href="/project-help/?kind=trade" data-track="help_cta_click" data-placement="home_trade">Discuss a project</a>
+        <a class="btn btn-secondary" href="/project-help/?kind=trade#lead-trade" data-track="help_cta_click" data-placement="home_trade_plans">Send plans</a>
+        <a class="btn btn-secondary" href={telHref} data-track="phone_click" data-placement="home_trade">{site.phone.display}</a>
+        <p class="basis"><a class="link link-arrow" href="/designers-builders/">How we work with trade partners</a></p>
       </div>
     </div>
   </section>
 
-  <!-- 12 — REVIEWS (§16.3 static, §4.11 no fabricated quotes) -->
-  <section class="section-light">
-    <div class="container-page py-20 text-center" data-reveal>
-      <div class="flex items-center justify-center gap-1 text-ember-500" aria-hidden="true">
-        {[0, 1, 2, 3, 4].map(() => (
-          <svg viewBox="0 0 24 24" class="h-6 w-6 fill-current"><path d="m12 2 3 6.9 7.5.6-5.7 4.9 1.8 7.3L12 17.8 5.4 21.7l1.8-7.3L1.5 9.5 9 8.9 12 2Z"/></svg>
-        ))}
-      </div>
-      <p class="mt-4 font-[var(--font-display)] text-3xl md:text-4xl text-coal-900">More than 300 five-star Google reviews</p>
-      <p class="mx-auto mt-3 max-w-xl text-coal-700">Homeowners, builders and designers across the New York metro area trust our in-house team.</p>
-      <a href="https://www.google.com/search?q=NYC+Fireplaces+%26+Outdoor+Kitchens+reviews" target="_blank" rel="noopener" class="mt-6 inline-block btn btn-primary">Read our Google reviews</a>
+  <!-- I. FAQs -->
+  <section class="section section-tint" aria-labelledby="faq-h">
+    <div class="wrap wrap-narrow">
+      <p class="eyebrow">Common questions</p>
+      <h2 id="faq-h">Before you call</h2>
+      <div class="gap"><FaqList group="home" /></div>
     </div>
   </section>
 
-  <!-- 13 + 14 — TWO-SHOWROOM BLOCK + FINAL CTA -->
-  <ConversionBlock />
-
-  <!-- 15 — HELPFUL GUIDES -->
-  <section class="section-cream">
-    <div class="container-page py-20">
-      <div class="mb-12 flex flex-wrap items-end justify-between gap-4" data-reveal>
-        <div>
-          <p class="eyebrow mb-4">Plan with confidence</p>
-          <h2 class="text-4xl md:text-5xl lg:text-6xl">Helpful <span class="display-accent">guides</span></h2>
-        </div>
-        <a href="/blogs" class="link-underline text-sm font-semibold uppercase tracking-wider text-ember-600">All guides &amp; articles →</a>
+  <!-- J. Final form -->
+  <section class="section" aria-labelledby="form-h">
+    <div class="wrap final">
+      <div>
+        <h2 id="form-h">Let’s make your project easier to figure out.</h2>
+        <p class="lede">Send a few details and we’ll get back to you to talk it through. Or skip the form and call.</p>
+        <p class="bigphone"><a href={telHref} data-track="phone_click" data-placement="home_final">{site.phone.display}</a></p>
       </div>
-      <div class="grid gap-6 md:grid-cols-3" data-reveal data-reveal-group>
-        {guides.map((g) => (
-          <a href={g.href} class="group flex flex-col justify-between rounded-sm border border-coal-900/12 bg-stone-100 p-8 shadow-[var(--shadow-card)] transition-all duration-500 hover:-translate-y-1 hover:border-ember-600/40 hover:shadow-[var(--shadow-luxe)]">
-            <h3 class="text-xl leading-snug text-coal-900">{g.title}</h3>
-            <span class="mt-6 inline-block text-sm font-semibold uppercase tracking-wider text-ember-600 transition-transform duration-500 group-hover:translate-x-1.5">Read the guide →</span>
-          </a>
-        ))}
-      </div>
+      <div class="card form-card"><LeadForm kind="project" id="lead-home" /></div>
     </div>
   </section>
 </Base>
+
+<style>
+  .hero { background: var(--color-paper-2); border-bottom: 1px solid var(--color-line); padding-block: clamp(1.75rem, 5vw, 4.5rem); }
+  .hero-grid { display: grid; gap: 2rem; align-items: center; }
+  @media (min-width: 900px) { .hero-grid { grid-template-columns: 1.08fr 0.92fr; gap: 3.5rem; } }
+  .hero h1 { max-width: 17ch; margin-bottom: 1rem; }
+  .acts { display: flex; flex-wrap: wrap; gap: 0.8rem; margin-top: 1.5rem; }
+  @media (max-width: 479px) { .hero .acts .btn { width: 100%; } }
+  .reassure { margin-top: 1.1rem; font-weight: 650; }
+  .hero-copy > p:last-child { margin-top: 0.7rem; }
+  .hero-media { position: relative; padding-bottom: 2.5rem; }
+  .hm-main { border-radius: var(--radius-card); overflow: hidden; aspect-ratio: 5 / 4; box-shadow: var(--shadow-card); margin-right: 12%; }
+  .hm-inset { position: absolute; right: 0; bottom: 2.5rem; width: 46%; aspect-ratio: 4 / 3; border-radius: 12px; overflow: hidden; border: 5px solid var(--color-paper-2); box-shadow: var(--shadow-card); }
+  .hero-media :global(img) { width: 100%; height: 100%; object-fit: cover; }
+  .hm-cap { position: absolute; left: 0; bottom: 0.4rem; font-size: 0.85rem; }
+  @media (max-width: 899px) { .hm-main { aspect-ratio: 16 / 10; } }
+
+  .paths, .grid3 { display: grid; gap: 1.5rem; margin-top: 2rem; }
+  @media (min-width: 640px) { .grid3 { grid-template-columns: repeat(2, 1fr); } }
+  @media (min-width: 900px) { .paths, .grid3 { grid-template-columns: repeat(3, 1fr); } }
+  .path .media { aspect-ratio: 3 / 2; overflow: hidden; }
+  .path .media :global(img) { width: 100%; height: 100%; object-fit: cover; }
+  .path h3 { font-size: 1.5rem; margin-bottom: 0.4rem; }
+  .path p { color: var(--color-ink-2); margin-bottom: 0.8rem; }
+  .escape { margin-top: 2rem; font-size: 1.1rem; }
+  .secondary-paths { margin-top: 0.6rem; }
+  .secondary-paths a { text-decoration: underline; text-underline-offset: 3px; }
+  .lede { margin-top: 0.8rem; }
+  .after { margin-top: 2rem; }
+  .gap { margin-top: 2.25rem; }
+  .scopes { margin-top: 3.5rem; padding-top: 2.5rem; border-top: 1px solid var(--color-line); }
+  .scope-grid { margin-top: 1.25rem; }
+  .scope-grid > div { background: var(--color-paper-2); border-radius: var(--radius-card); padding: 1.25rem 1.35rem; }
+  h4 { font-weight: 700; margin-bottom: 0.3rem; }
+  .showroom { display: grid; gap: 2.5rem; }
+  @media (min-width: 900px) { .showroom { grid-template-columns: 1fr 1fr; gap: 4rem; align-items: start; } }
+  .bring { margin-block: 1.75rem; padding: 1.25rem 1.4rem; border: 1px solid #4a3d33; border-radius: var(--radius-card); display: grid; gap: 0.8rem; }
+  .bring h3 { font-size: 1.15rem; }
+  .more { margin-top: 1.25rem; }
+  .showroom-media { display: grid; gap: 1rem; }
+  .showroom-media :global(img) { border-radius: var(--radius-card); width: 100%; height: auto; }
+  .trade { display: grid; gap: 1.75rem; align-items: center; }
+  @media (min-width: 900px) { .trade { grid-template-columns: 1.2fr 1fr; gap: 3rem; } }
+  .trade .acts { margin-top: 0; }
+  .basis { flex-basis: 100%; }
+  .final { display: grid; gap: 2.5rem; align-items: start; }
+  @media (min-width: 900px) { .final { grid-template-columns: 0.85fr 1.15fr; gap: 4rem; } }
+  .bigphone a { font-family: var(--font-display); font-size: clamp(2rem, 4vw, 2.75rem); color: var(--color-ember); text-decoration: none; display: inline-block; margin-top: 1rem; }
+  .form-card { padding: clamp(1.25rem, 3vw, 2rem); }
+</style>

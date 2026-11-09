@@ -1,0 +1,48 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import OptionCard from '../../components/OptionCard.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import { site } from '../../data/site';
+const options = await getCollection('options');
+const types = (await getCollection('types')).sort((a, b) => a.data.order - b.data.order);
+const groups = [
+  ['new-fireplace', 'Adding a new fireplace', '/fireplaces/new/'],
+  ['existing-fireplace', 'Upgrading an existing fireplace', '/fireplaces/upgrade-existing/'],
+  ['outdoor-kitchen', 'Outdoor kitchens', '/outdoor-kitchens/'],
+  ['outdoor-living', 'Outdoor fire and heating', '/outdoor-living/'],
+] as const;
+---
+<Base title="Explore More Models & Product Types" description="A deeper look at the fireplace, insert, grill and outdoor living product types we help customers choose, organized by the kind of project you are planning.">
+  <section class="section">
+    <div class="wrap">
+      <p class="eyebrow">Explore more</p>
+      <h1>Product types, organized by project</h1>
+      <p class="lede">If you already know roughly what you are after, start here. Each page explains the type in plain terms and lists the makers we work with. For a specific model, <a class="link" href="/project-help/">ask us</a>. We will confirm availability and whether it is on display.</p>
+      {groups.map(([path, label, href]) => (
+        <div class="group">
+          <h2><a href={href}>{label}</a></h2>
+          {options.filter((o) => o.data.path === path).length > 0 && (
+            <div class="grid3">{options.filter((o) => o.data.path === path).sort((a, b) => a.data.order - b.data.order).map((o) => <OptionCard option={o} />)}</div>
+          )}
+          <ul class="type-links">{types.filter((t) => t.data.path === path).map((t) => <li><a href={`/${t.id}/`}>{t.data.title}</a></li>)}</ul>
+        </div>
+      ))}
+      <p class="shop">Already know exactly what you need? Grills, parts and accessories are sold through our separate online store: <a class="link" href={site.shopOnline.url} rel="noopener" data-track="shop_online_click" data-placement="products">Shop Online at nycfireplaceshop.com ↗</a></p>
+    </div>
+  </section>
+  <CtaBand placement="products_band" />
+</Base>
+<style>
+  h1 { margin-block: 0.6rem 1rem; }
+  .group { margin-top: 3.5rem; }
+  .group h2 a { text-decoration: none; }
+  .group h2 a:hover { color: var(--color-ember); }
+  .grid3 { display: grid; gap: 1.5rem; margin-top: 1.5rem; }
+  @media (min-width: 640px) { .grid3 { grid-template-columns: repeat(2, 1fr); } }
+  @media (min-width: 900px) { .grid3 { grid-template-columns: repeat(3, 1fr); } }
+  .type-links { list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 1.5rem; }
+  .type-links a { display: inline-flex; align-items: center; min-height: 2.75rem; padding: 0.4rem 1rem; border: 1px solid var(--color-line); border-radius: 999px; background: #fff; text-decoration: none; font-weight: 600; }
+  .type-links a:hover { border-color: var(--color-ember); color: var(--color-ember); }
+  .shop { margin-top: 3.5rem; padding-top: 1.5rem; border-top: 1px solid var(--color-line); }
+</style>

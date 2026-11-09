@@ -1,0 +1,32 @@
+---
+// Shows approved, real reviews only. With none approved it renders a plain
+// pointer to our Google reviews rather than anything invented.
+import { getCollection } from 'astro:content';
+import { site } from '../data/site';
+interface Props { limit?: number }
+const { limit = 3 } = Astro.props;
+const reviews = (await getCollection('reviews')).filter((r) => r.data.approved).sort((a, b) => a.data.order - b.data.order).slice(0, limit);
+---
+{reviews.length > 0 ? (
+  <div class="reviews">
+    {reviews.map((r) => (
+      <figure class="card">
+        <blockquote>“{r.data.quote}”</blockquote>
+        <figcaption>
+          <strong>{r.data.author}</strong>
+          <span class="muted"> · {r.data.source} review{r.data.about === 'product' ? ' of a product' : ' of our service'}</span>
+          {r.data.sourceUrl && <a class="link" href={r.data.sourceUrl} rel="noopener" target="_blank">Read the original</a>}
+        </figcaption>
+      </figure>
+    ))}
+  </div>
+) : site.googleReviewsUrl ? (
+  <p class="fallback">Want to hear from customers directly? <a class="link link-arrow" href={site.googleReviewsUrl} rel="noopener" target="_blank">Read our reviews on Google</a></p>
+) : null}
+<style>
+  .reviews { display: grid; gap: 1.25rem; }
+  @media (min-width: 860px) { .reviews { grid-template-columns: repeat(3, 1fr); } }
+  figure { padding: 1.4rem; display: grid; gap: 1rem; align-content: space-between; }
+  blockquote { font-size: 1.05rem; }
+  figcaption { font-size: 0.93rem; display: grid; gap: 0.2rem; }
+</style>

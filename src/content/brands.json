@@ -1,0 +1,394 @@
+[
+  {
+    "id": "kozy-heat",
+    "name": "Kozy Heat",
+    "group": "Fireplaces & hearth",
+    "path": "new-fireplace",
+    "summary": "Gas fireplaces and gas inserts in traditional and contemporary styles."
+  },
+  {
+    "id": "napoleon",
+    "name": "Napoleon",
+    "group": "Fireplaces & hearth",
+    "path": "new-fireplace",
+    "summary": "Gas and electric fireplaces, inserts, stoves and grills."
+  },
+  {
+    "id": "montigo",
+    "name": "Montigo",
+    "group": "Fireplaces & hearth",
+    "path": "new-fireplace",
+    "summary": "Linear and custom gas fireplaces for residential and commercial projects."
+  },
+  {
+    "id": "davinci-custom-fireplaces",
+    "name": "DaVinci Custom Fireplaces",
+    "group": "Fireplaces & hearth",
+    "path": "new-fireplace",
+    "summary": "Made-to-order linear gas fireplaces in see-through, corner and multi-sided configurations."
+  },
+  {
+    "id": "fireplace-xtrordinair",
+    "name": "Fireplace Xtrordinair",
+    "group": "Fireplaces & hearth",
+    "path": "new-fireplace",
+    "summary": "Gas, wood and electric fireplaces and inserts."
+  },
+  {
+    "id": "town-and-country-gas-fireplaces",
+    "name": "Town & Country",
+    "group": "Fireplaces & hearth",
+    "path": "new-fireplace",
+    "summary": "Large-format gas fireplaces with clean, frameless views."
+  },
+  {
+    "id": "flare-fireplaces",
+    "name": "Flare Fireplaces",
+    "group": "Fireplaces & hearth",
+    "path": "new-fireplace",
+    "summary": "Frameless linear gas fireplaces in a wide range of lengths and shapes."
+  },
+  {
+    "id": "majestic",
+    "name": "Majestic",
+    "group": "Fireplaces & hearth",
+    "path": "new-fireplace",
+    "summary": "Gas and wood fireplaces, including see-through models."
+  },
+  {
+    "id": "heatilator",
+    "name": "Heatilator",
+    "group": "Fireplaces & hearth",
+    "path": "new-fireplace",
+    "summary": "Gas, wood and electric fireplaces for new construction and remodels."
+  },
+  {
+    "id": "lopi",
+    "name": "Lopi",
+    "group": "Fireplaces & hearth",
+    "path": "new-fireplace",
+    "summary": "Wood, gas and pellet stoves and inserts."
+  },
+  {
+    "id": "pacific-energy",
+    "name": "Pacific Energy",
+    "group": "Fireplaces & hearth",
+    "path": "new-fireplace",
+    "summary": "Wood and gas stoves, inserts and fireplaces."
+  },
+  {
+    "id": "marquis-collection",
+    "name": "Marquis Collection",
+    "group": "Fireplaces & hearth",
+    "path": "new-fireplace",
+    "summary": "Gas fireplaces and inserts."
+  },
+  {
+    "id": "solas",
+    "name": "Solas",
+    "group": "Fireplaces & hearth",
+    "path": "new-fireplace",
+    "summary": "Contemporary gas fireplaces."
+  },
+  {
+    "id": "american-hearth",
+    "name": "American Hearth",
+    "group": "Fireplaces & hearth",
+    "path": "existing-fireplace",
+    "summary": "Gas fireplaces, inserts and log sets."
+  },
+  {
+    "id": "modern-flames",
+    "name": "Modern Flames",
+    "group": "Fireplaces & hearth",
+    "path": "new-fireplace",
+    "summary": "Linear and traditional electric fireplaces for built-in and wall-mount installation."
+  },
+  {
+    "id": "dimplex",
+    "name": "Dimplex",
+    "group": "Fireplaces & hearth",
+    "path": "new-fireplace",
+    "summary": "Electric and water-vapor fireplaces."
+  },
+  {
+    "id": "net-zero",
+    "name": "Net Zero",
+    "group": "Fireplaces & hearth",
+    "path": "new-fireplace",
+    "summary": "Water-vapor fireplaces."
+  },
+  {
+    "id": "ecosmart",
+    "name": "EcoSmart Fire",
+    "group": "Fireplaces & hearth",
+    "path": "new-fireplace",
+    "summary": "Bioethanol fireplaces, burners and fire tables."
+  },
+  {
+    "id": "real-fyre-gas-logs",
+    "name": "Real Fyre",
+    "group": "Fireplaces & hearth",
+    "path": "existing-fireplace",
+    "summary": "Gas log sets and contemporary burners for existing fireplaces."
+  },
+  {
+    "id": "hargrove",
+    "name": "Hargrove",
+    "group": "Fireplaces & hearth",
+    "path": "existing-fireplace",
+    "summary": "Gas log sets and burners."
+  },
+  {
+    "id": "stoll-industries",
+    "name": "Stoll Industries",
+    "group": "Mantels, doors & accessories",
+    "path": "existing-fireplace",
+    "summary": "Custom glass fireplace doors, shelves and steel surrounds."
+  },
+  {
+    "id": "design-specialties",
+    "name": "Design Specialties",
+    "group": "Mantels, doors & accessories",
+    "path": "existing-fireplace",
+    "summary": "Glass fireplace doors made to fit your opening."
+  },
+  {
+    "id": "ironhaus",
+    "name": "Ironhaus",
+    "group": "Mantels, doors & accessories",
+    "path": "existing-fireplace",
+    "summary": "Handcrafted iron fireplace doors and screens."
+  },
+  {
+    "id": "omega-mantels-of-stone",
+    "name": "Omega Mantels of Stone",
+    "group": "Mantels, doors & accessories",
+    "path": "existing-fireplace",
+    "summary": "Cast stone mantels and surrounds."
+  },
+  {
+    "id": "twin-eagles",
+    "name": "Twin Eagles",
+    "group": "Grills & outdoor kitchens",
+    "path": "outdoor-kitchen",
+    "summary": "Premium built-in gas grills and outdoor kitchen equipment."
+  },
+  {
+    "id": "lynx",
+    "name": "Lynx",
+    "group": "Grills & outdoor kitchens",
+    "path": "outdoor-kitchen",
+    "summary": "Professional built-in grills and outdoor kitchen appliances."
+  },
+  {
+    "id": "fire-magic",
+    "name": "Fire Magic",
+    "group": "Grills & outdoor kitchens",
+    "path": "outdoor-kitchen",
+    "summary": "Built-in and freestanding gas grills and accessories."
+  },
+  {
+    "id": "delta-heat",
+    "name": "Delta Heat",
+    "group": "Grills & outdoor kitchens",
+    "path": "outdoor-kitchen",
+    "summary": "Gas grills and outdoor kitchen components."
+  },
+  {
+    "id": "blaze",
+    "name": "Blaze",
+    "group": "Grills & outdoor kitchens",
+    "path": "outdoor-kitchen",
+    "summary": "Built-in gas grills, power burners and kamados."
+  },
+  {
+    "id": "american-outdoor-grill",
+    "name": "American Outdoor Grill",
+    "group": "Grills & outdoor kitchens",
+    "path": "outdoor-kitchen",
+    "summary": "Built-in and freestanding gas grills."
+  },
+  {
+    "id": "american-made-grills",
+    "name": "American Made Grills",
+    "group": "Grills & outdoor kitchens",
+    "path": "outdoor-kitchen",
+    "summary": "Hybrid grills that cook with gas, charcoal or wood."
+  },
+  {
+    "id": "summerset-grills",
+    "name": "Summerset",
+    "group": "Grills & outdoor kitchens",
+    "path": "outdoor-kitchen",
+    "summary": "Gas grills and outdoor kitchen components."
+  },
+  {
+    "id": "sunfire-grills",
+    "name": "Sunfire",
+    "group": "Grills & outdoor kitchens",
+    "path": "outdoor-kitchen",
+    "summary": "Gas grills."
+  },
+  {
+    "id": "broilmaster",
+    "name": "Broilmaster",
+    "group": "Grills & outdoor kitchens",
+    "path": "outdoor-kitchen",
+    "summary": "Gas and infrared grills."
+  },
+  {
+    "id": "viking",
+    "name": "Viking",
+    "group": "Grills & outdoor kitchens",
+    "path": "outdoor-kitchen",
+    "summary": "Outdoor grills and outdoor kitchen appliances."
+  },
+  {
+    "id": "wolf",
+    "name": "Wolf",
+    "group": "Grills & outdoor kitchens",
+    "path": "outdoor-kitchen",
+    "summary": "Outdoor gas grills and burner modules."
+  },
+  {
+    "id": "xo-appliance",
+    "name": "XO",
+    "group": "Grills & outdoor kitchens",
+    "path": "outdoor-kitchen",
+    "summary": "Grills, outdoor refrigeration and ventilation."
+  },
+  {
+    "id": "tru-innovative-outdoor",
+    "name": "TRU Innovative Outdoor",
+    "group": "Grills & outdoor kitchens",
+    "path": "outdoor-kitchen",
+    "summary": "Outdoor kitchen equipment."
+  },
+  {
+    "id": "big-green-egg",
+    "name": "Big Green Egg",
+    "group": "Grills & outdoor kitchens",
+    "path": "outdoor-kitchen",
+    "summary": "Ceramic kamado charcoal cookers."
+  },
+  {
+    "id": "primo",
+    "name": "Primo",
+    "group": "Grills & outdoor kitchens",
+    "path": "outdoor-kitchen",
+    "summary": "Ceramic kamado charcoal grills."
+  },
+  {
+    "id": "green-mountain-grills",
+    "name": "Green Mountain Grills",
+    "group": "Grills & outdoor kitchens",
+    "path": "outdoor-kitchen",
+    "summary": "Wood pellet grills."
+  },
+  {
+    "id": "danver",
+    "name": "Danver",
+    "group": "Grills & outdoor kitchens",
+    "path": "outdoor-kitchen",
+    "summary": "Stainless steel outdoor kitchen cabinetry in powder-coated finishes."
+  },
+  {
+    "id": "brown-jordan",
+    "name": "Brown Jordan Outdoor Kitchens",
+    "group": "Grills & outdoor kitchens",
+    "path": "outdoor-kitchen",
+    "summary": "Design-led stainless outdoor cabinetry."
+  },
+  {
+    "id": "challenger-designs",
+    "name": "Challenger Designs",
+    "group": "Grills & outdoor kitchens",
+    "path": "outdoor-kitchen",
+    "summary": "Aluminum outdoor kitchen islands and cabinetry."
+  },
+  {
+    "id": "true-residential",
+    "name": "True Residential",
+    "group": "Grills & outdoor kitchens",
+    "path": "outdoor-kitchen",
+    "summary": "Outdoor-rated refrigeration, ice makers and beverage centers."
+  },
+  {
+    "id": "marvel-refrigeration",
+    "name": "Marvel",
+    "group": "Grills & outdoor kitchens",
+    "path": "outdoor-kitchen",
+    "summary": "Undercounter and outdoor refrigeration."
+  },
+  {
+    "id": "alfa-forni",
+    "name": "Alfa Forni",
+    "group": "Pizza ovens",
+    "path": "outdoor-kitchen",
+    "summary": "Italian wood, gas and hybrid pizza ovens."
+  },
+  {
+    "id": "gozney",
+    "name": "Gozney",
+    "group": "Pizza ovens",
+    "path": "outdoor-kitchen",
+    "summary": "Gas and dual-fuel pizza ovens."
+  },
+  {
+    "id": "fontana",
+    "name": "Fontana Forni",
+    "group": "Pizza ovens",
+    "path": "outdoor-kitchen",
+    "summary": "Italian wood and gas pizza ovens."
+  },
+  {
+    "id": "warming-trends",
+    "name": "Warming Trends",
+    "group": "Outdoor fire & heating",
+    "path": "outdoor-living",
+    "summary": "Gas fire pit burners and custom fire features."
+  },
+  {
+    "id": "outdoor-plus",
+    "name": "The Outdoor Plus",
+    "group": "Outdoor fire & heating",
+    "path": "outdoor-living",
+    "summary": "Fire pits, fire bowls and fire-and-water features."
+  },
+  {
+    "id": "american-fyre-designs",
+    "name": "American Fyre Designs",
+    "group": "Outdoor fire & heating",
+    "path": "outdoor-living",
+    "summary": "Cast-concrete fire tables, fire pits and outdoor fireplaces."
+  },
+  {
+    "id": "the-outdoor-greatroom-company",
+    "name": "The Outdoor GreatRoom Company",
+    "group": "Outdoor fire & heating",
+    "path": "outdoor-living",
+    "summary": "Gas fire pit tables and outdoor fire features."
+  },
+  {
+    "id": "fire-garden",
+    "name": "Fire Garden",
+    "group": "Outdoor fire & heating",
+    "path": "outdoor-living",
+    "summary": "Outdoor gas fireplaces and fire features."
+  },
+  {
+    "id": "bromic",
+    "name": "Bromic",
+    "group": "Outdoor fire & heating",
+    "path": "outdoor-living",
+    "summary": "Electric and gas infrared patio heaters."
+  },
+  {
+    "id": "infratech",
+    "name": "Infratech",
+    "group": "Outdoor fire & heating",
+    "path": "outdoor-living",
+    "summary": "Electric infrared patio heaters and controls."
+  }
+]

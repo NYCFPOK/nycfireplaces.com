@@ -1,0 +1,132 @@
+---
+// Root-level secondary pages that keep the old WordPress URLs alive:
+// product-type explainers (/gas-inserts/), brand pages (/kozy-heat/) and legal pages.
+import { getCollection, render } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+import OptionCard from '../components/OptionCard.astro';
+import CtaBand from '../components/CtaBand.astro';
+import { site, telHref } from '../data/site';
+
+export async function getStaticPaths() {
+  const [types, brands, legal] = await Promise.all([getCollection('types'), getCollection('brands'), getCollection('legal')]);
+  return [
+    ...types.map((entry) => ({ params: { slug: entry.id }, props: { kind: 'type' as const, entry } })),
+    ...brands.map((entry) => ({ params: { slug: entry.id }, props: { kind: 'brand' as const, entry } })),
+    ...legal.map((entry) => ({ params: { slug: entry.id }, props: { kind: 'legal' as const, entry } })),
+  ];
+}
+const { kind, entry } = Astro.props as any;
+const PARENT = {
+  'new-fireplace': ['Add a new fireplace', '/fireplaces/new/', 'new-fireplace'],
+  'existing-fireplace': ['Upgrade an existing fireplace', '/fireplaces/upgrade-existing/', 'existing-fireplace'],
+  'outdoor-kitchen': ['Plan an outdoor kitchen', '/outdoor-kitchens/', 'outdoor-kitchen'],
+  'outdoor-living': ['Outdoor fire and heating', '/outdoor-living/', 'outdoor-fire-heat'],
+} as const;
+
+const d = entry.data;
+const parent = kind === 'legal' ? null : PARENT[d.path as keyof typeof PARENT];
+const projects = await getCollection('projects', (p) => !p.data.draft);
+const norm = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, ' ');
+let matched: typeof projects = [];
+let brandList: { id: string; name: string }[] = [];
+let relatedTypes: { id: string; title: string }[] = [];
+let options: any[] = [];
+if (kind === 'brand') {
+  const key = norm(d.name.replace(/ (Custom Fireplaces|Outdoor Kitchens|Fire|Forni|Industries)$/i, ''));
+  matched = projects.filter((p) => norm(p.data.title + ' ' + (p.data.description ?? '')).includes(key.trim())).slice(0, 6);
+  relatedTypes = (await getCollection('types')).filter((t) => t.data.brands.some((b: string) => norm(b) === norm(d.name) || norm(d.name).startsWith(norm(b)))).map((t) => ({ id: t.id, title: t.data.title }));
+}
+if (kind === 'type') {
+  const allBrands = await getCollection('brands');
+  brandList = d.brands.map((b: string) => { const hit = allBrands.find((x) => norm(x.data.name) === norm(b) || norm(x.data.name).startsWith(norm(b))); return { id: hit?.id ?? '', name: b }; });
+  const words = norm(d.navLabel).split(' ').filter((w: string) => w.length > 3 && !['fireplaces', 'fireplace', 'outdoor'].includes(w));
+  const cat = { 'new-fireplace': ['fireplace-new'], 'existing-fireplace': ['fireplace-upgrade'], 'outdoor-kitchen': ['outdoor-kitchen'], 'outdoor-living': ['outdoor-living', 'fireplace-upgrade', 'fireplace-new'] }[d.path as string]!;
+  const stem = (w: string) => w.replace(/s$/, '');
+  matched = projects.filter((p) => cat.includes(p.data.category) && words.some((w: string) => norm(p.data.title).includes(stem(w)))).sort((a, b) => (b.data.year ?? 0) - (a.data.year ?? 0)).slice(0, 3);
+  options = (await getCollection('options')).filter((o) => o.data.path === d.path).sort((a, b) => a.data.order - b.data.order).slice(0, 3);
+}
+const Legal = kind === 'legal' ? (await render(entry)).Content : null;
+const title = kind === 'brand' ? `${d.name} — Help Choosing & Planning in NYC` : kind === 'type' ? `${d.title} — Plain-English Guide & Help Choosing` : d.title;
+const description = kind === 'brand' ? `${d.name}: ${d.summary} Talk to our team about models, availability and installation. Call ${site.phone.display}.` : d.description;
+---
+<Base title={title} description={description}>
+  {kind === 'legal' && (
+    <article class="section"><div class="wrap wrap-narrow">
+      <h1>{d.title}</h1>
+      {d.updated && <p class="muted">Last updated {d.updated}</p>}
+      <div class="prose legal"><Legal /></div>
+    </div></article>
+  )}
+
+  {kind !== 'legal' && (
+    <section class="section">
+      <div class="wrap wrap-narrow">
+        <nav aria-label="Breadcrumb" class="crumbs"><a href="/">Home</a> / <a href={parent![1]}>{parent![0]}</a>{kind === 'brand' && <> / <a href="/brands/">Brands</a></>}</nav>
+        <p class="eyebrow">{kind === 'brand' ? d.group : parent![0]}</p>
+        <h1>{kind === 'brand' ? d.name : d.title}</h1>
+        <p class="lede">{kind === 'brand' ? d.summary : d.intro}</p>
+        {kind === 'brand' && <p class="mt">{d.name} is one of the makers we work with. Ask us which models suit your project, what is available, and whether one is on display in our Maspeth showroom.</p>}
+        <div class="acts">
+          <a class="btn btn-primary" href={telHref} data-track="phone_click" data-placement={`${kind}_page`}>{site.cta.call}</a>
+          <a class="btn btn-secondary" href={kind === 'brand' ? `/project-help/?product=${encodeURIComponent(d.name)}&type=${parent![2]}` : `/project-help/?type=${parent![2]}`} data-track="help_cta_click" data-placement={`${kind}_page`}>{kind === 'brand' ? `Ask us about ${d.name}` : site.cta.help}</a>
+        </div>
+
+        {kind === 'type' && (
+          <div class="two">
+            <div><h2>Often a good fit for</h2><ul class="ticks">{d.goodFor.map((x: string) => <li>{x}</li>)}</ul></div>
+            <div><h2>Things to think about</h2><ul class="ticks">{d.thinkAbout.map((x: string) => <li>{x}</li>)}</ul></div>
+          </div>
+        )}
+        {kind === 'type' && brandList.length > 0 && (
+          <div class="mt2"><h2>Makers we work with</h2>
+            <ul class="pills">{brandList.map((b) => <li>{b.id ? <a href={`/${b.id}/`}>{b.name}</a> : <span>{b.name}</span>}</li>)}</ul>
+            <p class="muted small">Looking for a specific model? Ask us. We will confirm availability and whether it is on display.</p>
+          </div>
+        )}
+        {kind === 'brand' && relatedTypes.length > 0 && (
+          <div class="mt2"><h2>Where {d.name} fits</h2><ul class="pills">{relatedTypes.map((t) => <li><a href={`/${t.id}/`}>{t.title}</a></li>)}</ul></div>
+        )}
+        {kind === 'brand' && d.path === 'outdoor-kitchen' && (
+          <p class="muted small mt">Some grills, parts and accessories are also sold through our separate online store: <a class="link" href={site.shopOnline.url} rel="noopener">Shop Online ↗</a></p>
+        )}
+      </div>
+    </section>
+  )}
+
+  {kind === 'type' && options.length > 0 && (
+    <section class="section section-tint"><div class="wrap">
+      <h2>Not sure this is the right type? Start with these</h2>
+      <div class="grid3">{options.map((o) => <OptionCard option={o} />)}</div>
+      <p class="after"><a class="link link-arrow" href={parent![1]}>{parent![0]}: compare the options</a></p>
+    </div></section>
+  )}
+
+  {matched.length > 0 && (
+    <section class="section"><div class="wrap">
+      <h2>{kind === 'brand' ? `Our projects featuring ${d.name}` : 'Related projects'}</h2>
+      <div class="grid3">{matched.map((p) => <ProjectCard project={p} />)}</div>
+    </div></section>
+  )}
+
+  {kind !== 'legal' && <CtaBand placement={`${kind}_band`} />}
+</Base>
+<style>
+  .crumbs { font-size: 0.9rem; color: var(--color-ink-3); margin-bottom: 1rem; }
+  .crumbs a { text-decoration: underline; }
+  h1 { margin-block: 0.5rem 1rem; }
+  .acts { display: flex; flex-wrap: wrap; gap: 0.8rem; margin-top: 1.6rem; }
+  .two { display: grid; gap: 2rem; margin-top: 3rem; }
+  @media (min-width: 700px) { .two { grid-template-columns: 1fr 1fr; } }
+  h2 { font-size: clamp(1.35rem, 2.4vw, 1.7rem); margin-bottom: 0.9rem; }
+  .mt { margin-top: 1rem; } .mt2 { margin-top: 2.75rem; }
+  .small { font-size: 0.93rem; margin-top: 0.8rem; }
+  .pills { list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .pills a, .pills span { display: inline-flex; align-items: center; min-height: 2.6rem; padding: 0.3rem 0.95rem; border: 1px solid var(--color-line); border-radius: 999px; background: #fff; text-decoration: none; font-weight: 600; }
+  .pills a:hover { border-color: var(--color-ember); color: var(--color-ember); }
+  .grid3 { display: grid; gap: 1.5rem; margin-top: 1.5rem; }
+  @media (min-width: 640px) { .grid3 { grid-template-columns: repeat(2, 1fr); } }
+  @media (min-width: 900px) { .grid3 { grid-template-columns: repeat(3, 1fr); } }
+  .after { margin-top: 2rem; }
+  .legal { margin-top: 2rem; }
+</style>

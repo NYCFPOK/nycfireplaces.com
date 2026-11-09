@@ -1,0 +1,24 @@
+---
+import { Image } from 'astro:assets';
+import type { CollectionEntry } from 'astro:content';
+interface Props { project: CollectionEntry<'projects'>; eager?: boolean }
+const { project, eager = false } = Astro.props;
+const p = project.data;
+const LABEL = { 'fireplace-new': 'New fireplace', 'fireplace-upgrade': 'Fireplace upgrade', 'outdoor-kitchen': 'Outdoor kitchen', 'outdoor-living': 'Outdoor fire & heating' };
+---
+<a class="card card-link project" href={`/projects/${project.id}/`}>
+  <div class="media">
+    <Image src={p.images[0]} alt={p.title} widths={[320, 480, 720]} sizes="(min-width: 1024px) 350px, (min-width: 640px) 50vw, 100vw" width={720} height={540} fit="cover" loading={eager ? 'eager' : 'lazy'} />
+  </div>
+  <div class="card-body">
+    <p class="meta">{LABEL[p.category]}{p.location && ` · ${p.location}`}{p.year && ` · ${p.year}`}</p>
+    <h3>{p.title}</h3>
+  </div>
+</a>
+<style>
+  .media { aspect-ratio: 4 / 3; overflow: hidden; background: var(--color-paper-3); }
+  .media :global(img) { width: 100%; height: 100%; object-fit: cover; }
+  .meta { font-size: 0.85rem; font-weight: 650; color: var(--color-ink-3); margin-bottom: 0.3rem; }
+  h3 { font-size: 1.15rem; }
+  .card-body { padding: 1rem 1.15rem 1.2rem; }
+</style>

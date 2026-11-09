@@ -1,0 +1,15 @@
+# Real customer reviews only. Paste the review exactly as the customer wrote it,
+# with their name as shown publicly and a link to the original where possible.
+# A review appears on the site only when approved: true.
+#
+# - id: jane-d-2026
+#   author: "Jane D."
+#   source: Google
+#   sourceUrl: "https://maps.google.com/..."
+#   date: "2026-03"
+#   about: company-service      # or: product
+#   topic: choosing             # choosing | explanations | working-with-trades | installation | communication
+#   quote: "Exact text of the review."
+#   approved: true
+#   order: 1
+[]

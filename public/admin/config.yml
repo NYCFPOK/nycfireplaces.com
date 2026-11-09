@@ -1,0 +1,202 @@
+# Content editor configuration. Staff sign in with GitHub at /admin/.
+# Every save is a commit, so every change has a history and can be undone.
+backend:
+  name: github
+  repo: nycfpok/nycfireplaces.com
+  branch: main
+media_folder: src/assets/uploads
+public_folder: ../../assets/uploads
+site_url: https://www.nycfireplaces.com
+
+collections:
+  - name: settings
+    label: "Business details"
+    files:
+      - name: site
+        label: "Address, phone, hours, locations, service areas"
+        file: src/data/site.json
+        fields:
+          - { name: name, label: "Business name" }
+          - { name: shortName, label: "Short name" }
+          - { name: url, label: "Website address" }
+          - { name: phone, label: "Phone", widget: object, fields: [{ name: e164, label: "Dial format (+1...)" }, { name: display, label: "Shown as" }] }
+          - { name: email, label: "Email" }
+          - { name: shopOnline, label: "Shop Online link", widget: object, fields: [{ name: label }, { name: url }, { name: note }] }
+          - { name: teamStatement, label: "Approved team statement", widget: text }
+          - { name: googleReviewsUrl, label: "Link to Google reviews", required: false }
+          - name: showroom
+            label: "Maspeth showroom"
+            widget: object
+            fields:
+              - { name: id, widget: hidden }
+              - { name: name }
+              - { name: area, label: "Area label" }
+              - { name: street }
+              - { name: city }
+              - { name: region, label: "State" }
+              - { name: postalCode, label: "ZIP" }
+              - { name: status, widget: select, options: [open, temporarily-closed] }
+              - { name: directionsUrl, label: "Google Maps directions link" }
+              - { name: mapEmbedUrl, label: "Google Maps embed link" }
+              - name: hours
+                label: "Regular hours"
+                widget: list
+                fields:
+                  - { name: label, label: "Days shown as" }
+                  - { name: days, label: "Day numbers (0 = Sunday ... 6 = Saturday)", widget: list, field: { name: day, widget: number, value_type: int } }
+                  - { name: open, label: "Opens (24h, e.g. 09:00). Leave empty if closed", required: false }
+                  - { name: close, label: "Closes (24h, e.g. 17:00)", required: false }
+              - name: holidayOverrides
+                label: "Holiday and special hours"
+                widget: list
+                fields:
+                  - { name: date, label: "Date (YYYY-MM-DD)" }
+                  - { name: open, label: "Opens (leave empty if closed)", required: false }
+                  - { name: close, label: "Closes", required: false }
+                  - { name: note, label: "Reason shown to visitors", required: false }
+              - { name: appointments, label: "Appointments note (shown only when filled in)", required: false }
+              - { name: parking, label: "Parking note (shown only when filled in)", required: false }
+              - { name: accessibility, label: "Accessibility note (shown only when filled in)", required: false }
+          - name: otherLocations
+            label: "Other locations"
+            widget: list
+            fields:
+              - { name: id }
+              - { name: name }
+              - { name: street }
+              - { name: city }
+              - { name: region }
+              - { name: postalCode }
+              - { name: status, widget: select, options: [coming-soon, open, hidden] }
+              - { name: publicNote, label: "Note shown to visitors" }
+          - name: serviceAreas
+            label: "Service areas"
+            widget: object
+            fields:
+              - { name: intro, widget: text }
+              - { name: installation, label: "Regular installation areas", widget: list }
+              - { name: installationByProject, label: "Areas served depending on the project", widget: list }
+          - { name: social, label: "Social links", widget: list, fields: [{ name: label }, { name: url }] }
+          - { name: cta, label: "Button wording", widget: object, fields: [{ name: call }, { name: help }, { name: helpShort }, { name: visit }] }
+
+  - name: options
+    label: "Featured shortlist"
+    label_singular: "Featured option"
+    folder: src/content/options
+    extension: yaml
+    create: true
+    slug: "{{title}}"
+    summary: "{{title}} ({{path}}, order {{order}})"
+    fields:
+      - { name: title }
+      - { name: path, label: "Starting path", widget: select, options: [new-fireplace, existing-fireplace, outdoor-kitchen, outdoor-living] }
+      - { name: order, widget: number, value_type: int }
+      - { name: homepage, label: "Show on homepage", widget: boolean, default: false }
+      - { name: whatItIs, label: "What it is", widget: text }
+      - { name: goodFor, label: "A good starting point for", widget: text }
+      - { name: benefit, label: "Main customer benefit", widget: text }
+      - { name: facts, label: "Verified facts (max 3)", widget: list }
+      - { name: considerations, label: "Fit, fuel, power or venting considerations", widget: list }
+      - { name: included, label: "Included (only if verified)", widget: list, required: false }
+      - { name: separate, label: "Needed separately", widget: list, required: false }
+      - { name: exampleBrands, label: "Example makers", widget: list, required: false }
+      - { name: showroomDisplay, label: "On display in showroom?", widget: select, options: [call-to-confirm, confirmed] }
+      - { name: image, widget: image }
+      - { name: imageAlt, label: "Image description" }
+      - { name: imagePosition, widget: select, options: [center, top, bottom], default: center }
+      - { name: relatedProjects, label: "Related projects (file names without .json)", widget: list, required: false }
+      - { name: documents, label: "Technical documents", widget: list, required: false, fields: [{ name: label }, { name: url }] }
+      - { name: priceNote, label: "Pricing note (owner-approved wording only)", required: false }
+
+  - name: projects
+    label: "Projects"
+    label_singular: "Project"
+    folder: src/content/projects
+    extension: json
+    create: true
+    slug: "{{title}}"
+    summary: "{{title}} ({{year}})"
+    fields:
+      - { name: title }
+      - { name: year, widget: number, value_type: int, required: false }
+      - { name: category, widget: select, options: [fireplace-new, fireplace-upgrade, outdoor-kitchen, outdoor-living] }
+      - { name: location, label: "Location (only if the customer approved)", required: false }
+      - { name: designer, label: "Designer or builder credit", required: false }
+      - { name: images, widget: list, field: { name: image, widget: image } }
+      - { name: featured, widget: boolean, default: false }
+      - { name: order, label: "Order among featured (lower shows first)", widget: number, value_type: int, default: 50 }
+      - { name: summary, label: "One-sentence summary", widget: text, required: false }
+      - { name: goal, label: "The customer's goal", widget: text, required: false }
+      - { name: solution, label: "What was selected", widget: text, required: false }
+      - { name: ourRole, label: "What our team did", widget: text, required: false }
+      - { name: takeaway, label: "Useful result or lesson", widget: text, required: false }
+      - { name: description, label: "Project notes", widget: text, required: false }
+      - { name: features, widget: list, required: false }
+      - { name: beforeAfter, label: "Includes before photos", widget: boolean, required: false }
+      - { name: draft, label: "Hide from the site", widget: boolean, default: false }
+      - { name: legacyId, widget: hidden, required: false }
+
+  - name: lists
+    label: "Reviews, FAQs and promotions"
+    files:
+      - name: reviews
+        label: "Customer reviews (real and approved only)"
+        file: src/content/reviews.yaml
+        fields:
+          - name: reviews
+            label: Reviews
+            widget: list
+            root: true
+            fields:
+              - { name: id, label: "Short ID (e.g. jane-d-2026)" }
+              - { name: author, label: "Name as shown publicly" }
+              - { name: source, widget: select, options: [Google, Houzz, Facebook, Direct] }
+              - { name: sourceUrl, label: "Link to the original review", required: false }
+              - { name: date, required: false }
+              - { name: about, widget: select, options: [company-service, product] }
+              - { name: topic, widget: select, options: [choosing, explanations, working-with-trades, installation, communication], required: false }
+              - { name: quote, label: "Exact text of the review", widget: text }
+              - { name: approved, label: "Approved to publish", widget: boolean, default: false }
+              - { name: order, widget: number, value_type: int, default: 10 }
+      - name: faqs
+        label: "FAQs"
+        file: src/content/faqs.yaml
+        fields:
+          - name: faqs
+            label: FAQs
+            widget: list
+            root: true
+            fields:
+              - { name: id }
+              - { name: question }
+              - { name: answer, widget: text }
+              - { name: groups, label: "Where it shows", widget: select, multiple: true, options: [home, fireplaces, existing, outdoor-kitchens, trade, showroom, service] }
+              - { name: order, widget: number, value_type: int }
+      - name: promotions
+        label: "Promotions (end date required)"
+        file: src/content/promotions.yaml
+        fields:
+          - name: promotions
+            label: Promotions
+            widget: list
+            root: true
+            fields:
+              - { name: id }
+              - { name: title }
+              - { name: body, widget: text }
+              - { name: terms, widget: text, required: false }
+              - { name: starts, label: "Starts (YYYY-MM-DD)" }
+              - { name: expires, label: "Ends (YYYY-MM-DD)" }
+              - { name: link, required: false }
+
+  - name: guides
+    label: "Buying guides"
+    folder: src/content/guides
+    extension: md
+    create: true
+    fields:
+      - { name: title }
+      - { name: description, widget: text }
+      - { name: order, widget: number, value_type: int }
+      - { name: path, widget: select, options: [new-fireplace, existing-fireplace, outdoor-kitchen, outdoor-living], required: false }
+      - { name: body, widget: markdown }

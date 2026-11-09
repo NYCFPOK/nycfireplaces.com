@@ -1,0 +1,20 @@
+---
+import { getCollection } from 'astro:content';
+interface Props { group: string; limit?: number }
+const { group, limit } = Astro.props;
+const all = (await getCollection('faqs')).filter((f) => f.data.groups.includes(group as any)).sort((a, b) => a.data.order - b.data.order);
+const faqs = limit ? all.slice(0, limit) : all;
+const schema = {
+  '@context': 'https://schema.org', '@type': 'FAQPage',
+  mainEntity: faqs.map((f) => ({ '@type': 'Question', name: f.data.question, acceptedAnswer: { '@type': 'Answer', text: f.data.answer } })),
+};
+---
+<div class="faq">
+  {faqs.map((f) => (
+    <details>
+      <summary>{f.data.question}</summary>
+      <div class="answer"><p>{f.data.answer}</p></div>
+    </details>
+  ))}
+</div>
+<script type="application/ld+json" set:html={JSON.stringify(schema)} />

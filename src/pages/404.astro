@@ -1,0 +1,18 @@
+---
+import Base from '../layouts/Base.astro';
+import { site, telHref } from '../data/site';
+---
+<Base title="Page Not Found" description="That page has moved or no longer exists." noindex>
+  <section class="section"><div class="wrap wrap-narrow">
+    <h1>We could not find that page.</h1>
+    <p class="lede" style="margin-top:1rem">The site was recently rebuilt and some addresses changed. These will get you back on track:</p>
+    <ul style="margin-top:1.5rem;display:grid;gap:.7rem;font-size:1.15rem">
+      <li><a class="link" href="/start-here/">Start here</a></li>
+      <li><a class="link" href="/fireplaces/">Fireplaces</a></li>
+      <li><a class="link" href="/outdoor-kitchens/">Outdoor kitchens</a></li>
+      <li><a class="link" href="/projects/">Our projects</a></li>
+      <li><a class="link" href="/showroom/">Showroom address and hours</a></li>
+    </ul>
+    <p style="margin-top:2rem">Or call us at <a class="link" href={telHref}>{site.phone.display}</a>.</p>
+  </div></section>
+</Base>

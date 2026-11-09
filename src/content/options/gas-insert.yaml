@@ -1,0 +1,26 @@
+title: Gas fireplace insert
+path: existing-fireplace
+order: 1
+homepage: true
+whatItIs: A sealed gas firebox with a glass front that slides into your existing wood-burning fireplace and vents up the existing chimney.
+goodFor: A wood fireplace you rarely use, or one that makes the room colder when it burns.
+benefit: Turns an open fireplace into a clean, controllable source of real heat.
+facts:
+  - An insert needs an existing fireplace and chimney to install into.
+  - It is a sealed unit with a glass front, which is how it delivers heat to the room.
+considerations:
+  - "The size of your opening: width at the front and back, height and depth."
+  - The condition of the chimney.
+  - Gas supply to the fireplace.
+  - The surround or trim that covers the gap between the insert and the opening.
+included:
+  - The insert as specified in your quote.
+separate:
+  - Chimney liner and venting components.
+  - Gas line work.
+  - Surround, trim or any new facing.
+exampleBrands: [Kozy Heat, Napoleon, Fireplace Xtrordinair, Lopi]
+showroomDisplay: call-to-confirm
+image: ../../assets/projects/living-room-upgrade-kozy-heat-nordic-34-gas-insert/1.webp
+imageAlt: Gas insert installed in a marble-faced fireplace beneath a wood mantel and television
+relatedProjects: [living-room-upgrade-kozy-heat-nordic-34-gas-insert, kozyheat-gas-fireplace-insert-w-stoll-custom-steel-shelf, energy-efficient-gas-fireplace-insert-kozy-heat-chaska]

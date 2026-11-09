@@ -1,0 +1,24 @@
+title: Gas logs with glass doors
+path: existing-fireplace
+order: 2
+homepage: true
+whatItIs: A gas burner and log set (or a contemporary glass burner) installed inside your existing firebox, usually finished with made-to-measure glass doors.
+goodFor: A wood fireplace you love the look of and want to light without the work.
+benefit: Keeps the open-hearth character of your fireplace and gives you a fire in seconds.
+facts:
+  - A log set is more about the look of the fire than heating the room. If heat matters most, look at an insert.
+  - Log sets do not come with a glass front. Doors are made to your opening and are optional.
+considerations:
+  - A gas line into the firebox.
+  - The size and condition of the firebox and chimney.
+  - Log style, or a glass burner for a modern look.
+included:
+  - The burner and log set as specified in your quote.
+separate:
+  - Gas line work.
+  - Glass doors, which are made to order.
+exampleBrands: [Real Fyre, Hargrove, Stoll Industries, Design Specialties]
+showroomDisplay: call-to-confirm
+image: ../../assets/projects/real-fyre-g31-wood-to-gas-conversion/1.webp
+imageAlt: Gas log set burning in a stone fireplace
+relatedProjects: [real-fyre-g31-wood-to-gas-conversion, real-fyre-mountain-crest-oak-log-set-w-stoll-industries-arched-door, wood-to-gas-fireplace-conversion]

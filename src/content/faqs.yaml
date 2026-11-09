@@ -1,0 +1,80 @@
+- id: which-type
+  question: "I don't know which fireplace type I need. Can you help?"
+  answer: "Yes. That is where most conversations start. Tell us about the room, whether there is an existing fireplace or chimney, and what you want from it: heat, atmosphere, or both. We will narrow it down to a few options that make sense and explain the differences in plain terms."
+  groups: [home, fireplaces]
+  order: 1
+- id: existing-fireplace
+  question: "Can you help with an existing fireplace?"
+  answer: "Yes. The two most common routes are a sealed gas insert that slides into the existing firebox and adds real heat, or a gas log set or glass burner that is more about the look of the fire. Glass doors and a new mantel can also change a fireplace without replacing it. Photos of the opening and rough measurements help us tell you which routes are realistic."
+  groups: [home, fireplaces, existing]
+  order: 2
+- id: see-in-showroom
+  question: "Can I see products in the showroom?"
+  answer: "Yes. Our Maspeth showroom has working fireplace displays and outdoor cooking equipment you can see up close. Not every model we sell is on the floor, so if you want to see a specific one, call ahead and we will tell you whether it is on display."
+  groups: [home, showroom, fireplaces, outdoor-kitchens]
+  order: 3
+- id: appointment
+  question: "Do I need an appointment?"
+  answer: "The showroom is open during the hours listed on this site. If you want to go through a specific project or see a particular model, call first so we can confirm it is on display and set aside time for you."
+  groups: [home, showroom]
+  order: 4
+- id: install-area
+  question: "Do you handle installation in my area?"
+  answer: "We install throughout the five boroughs and Long Island, and we take on projects in Westchester, parts of northern New Jersey and the Greenwich and Stamford area depending on the job. Send us the project ZIP code and we will confirm. We install products purchased through us."
+  groups: [home, fireplaces, outdoor-kitchens]
+  order: 5
+- id: what-to-bring
+  question: "What should I bring or send?"
+  answer: "Whatever you have. Photos of the space, approximate dimensions, inspiration images, and plans or drawings are all useful. None of it is required. If all you have is an idea, that is enough to start."
+  groups: [home, showroom]
+  order: 6
+- id: cost
+  question: "What affects the overall project cost?"
+  answer: "The appliance is one part. The rest depends on the venting, gas or electrical work the location needs, the finish around it such as a mantel, surround, stonework or cabinetry, site access, and how much of the installation we handle. Once we understand the project we put the scope in a written quote so you can see what is and is not included."
+  groups: [home, fireplaces, outdoor-kitchens]
+  order: 7
+- id: coordinate
+  question: "Can you coordinate with my designer or contractor?"
+  answer: "Yes. We regularly work alongside designers, architects, builders, plumbers and electricians, and we can also supply equipment only while your team handles the installation. Bringing us in early helps avoid venting, gas line and clearance surprises later."
+  groups: [home, trade, outdoor-kitchens, fireplaces]
+  order: 8
+- id: no-chimney
+  question: "Can I add a fireplace if I don't have a chimney?"
+  answer: "Often, yes. A direct-vent gas fireplace vents through an exterior wall or the roof with its own sealed pipe, so it does not need a traditional chimney. Where venting is not possible, electric, water-vapor and ethanol fireplaces are worth a look. Which of these suits your home depends on the building, so we confirm the details before recommending one."
+  groups: [fireplaces]
+  order: 9
+- id: apartment
+  question: "I live in an apartment, condo or co-op. What are my options?"
+  answer: "Electric fireplaces are the simplest, and water-vapor and ethanol models are other options that do not need a vent. Buildings often have their own rules, so check with your board or management early. We can help you put together what they ask for."
+  groups: [fireplaces]
+  order: 10
+- id: bought-elsewhere
+  question: "I bought a fireplace somewhere else. Can you install it?"
+  answer: "No. We install new products purchased through us, so we can stand behind both the appliance and the installation."
+  groups: [fireplaces, existing, service]
+  order: 11
+- id: code
+  question: "Do you handle permits and building code questions?"
+  answer: "We install to the manufacturer's specifications. We do not obtain permits or carry out inspections, and code requirements vary by municipality and building. Your architect, contractor or local building department is the right source for those answers, and we can supply the product documentation they need."
+  groups: [fireplaces, trade]
+  order: 12
+- id: ok-contractor-builds
+  question: "Can my contractor build the kitchen while I buy the equipment from you?"
+  answer: "Yes. We recommend having the appliances on site before any finish work starts, because cut-outs depend on the exact equipment. We can supply specifications for your builder."
+  groups: [outdoor-kitchens]
+  order: 13
+- id: ok-fuel
+  question: "Natural gas or propane?"
+  answer: "Most of the grills we work with are available for either fuel. Which one suits you depends on what is already at the house and where the kitchen will sit. Tell us what you have and we will plan around it."
+  groups: [outdoor-kitchens]
+  order: 14
+- id: ok-3d
+  question: "Can I see the kitchen layout before it is built?"
+  answer: "Yes. We prepare 3D outdoor kitchen layouts to go along with an outdoor kitchen purchase, so you can see the arrangement of the grill, storage, refrigeration and counters before anything is ordered. Ask us what is included for your project."
+  groups: [outdoor-kitchens]
+  order: 15
+- id: service-who
+  question: "Do you service fireplaces you did not install?"
+  answer: "Our service team works on units that we sold and installed. We do not offer chimney sweeping or cleaning for wood-burning fireplaces. If you are not sure whether your unit came from us, send the details and we will check."
+  groups: [service]
+  order: 16

@@ -1,0 +1,180 @@
+- id: direct-vent-gas-fireplaces
+  title: Direct-vent gas fireplaces
+  navLabel: Direct-vent gas
+  description: What a direct-vent gas fireplace is, where it fits, and how NYC Fireplaces & Outdoor Kitchens helps you plan one.
+  path: new-fireplace
+  order: 1
+  intro: A direct-vent gas fireplace is a sealed unit with a glass front that brings in air and sends exhaust out through its own pipe. It does not need a chimney, which is why it is the usual choice when you are adding a fireplace where there was none.
+  goodFor: [New construction and renovations, Rooms with no existing fireplace or chimney, "People who want real flame and real heat at the press of a button"]
+  thinkAbout: [Where the vent can run to an exterior wall or the roof, Gas supply to the location, "Framing and clearances, which vary by model and affect the wall design"]
+  brands: [Kozy Heat, Napoleon, Montigo, DaVinci Custom Fireplaces, Fireplace Xtrordinair, Town & Country, Majestic, Heatilator, Flare Fireplaces]
+- id: electric-fireplaces
+  title: Electric fireplaces
+  navLabel: Electric
+  description: Electric fireplaces explained in plain terms, with help choosing one for your room, apartment or media wall.
+  path: new-fireplace
+  order: 2
+  intro: An electric fireplace needs power, not gas or a vent. That makes it the simplest way to add a fireplace to an apartment, a bedroom, or a media wall.
+  goodFor: ["Apartments, condos and co-ops", Media walls and built-ins, Rooms where venting or gas is not practical]
+  thinkAbout: [Whether you want it built into the wall or mounted on it, The electrical supply at the location, "How much heat you expect: these are mainly about the look"]
+  brands: [Modern Flames, Dimplex, Napoleon, Kozy Heat]
+- id: water-vapor-fireplaces
+  title: Water-vapor fireplaces
+  navLabel: Water vapor
+  description: How water-vapor fireplaces create a flame effect without fire, and where they make sense.
+  path: new-fireplace
+  order: 3
+  intro: A water-vapor fireplace uses fine mist and light to create a three-dimensional flame effect. There is no combustion, so there is nothing to vent and the "flame" is cool to the touch.
+  goodFor: [Spaces where real fire is not allowed or practical, Open and see-through designs, Homes with children or pets]
+  thinkAbout: [It is a visual feature and does not produce heat, It needs power and a water supply or reservoir, Seeing one running in person helps you judge the effect]
+  brands: [Dimplex, Net Zero]
+- id: ethanol-fireplaces
+  title: Ethanol fireplaces
+  navLabel: Ethanol
+  description: Ethanol fireplaces offer a real flame with no vent or gas line. Here is what to know before choosing one.
+  path: new-fireplace
+  order: 4
+  intro: An ethanol fireplace burns bioethanol fuel from a built-in burner. It gives you a real flame with no vent, gas line or electrical connection, and is used mainly for atmosphere.
+  goodFor: [Design-led rooms where a real flame matters, Locations with no gas or venting route, Freestanding and furniture-style pieces]
+  thinkAbout: [Fuel is added by hand and stored in the home, Building and local rules may apply, Heat output is modest]
+  brands: [EcoSmart]
+- id: wood-fireplaces
+  title: Wood-burning fireplaces
+  navLabel: Wood
+  description: Planning a wood-burning fireplace, and when gas or another option may suit the home better.
+  path: new-fireplace
+  order: 5
+  intro: A wood-burning fireplace gives you the sound, smell and ritual of a real wood fire. It also asks the most of the building, since it needs a proper chimney and regular upkeep.
+  goodFor: [Homes with a suitable chimney or space to build one, People who enjoy tending a fire]
+  thinkAbout: [Chimney and clearance requirements, Local rules on wood burning, Whether a gas unit would give you the look with less upkeep]
+  brands: [Fireplace Xtrordinair, Lopi, Majestic, Heatilator, Pacific Energy]
+- id: stoves
+  title: Stoves
+  navLabel: Stoves
+  description: Freestanding gas, wood and pellet stoves, and how to tell whether a stove suits your space.
+  path: new-fireplace
+  order: 6
+  intro: A stove is a freestanding heater that sits in the room and vents through a pipe. Gas, wood and pellet versions are available, and they tend to deliver a lot of heat from a small footprint.
+  goodFor: [Heating a main living area, Rooms without space for a built-in fireplace]
+  thinkAbout: [Venting route and floor protection, Fuel preference and storage, Clearances to walls and furniture]
+  brands: [Lopi, Pacific Energy, Kozy Heat, Napoleon]
+- id: gas-inserts
+  title: Gas fireplace inserts
+  navLabel: Gas inserts
+  description: A gas insert turns a drafty wood-burning fireplace into a clean, controllable heat source. See how it works and what we need to know.
+  path: existing-fireplace
+  order: 1
+  intro: A gas insert is a sealed firebox that slides into an existing wood-burning fireplace and vents up the existing chimney. It turns an open fireplace that loses heat into one that adds it.
+  goodFor: [Existing masonry or factory-built wood fireplaces, People who want heat as well as flame, Anyone tired of hauling wood and cleaning ash]
+  thinkAbout: ["The size of the opening: width, height and depth", The condition of the chimney, "Gas supply to the fireplace, and power for some features"]
+  brands: [Kozy Heat, Napoleon, Fireplace Xtrordinair, Lopi, Majestic, Heatilator]
+- id: gas-logs
+  title: Gas logs and glass burners
+  navLabel: Gas logs
+  description: Gas log sets and contemporary glass burners give an existing fireplace an instant fire. Here is how they differ from an insert.
+  path: existing-fireplace
+  order: 2
+  intro: A gas log set or glass burner is installed inside your existing firebox and connected to a gas line. You keep the open fireplace and get a fire that starts instantly. It is more about the look of the fire than heating the room.
+  goodFor: [Wood fireplaces you want to convert to gas, People who care most about the appearance of the fire, Pairing with new glass doors]
+  thinkAbout: [It does not have a sealed glass front, Gas line into the firebox, Whether heat matters enough to consider an insert instead]
+  brands: [Real Fyre, Hargrove, American Hearth]
+- id: electric-fireplace-inserts
+  title: Electric fireplace inserts
+  navLabel: Electric inserts
+  description: An electric insert brings an unused fireplace back to life with no gas or chimney work.
+  path: existing-fireplace
+  order: 3
+  intro: An electric insert sits inside an existing fireplace opening and plugs into power. It is a practical way to bring back a fireplace that cannot be used for burning.
+  goodFor: [Fireplaces with a chimney that cannot be used, "Apartments and co-ops", A quick visual upgrade]
+  thinkAbout: [Power at or near the firebox, The opening dimensions, How the surround will be finished]
+  brands: [Modern Flames, Dimplex, Kozy Heat]
+- id: wood-fireplace-inserts
+  title: Wood and pellet inserts
+  navLabel: Wood & pellet inserts
+  description: Wood and pellet inserts improve the heat you get from an existing fireplace while keeping a solid-fuel fire.
+  path: existing-fireplace
+  order: 4
+  intro: A wood or pellet insert fits into an existing fireplace and burns far more efficiently than an open fire, so more of the heat stays in the room.
+  goodFor: [People who want to keep burning wood, Using an existing fireplace as a real heat source]
+  thinkAbout: [Chimney liner requirements, Fuel storage, Local rules on solid-fuel appliances]
+  brands: [Lopi, Fireplace Xtrordinair, Pacific Energy]
+- id: fireplace-doors
+  title: Fireplace doors
+  navLabel: Doors
+  description: Custom glass fireplace doors fitted to your opening, in a range of finishes and styles.
+  path: existing-fireplace
+  order: 5
+  intro: Glass doors are made to the size of your fireplace opening. They finish the look of the fireplace and are often paired with a new gas log set.
+  goodFor: [Refreshing a dated fireplace without replacing it, Finishing a gas log conversion]
+  thinkAbout: [Exact opening measurements, Finish and style to suit the room, Whether the doors sit inside or over the opening]
+  brands: [Stoll Industries, Design Specialties, Ironhaus]
+- id: mantels
+  title: Mantels and surrounds
+  navLabel: Mantels
+  description: Custom mantels and surrounds made to your fireplace dimensions.
+  path: existing-fireplace
+  order: 6
+  intro: Mantels are made to order for your fireplace. Choose from our fabricators' styles, or bring a photo of something you like and we will tell you what is possible.
+  goodFor: [Changing the character of a fireplace, Finishing a new installation]
+  thinkAbout: [Clearances to combustible materials set by the fireplace maker, Wall and ceiling proportions, Lead time for made-to-order pieces]
+  brands: [Omega Mantels of Stone, Stoll Industries]
+- id: built-in-grills
+  title: Built-in grills
+  navLabel: Built-in grills
+  description: Choosing a built-in grill for an outdoor kitchen, explained without the jargon.
+  path: outdoor-kitchen
+  order: 1
+  intro: A built-in grill is the centerpiece of most outdoor kitchens. It drops into an island or cabinetry run, so the grill you choose sets the cut-out dimensions for everything around it.
+  goodFor: [New outdoor kitchens, Replacing a grill in an existing island]
+  thinkAbout: [How many people you usually cook for, Natural gas or propane, "The cut-out size if you are replacing an existing grill"]
+  brands: [Twin Eagles, Lynx, Fire Magic, Delta Heat, Blaze, Hestan, Napoleon, American Outdoor Grill, Summerset]
+- id: outdoor-kitchen-islands
+  title: Outdoor kitchen islands and cabinetry
+  navLabel: Islands & cabinetry
+  description: Masonry islands, stainless and powder-coated cabinetry, and ready-to-finish island systems compared.
+  path: outdoor-kitchen
+  order: 2
+  intro: The structure of an outdoor kitchen can be custom masonry, weatherproof metal cabinetry, or a pre-engineered island system. Each has a different look, lead time and amount of site work.
+  goodFor: [Anyone planning more than a freestanding grill, Patios, yards, terraces and rooftops]
+  thinkAbout: [Where gas, water and power will come from, Counter space on both sides of the grill, "Storage, refrigeration and seating"]
+  brands: [Danver, Challenger Designs, Brown Jordan Outdoor Kitchens]
+- id: pizza-ovens
+  title: Pizza ovens
+  navLabel: Pizza ovens
+  description: Wood, gas and hybrid pizza ovens for countertops, carts and built-in outdoor kitchens.
+  path: outdoor-kitchen
+  order: 3
+  intro: Outdoor pizza ovens come as countertop models, on a cart, or built into a kitchen. Gas ovens are quick and consistent, wood gives a traditional fire, and hybrid ovens do both.
+  goodFor: [Adding to a new or existing outdoor kitchen, "People who cook for a crowd"]
+  thinkAbout: [Gas or wood or both, The counter depth and weight the oven needs, Clearance above and around the oven]
+  brands: [Alfa Forni, Gozney, Fontana Forni]
+- id: firepits-fire-features
+  title: Fire pits and fire features
+  navLabel: Fire pits
+  description: Gas fire pits, fire tables and custom fire features for patios and gardens.
+  path: outdoor-living
+  order: 1
+  intro: A fire pit or fire table gives people a reason to stay outside. Gas versions light instantly and can be built into masonry or bought as a finished piece.
+  goodFor: [Seating areas and patios, Extending the outdoor season]
+  thinkAbout: [Gas supply to the location, Clearance overhead and to seating, Whether you want a finished table or a custom-built surround]
+  brands: [Warming Trends, The Outdoor Plus, American Fyre Designs, The Outdoor GreatRoom Company]
+- id: patio-heaters
+  title: Patio heaters
+  navLabel: Patio heating
+  description: Help choosing and laying out electric and gas patio heaters. We consult, specify and supply.
+  path: outdoor-living
+  order: 2
+  intro: Mounted infrared heaters warm people rather than the air, which makes covered patios, pergolas and terraces comfortable for more of the year. We help with product selection and heater layout, and supply the equipment for your electrician or contractor to install.
+  goodFor: [Covered patios and pergolas, Restaurants and terraces, Outdoor kitchens used in cooler months]
+  thinkAbout: [Mounting height and coverage area, Electrical capacity or gas supply, Controls and zoning]
+  brands: [Bromic, Infratech]
+- id: outdoor-fireplaces
+  title: Outdoor fireplaces
+  navLabel: Outdoor fireplaces
+  description: Gas and wood outdoor fireplaces as the anchor of a patio or outdoor room.
+  path: outdoor-living
+  order: 3
+  intro: An outdoor fireplace anchors a patio the way a fireplace anchors a living room. Gas units are easy to live with, while wood gives a traditional fire.
+  goodFor: [Outdoor rooms and covered patios, Creating a focal point and some shelter]
+  thinkAbout: [Gas or wood, The structure and finish around the fireplace, Distance from the house and overhead cover]
+  brands: [Fireplace Xtrordinair, Montigo, Napoleon, Majestic]

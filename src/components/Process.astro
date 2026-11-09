@@ -1,0 +1,25 @@
+---
+const steps = [
+  ['Tell us about your project', 'Call or send a short inquiry. Share what you know. A photo and a rough idea are plenty.'],
+  ['Narrow the options', 'We look at the space, what you like, and the practical requirements, then point you to the products that suit.'],
+  ['Plan the complete setup', 'We confirm the scope, the compatible components, who is responsible for what, and the next steps, in a written quote.'],
+];
+---
+<ol class="steps">
+  {steps.map(([t, d], i) => (
+    <li>
+      <span class="n" aria-hidden="true">{i + 1}</span>
+      <h3>{t}</h3>
+      <p>{d}</p>
+    </li>
+  ))}
+</ol>
+<p class="muted note">Every project is different, so the exact steps depend on yours.</p>
+<style>
+  .steps { list-style: none; padding: 0; display: grid; gap: 1.75rem; counter-reset: s; }
+  @media (min-width: 800px) { .steps { grid-template-columns: repeat(3, 1fr); gap: 2.25rem; } }
+  .n { display: inline-grid; place-items: center; width: 2.6rem; height: 2.6rem; border-radius: 50%; background: var(--color-ember); color: #fff; font-family: var(--font-display); font-size: 1.3rem; margin-bottom: 0.8rem; }
+  h3 { margin-bottom: 0.4rem; }
+  p { color: var(--color-ink-2); }
+  .note { margin-top: 1.5rem; font-size: 0.95rem; }
+</style>

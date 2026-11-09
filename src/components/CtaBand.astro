@@ -1,0 +1,25 @@
+---
+import { site, telHref, helpHref, hoursCompact, addressLine } from '../data/site';
+interface Props { heading?: string; text?: string; placement: string; helpQuery?: string }
+const { heading = 'Not sure where to start? Call us.', text = 'You do not need a model number or a finished plan. Tell us what you are picturing and we will help you narrow it down.', placement, helpQuery = '' } = Astro.props;
+---
+<section class="section section-dark">
+  <div class="wrap band">
+    <div>
+      <h2>{heading}</h2>
+      <p class="lede">{text}</p>
+    </div>
+    <div class="acts">
+      <a class="btn btn-primary btn-lg" href={telHref} data-track="phone_click" data-placement={placement}>{site.cta.call}</a>
+      <a class="btn btn-secondary btn-lg" href={`${helpHref}${helpQuery}`} data-track="help_cta_click" data-placement={placement}>{site.cta.help}</a>
+      <p class="muted where"><a href="/showroom/">{addressLine}</a><br />{hoursCompact}</p>
+    </div>
+  </div>
+</section>
+<style>
+  .band { display: grid; gap: 2rem; align-items: center; }
+  @media (min-width: 900px) { .band { grid-template-columns: 1.2fr 1fr; } }
+  h2 { margin-bottom: 0.8rem; }
+  .acts { display: flex; flex-wrap: wrap; gap: 0.8rem; }
+  .where { flex-basis: 100%; font-size: 0.95rem; margin-top: 0.4rem; }
+</style>

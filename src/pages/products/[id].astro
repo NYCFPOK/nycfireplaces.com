@@ -1,0 +1,151 @@
+---
+// A showroom product/solution page built for a conversation, not a checkout.
+import { Image } from 'astro:assets';
+import { getCollection, getEntries } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import ProjectCard from '../../components/ProjectCard.astro';
+import ShowroomInfo from '../../components/ShowroomInfo.astro';
+import LeadForm from '../../components/LeadForm.astro';
+import { site, telHref } from '../../data/site';
+
+export async function getStaticPaths() {
+  return (await getCollection('options')).map((option) => ({ params: { id: option.id }, props: { option } }));
+}
+const { option } = Astro.props;
+const o = option.data;
+const related = (await getEntries(o.relatedProjects)).filter(Boolean);
+const PARENT = {
+  'new-fireplace': ['Add a new fireplace', '/fireplaces/new/'],
+  'existing-fireplace': ['Upgrade an existing fireplace', '/fireplaces/upgrade-existing/'],
+  'outdoor-kitchen': ['Outdoor kitchens', '/outdoor-kitchens/'],
+  'outdoor-living': ['Outdoor fire & heating', '/outdoor-living/'],
+} as const;
+const TYPE = { 'new-fireplace': 'new-fireplace', 'existing-fireplace': 'existing-fireplace', 'outdoor-kitchen': 'outdoor-kitchen', 'outdoor-living': 'outdoor-fire-heat' } as const;
+const [parentLabel, parentHref] = PARENT[o.path];
+---
+<Base title={`${o.title} — What It Is & Who It Suits`} description={`${o.whatItIs} ${o.goodFor}`.slice(0, 158)}>
+  <section class="top">
+    <div class="wrap top-grid">
+      <div class="media">
+        <Image src={o.image} alt={o.imageAlt} widths={[480, 760, 1100]} sizes="(min-width: 900px) 560px, 100vw" loading="eager" fetchpriority="high" />
+        <p class="muted cap">Photo from one of our completed projects.</p>
+      </div>
+      <div>
+        <nav aria-label="Breadcrumb" class="crumbs"><a href="/">Home</a> / <a href={parentHref}>{parentLabel}</a></nav>
+        <h1>{o.title}</h1>
+        <p class="lede">{o.whatItIs}</p>
+        <p class="good"><strong>A good starting point for:</strong> {o.goodFor}</p>
+        <p class="benefit">{o.benefit}</p>
+        <div class="acts">
+          <a class="btn btn-primary btn-lg" href={telHref} data-track="phone_click" data-placement="product_top">Call about this: {site.phone.display}</a>
+          <a class="btn btn-secondary btn-lg" href="#ask" data-track="product_inquiry_start" data-placement="product_top">Ask about this product</a>
+        </div>
+        <p class="price muted">{o.priceNote ?? 'Contact us for pricing. The appliance is one part of the cost; we quote the complete project once we understand it.'}</p>
+        <p class="display">{o.showroomDisplay === 'confirmed' ? 'On display in our Maspeth showroom.' : 'Want to see one running? Call ahead and we will tell you which models are on display in Maspeth.'}</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap cols">
+      <div>
+        <h2>What to know</h2>
+        <ul class="ticks big">{o.facts.map((f) => <li>{f}</li>)}</ul>
+        <h2 class="mt">Things that affect the fit</h2>
+        <ul class="ticks">{o.considerations.map((c) => <li>{c}</li>)}</ul>
+        <p class="muted small">Whether this suits your home is confirmed after we look at the details, and installation always follows the manufacturer’s instructions.</p>
+      </div>
+      <div>
+        {(o.included.length > 0 || o.separate.length > 0) && (
+          <div class="card scope">
+            <h2>Planning the whole project</h2>
+            {o.included.length > 0 && (<><h3>Typically part of the appliance</h3><ul class="ticks">{o.included.map((x) => <li>{x}</li>)}</ul></>)}
+            {o.separate.length > 0 && (<><h3>Usually needed separately</h3><ul class="plain">{o.separate.map((x) => <li>{x}</li>)}</ul></>)}
+            <p class="muted small">Your written quote lists exactly what is and is not included, so nothing is assumed.</p>
+          </div>
+        )}
+        {o.exampleBrands.length > 0 && (
+          <div class="brands">
+            <h3>Makers we often work with for this</h3>
+            <p>{o.exampleBrands.join(' · ')}</p>
+            <p class="muted small">Ask us about a specific model. <a class="link" href="/brands/">All brands</a></p>
+          </div>
+        )}
+        <details class="docs">
+          <summary>Technical documents and specifications</summary>
+          <div>
+            {o.documents.length > 0
+              ? <ul>{o.documents.map((d) => <li><a class="link" href={d.url} rel="noopener">{d.label}</a></li>)}</ul>
+              : <p>Installation manuals, framing dimensions and clearances are specific to each model. Tell us which model you are considering and we will send the manufacturer’s documents. Designers and builders: <a class="link" href="/designers-builders/">see trade support</a>.</p>}
+          </div>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  {related.length > 0 && (
+    <section class="section section-tint">
+      <div class="wrap">
+        <h2>Projects like this</h2>
+        <div class="grid3">{related.map((p) => <ProjectCard project={p} />)}</div>
+      </div>
+    </section>
+  )}
+
+  <section class="section" id="ask">
+    <div class="wrap final">
+      <div>
+        <h2>Ask about this product</h2>
+        <p class="lede">Tell us a little about the space and we will let you know whether this is a sensible fit, or point you to something better suited.</p>
+        <div class="card info"><ShowroomInfo placement="product_contact" compact /></div>
+      </div>
+      <div class="card form-card"><LeadForm kind="product" product={o.title} projectType={TYPE[o.path]} id="lead-product" /></div>
+    </div>
+  </section>
+
+  <div class="sticky-call" role="region" aria-label="Call about this product">
+    <span>{o.title}</span>
+    <a class="btn btn-primary" href={telHref} data-track="phone_click" data-placement="product_sticky">Call {site.phone.display}</a>
+  </div>
+</Base>
+<style>
+  .top { background: var(--color-paper-2); border-bottom: 1px solid var(--color-line); padding-block: clamp(1.5rem, 4vw, 3.5rem); }
+  .top-grid { display: grid; gap: 2rem; align-items: start; }
+  @media (min-width: 900px) { .top-grid { grid-template-columns: 1fr 1fr; gap: 3.5rem; } }
+  .media :global(img) { border-radius: var(--radius-card); width: 100%; height: auto; max-height: 34rem; object-fit: cover; box-shadow: var(--shadow-card); }
+  .cap { font-size: 0.85rem; margin-top: 0.5rem; }
+  .crumbs { font-size: 0.9rem; color: var(--color-ink-3); margin-bottom: 0.8rem; }
+  .crumbs a { text-decoration: underline; }
+  h1 { margin-bottom: 0.9rem; }
+  .good { margin-top: 1rem; }
+  .benefit { margin-top: 0.6rem; font-family: var(--font-display); font-size: 1.25rem; }
+  .acts { display: flex; flex-wrap: wrap; gap: 0.8rem; margin-top: 1.5rem; }
+  .price { margin-top: 1.1rem; font-size: 0.97rem; }
+  .display { margin-top: 0.5rem; font-weight: 600; font-size: 0.97rem; }
+  .cols { display: grid; gap: 2.5rem; }
+  @media (min-width: 900px) { .cols { grid-template-columns: 1.1fr 0.9fr; gap: 4rem; } }
+  h2 { font-size: clamp(1.4rem, 2.6vw, 1.85rem); margin-bottom: 1rem; }
+  .mt { margin-top: 2.25rem; }
+  .big { font-size: 1.1rem; }
+  .small { font-size: 0.93rem; margin-top: 1rem; }
+  .scope { padding: 1.5rem; }
+  .scope h3 { font-family: var(--font-sans); font-size: 1rem; font-weight: 700; margin: 1rem 0 0.5rem; }
+  .plain { list-style: disc; padding-left: 1.2rem; display: grid; gap: 0.35rem; }
+  .brands { margin-top: 1.75rem; }
+  .brands h3 { font-family: var(--font-sans); font-size: 1rem; font-weight: 700; margin-bottom: 0.3rem; }
+  .docs { margin-top: 1.75rem; border: 1px solid var(--color-line); border-radius: 10px; }
+  .docs summary { padding: 0.9rem 1rem; font-weight: 650; }
+  .docs div { padding: 0 1rem 1rem; color: var(--color-ink-2); }
+  .grid3 { display: grid; gap: 1.5rem; margin-top: 1.5rem; }
+  @media (min-width: 640px) { .grid3 { grid-template-columns: repeat(2, 1fr); } }
+  @media (min-width: 900px) { .grid3 { grid-template-columns: repeat(3, 1fr); } }
+  .final { display: grid; gap: 2.5rem; align-items: start; }
+  @media (min-width: 900px) { .final { grid-template-columns: 0.85fr 1.15fr; gap: 4rem; } }
+  .info { padding: 1.4rem; margin-top: 1.75rem; }
+  .form-card { padding: clamp(1.25rem, 3vw, 2rem); }
+  .sticky-call { display: none; }
+  @media (min-width: 768px) {
+    .sticky-call { display: flex; position: sticky; bottom: 0; z-index: 30; align-items: center; justify-content: center; gap: 1.25rem; padding: 0.6rem 1rem; background: var(--color-paper); border-top: 1px solid var(--color-line); font-weight: 650; }
+    .sticky-call .btn { min-height: 2.6rem; padding-block: 0.4rem; }
+  }
+</style>

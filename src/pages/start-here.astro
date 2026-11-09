@@ -1,0 +1,171 @@
+---
+// A short optional guide. It points to a sensible next step and never states
+// that a product is safe, compliant or suitable: that needs a proper assessment.
+// Without JavaScript the page shows the four starting paths as plain links.
+import Base from '../layouts/Base.astro';
+import { site, telHref } from '../data/site';
+
+const guide = {
+  q1: [
+    ['new-fireplace', 'A new fireplace', 'There is no fireplace there today'],
+    ['existing-fireplace', 'Upgrading an existing fireplace', 'Insert, conversion, doors or mantel'],
+    ['outdoor-kitchen', 'An outdoor kitchen', 'Grill, cabinetry, pizza oven, layout'],
+    ['not-sure', 'Something else, or not sure', 'Fire pit, patio heating, or still deciding'],
+  ],
+  q2: {
+    'new-fireplace': { q: 'What best describes the space?', a: [['house', 'A house'], ['apartment', 'An apartment, condo or co-op'], ['new-build', 'New construction or a major renovation'], ['unsure', 'Not sure']] },
+    'existing-fireplace': { q: 'What do you want most from it?', a: [['heat', 'Real heat'], ['look', 'The look of a fire, without the work'], ['refresh', 'A better-looking fireplace'], ['unsure', 'Not sure']] },
+    'outdoor-kitchen': { q: 'What best describes the space?', a: [['yard', 'A backyard or patio'], ['terrace', 'A terrace, balcony or rooftop'], ['existing', 'I already have a grill or island'], ['unsure', 'Not sure']] },
+    'not-sure': { q: 'What are you leaning toward?', a: [['firepit', 'A fire pit or outdoor fireplace'], ['heat', 'Heating a patio'], ['pizza', 'A pizza oven'], ['unsure', 'I really am not sure']] },
+  },
+  q3: [['exploring', 'Exploring ideas'], ['renovating', 'Planning a renovation'], ['trade', 'Working with a designer or builder'], ['ready', 'Ready to discuss products']],
+  results: {
+    'new-fireplace:house': { h: 'A direct-vent gas fireplace is the usual place to start', links: [['/products/linear-gas-fireplace/', 'Linear gas fireplace'], ['/products/traditional-gas-fireplace/', 'Traditional gas fireplace'], ['/fireplaces/new/', 'Compare all new-fireplace options']] },
+    'new-fireplace:apartment': { h: 'Start by looking at electric, and check your building’s rules', links: [['/products/built-in-electric-fireplace/', 'Built-in electric fireplace'], ['/water-vapor-fireplaces/', 'Water-vapor fireplaces'], ['/guides/fireplace-without-a-chimney/', 'Guide: a fireplace without a chimney']] },
+    'new-fireplace:new-build': { h: 'Bring us in early, while walls and vent routes are still flexible', links: [['/products/linear-gas-fireplace/', 'Linear gas fireplace'], ['/fireplaces/new/', 'Compare all new-fireplace options'], ['/designers-builders/', 'How we work with builders and designers']] },
+    'new-fireplace:unsure': { h: 'Start with the overview of new-fireplace options', links: [['/fireplaces/new/', 'Compare new-fireplace options'], ['/guides/fireplace-without-a-chimney/', 'Guide: a fireplace without a chimney']] },
+    'existing-fireplace:heat': { h: 'A gas insert is the option to look at first', links: [['/products/gas-insert/', 'Gas fireplace insert'], ['/guides/insert-gas-logs-or-new-fireplace/', 'Guide: insert, gas logs or a new fireplace?']] },
+    'existing-fireplace:look': { h: 'Gas logs with glass doors are worth a look', links: [['/products/gas-logs-and-doors/', 'Gas logs with glass doors'], ['/guides/insert-gas-logs-or-new-fireplace/', 'Guide: insert, gas logs or a new fireplace?']] },
+    'existing-fireplace:refresh': { h: 'New doors, a mantel or a surround may be all it needs', links: [['/products/doors-and-mantel-refresh/', 'New doors, mantel or surround'], ['/fireplaces/upgrade-existing/', 'Compare all upgrade options']] },
+    'existing-fireplace:unsure': { h: 'Start with heat versus looks', links: [['/fireplaces/upgrade-existing/', 'Compare upgrade options'], ['/guides/insert-gas-logs-or-new-fireplace/', 'Guide: insert, gas logs or a new fireplace?']] },
+    'outdoor-kitchen:yard': { h: 'A custom-built or cabinetry kitchen could both work', links: [['/products/custom-built-outdoor-kitchen/', 'Custom-built outdoor kitchen'], ['/products/cabinetry-outdoor-kitchen/', 'Kitchen with weatherproof cabinetry'], ['/guides/planning-an-outdoor-kitchen/', 'Guide: planning an outdoor kitchen']] },
+    'outdoor-kitchen:terrace': { h: 'Cabinetry is usually the practical starting point', links: [['/products/cabinetry-outdoor-kitchen/', 'Kitchen with weatherproof cabinetry'], ['/guides/planning-an-outdoor-kitchen/', 'Guide: planning an outdoor kitchen']] },
+    'outdoor-kitchen:existing': { h: 'Tell us what you have and we will work from there', links: [['/built-in-grills/', 'Built-in grills'], ['/products/pizza-oven/', 'Add a pizza oven'], ['/outdoor-kitchens/', 'Outdoor kitchen overview']] },
+    'outdoor-kitchen:unsure': { h: 'Start with the outdoor kitchen overview', links: [['/outdoor-kitchens/', 'Outdoor kitchen overview'], ['/guides/planning-an-outdoor-kitchen/', 'Guide: planning an outdoor kitchen']] },
+    'not-sure:firepit': { h: 'Have a look at fire pits and outdoor fireplaces', links: [['/firepits-fire-features/', 'Fire pits and fire features'], ['/outdoor-fireplaces/', 'Outdoor fireplaces'], ['/outdoor-living/', 'Outdoor fire and heating overview']] },
+    'not-sure:heat': { h: 'Patio heating is mostly about layout', links: [['/patio-heaters/', 'Patio heaters'], ['/outdoor-living/', 'Outdoor fire and heating overview']] },
+    'not-sure:pizza': { h: 'A pizza oven can stand alone or join a kitchen', links: [['/products/pizza-oven/', 'Add a pizza oven'], ['/outdoor-kitchens/', 'Outdoor kitchen overview']] },
+    'not-sure:unsure': { h: 'That is fine. A short call is the quickest way to get oriented', links: [['/projects/', 'Browse completed projects for ideas'], ['/showroom/', 'Visit the showroom']] },
+  },
+  stage: {
+    exploring: 'Since you are exploring, looking at real projects or visiting the showroom is a good next step. A quick call is welcome too.',
+    renovating: 'Since a renovation is being planned, it helps to talk before walls are closed up or patios are poured.',
+    trade: 'Since a designer or builder is involved, we can work directly with them on specifications and coordination.',
+    ready: 'Since you are ready to talk products, call us or send your details and we will get specific.',
+  },
+};
+---
+<Base title="Start Here — A 3-Question Project Guide" description="Not sure where to begin with a fireplace or outdoor kitchen? Answer three quick questions and get a sensible next step. No contact details needed.">
+  <section class="section">
+    <div class="wrap wrap-narrow">
+      <p class="eyebrow">Start here</p>
+      <h1>Three quick questions. One sensible next step.</h1>
+      <p class="lede">This is optional. If you would rather talk it through, call <a class="link" href={telHref} data-track="phone_click" data-placement="guide_intro">{site.phone.display}</a>. We will not ask for your details to show you the result.</p>
+
+      <div id="guide" class="guide card" hidden data-guide={JSON.stringify(guide)}>
+        <p class="progress" aria-live="polite"></p>
+        <fieldset>
+          <legend></legend>
+          <div class="choices"></div>
+        </fieldset>
+        <button type="button" class="back link" hidden>← Back</button>
+      </div>
+
+      <div id="result" class="result card" hidden tabindex="-1">
+        <p class="eyebrow">A good next step</p>
+        <h2></h2>
+        <p class="stage"></p>
+        <ul class="links"></ul>
+        <div class="acts">
+          <a class="btn btn-primary" href={telHref} data-track="phone_click" data-placement="guide_result">Call our team: {site.phone.display}</a>
+          <a class="btn btn-secondary help" href="/project-help/" data-track="help_cta_click" data-placement="guide_result">Send project details</a>
+          <a class="btn btn-secondary" href="/showroom/" data-track="showroom_info_click" data-placement="guide_result">Visit the showroom</a>
+        </div>
+        <p class="muted fine">This is a starting direction based on three answers, not a specification. What can be installed in your home is confirmed by a proper assessment and the manufacturer’s instructions.</p>
+        <button type="button" class="restart link">Start again</button>
+      </div>
+
+      <noscript>
+        <style>#guide, #result { display: none; }</style>
+      </noscript>
+      <div class="fallback" id="fallback">
+        <h2>Choose the closest starting point</h2>
+        <ul>
+          <li><a class="link" href="/fireplaces/new/">Add a new fireplace</a></li>
+          <li><a class="link" href="/fireplaces/upgrade-existing/">Upgrade an existing fireplace</a></li>
+          <li><a class="link" href="/outdoor-kitchens/">Plan an outdoor kitchen</a></li>
+          <li><a class="link" href="/outdoor-living/">Fire pits, outdoor fireplaces and patio heating</a></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<script>
+  import { track } from '../lib/client';
+  const root = document.getElementById('guide')!;
+  const result = document.getElementById('result')!;
+  const fallback = document.getElementById('fallback')!;
+  const g = JSON.parse(root.dataset.guide!);
+  const legend = root.querySelector('legend')!;
+  const choices = root.querySelector('.choices')!;
+  const progress = root.querySelector('.progress')!;
+  const back = root.querySelector<HTMLButtonElement>('.back')!;
+  const answers: string[] = [];
+  let started = false;
+
+  function render() {
+    const step = answers.length;
+    if (step === 3) return finish();
+    result.hidden = true; root.hidden = false;
+    progress.textContent = `Question ${step + 1} of 3`;
+    back.hidden = step === 0;
+    let question = 'What are you planning?';
+    let opts: string[][] = g.q1;
+    if (step === 1) { question = g.q2[answers[0]].q; opts = g.q2[answers[0]].a; }
+    if (step === 2) { question = 'What stage are you at?'; opts = g.q3; }
+    legend.textContent = question;
+    choices.replaceChildren(...opts.map(([value, label, hint]) => {
+      const b = document.createElement('button');
+      b.type = 'button'; b.className = 'choice';
+      b.innerHTML = `<strong></strong>${hint ? '<span></span>' : ''}`;
+      b.querySelector('strong')!.textContent = label;
+      if (hint) b.querySelector('span')!.textContent = hint;
+      b.addEventListener('click', () => {
+        if (!started) { started = true; track('guide_start'); }
+        answers.push(value); render();
+        (root.querySelector('.choice') as HTMLElement | null)?.focus();
+      });
+      return b;
+    }));
+  }
+  function finish() {
+    const [a1, a2, a3] = answers;
+    const r = g.results[`${a1}:${a2}`];
+    result.querySelector('h2')!.textContent = r.h;
+    result.querySelector('.stage')!.textContent = g.stage[a3];
+    result.querySelector('.links')!.replaceChildren(...r.links.map(([href, label]: string[]) => {
+      const li = document.createElement('li'); const a = document.createElement('a');
+      a.href = href; a.textContent = label; a.className = 'link link-arrow'; li.append(a); return li;
+    }));
+    const type = a1 === 'not-sure' ? (a2 === 'pizza' ? 'pizza-oven' : a2 === 'unsure' ? 'not-sure' : 'outdoor-fire-heat') : a1;
+    result.querySelector<HTMLAnchorElement>('.help')!.href = `/project-help/?${a3 === 'trade' ? 'kind=trade' : `type=${type}`}`;
+    root.hidden = true; result.hidden = false; result.focus();
+    track('guide_complete', { guide_path: a1, guide_stage: a3 });
+  }
+  back.addEventListener('click', () => { answers.pop(); render(); });
+  result.querySelector('.restart')!.addEventListener('click', () => { answers.length = 0; render(); });
+  fallback.querySelector('h2')!.textContent = 'Or go straight to a starting point';
+  render();
+</script>
+
+<style>
+  h1 { margin-block: 0.6rem 1rem; }
+  .guide, .result { margin-top: 2.25rem; padding: clamp(1.25rem, 4vw, 2.25rem); }
+  fieldset { border: 0; padding: 0; margin: 0; }
+  legend { font-family: var(--font-display); font-size: clamp(1.5rem, 3vw, 2rem); margin-bottom: 1.25rem; padding: 0; }
+  .progress { font-weight: 700; color: var(--color-ember); font-size: 0.9rem; margin-bottom: 0.5rem; }
+  .choices { display: grid; gap: 0.75rem; }
+  @media (min-width: 640px) { .choices { grid-template-columns: 1fr 1fr; } }
+  .choices :global(.choice) { text-align: left; padding: 1rem 1.15rem; min-height: 4.25rem; border: 1.5px solid #b9aa95; border-radius: 12px; background: #fff; display: grid; gap: 0.15rem; cursor: pointer; font: inherit; }
+  .choices :global(.choice:hover) { border-color: var(--color-ember); background: var(--color-ember-soft); }
+  .choices :global(.choice span) { color: var(--color-ink-3); font-size: 0.93rem; }
+  .back, .restart { background: none; border: 0; margin-top: 1.25rem; cursor: pointer; font: inherit; min-height: 2.75rem; }
+  .result h2 { margin-block: 0.5rem 0.75rem; }
+  .links { list-style: none; padding: 0; margin: 1.1rem 0; display: grid; gap: 0.6rem; font-size: 1.1rem; }
+  .acts { display: flex; flex-wrap: wrap; gap: 0.7rem; margin-top: 1.5rem; }
+  .fine { font-size: 0.9rem; margin-top: 1.25rem; }
+  .fallback { margin-top: 3rem; }
+  .fallback h2 { font-size: 1.4rem; }
+  .fallback ul { list-style: none; padding: 0; margin-top: 0.9rem; display: grid; gap: 0.6rem; }
+</style>

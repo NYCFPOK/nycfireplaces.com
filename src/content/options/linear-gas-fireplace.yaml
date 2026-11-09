@@ -1,0 +1,26 @@
+title: Linear gas fireplace
+path: new-fireplace
+order: 1
+homepage: true
+whatItIs: A wide, low, glass-fronted gas fireplace built into the wall. It vents directly outside, so it does not need a chimney.
+goodFor: Renovations, new construction and media walls where you want a clean, modern focal point.
+benefit: A real flame at the press of a button, in a wall designed around it.
+facts:
+  - Direct-vent units vent through an exterior wall or the roof with sealed pipe. No chimney is required.
+  - The glass front is how the heat reaches the room, and it gets hot. Most manufacturers supply a safety screen.
+considerations:
+  - The vent route to an exterior wall or the roof.
+  - Gas supply to the fireplace location.
+  - Framing and clearances differ by manufacturer and model, so the wall is designed around the unit you choose.
+  - If a TV will sit above it, tell us early. It affects which models and finishes make sense.
+included:
+  - The fireplace appliance as specified in your quote.
+separate:
+  - Venting components, which depend on the route.
+  - Gas and electrical work to the location.
+  - Wall finish, surround, mantel or stonework.
+exampleBrands: [Napoleon, Montigo, DaVinci Custom Fireplaces, Flare Fireplaces, Fireplace Xtrordinair]
+showroomDisplay: call-to-confirm
+image: ../../assets/projects/stylish-napoleon-56-linear-gas-fireplace/1.webp
+imageAlt: Linear gas fireplace in a stone surround, set into a wood-slat wall beneath a television
+relatedProjects: [stylish-napoleon-56-linear-gas-fireplace, luxurious-built-in-linear-fireplace, davinci-84-x-30-double-glass-gas-fireplace]

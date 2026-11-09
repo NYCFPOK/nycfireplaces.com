@@ -1,0 +1,44 @@
+---
+import Base from '../layouts/Base.astro';
+import FaqList from '../components/FaqList.astro';
+import { site, telHref } from '../data/site';
+---
+<Base title="Service & Parts — Requests for Existing Customers" description="Request service for a fireplace or outdoor appliance we sold and installed, or get help finding a replacement part. Call 718-326-4328.">
+  <section class="section">
+    <div class="wrap">
+      <p class="eyebrow">Service and parts</p>
+      <h1>Already have a unit? Here is where to go.</h1>
+      <p class="lede">Pick the one that matches what you need, so your request reaches the right people the first time.</p>
+      <div class="routes">
+        <div class="card route">
+          <h2>Service or repair</h2>
+          <p>For fireplaces and outdoor equipment that <strong>we sold and installed</strong>. Have your sales order number handy if you can find it.</p>
+          <p class="muted">We do not offer chimney sweeping or cleaning for wood-burning fireplaces.</p>
+          <a class="btn btn-primary" href="/project-help/?kind=service" data-track="service_request_start" data-placement="service_parts">Request Service</a>
+        </div>
+        <div class="card route">
+          <h2>Replacement parts</h2>
+          <p>Describe the part as best you can. A photo, plus the brand, model and approximate year, helps us find it, even without a part number.</p>
+          <a class="btn btn-primary" href="/project-help/?kind=parts" data-track="parts_request_start" data-placement="service_parts">Request a Part</a>
+          <p class="muted">Common grill parts and accessories are also available from our separate online store: <a class="link" href={site.shopOnline.url} rel="noopener" data-track="shop_online_click" data-placement="service_parts">Shop Online ↗</a></p>
+        </div>
+        <div class="card route">
+          <h2>Manuals and warranty</h2>
+          <p>Owner’s manuals are published by each manufacturer. Tell us your brand and model and we will point you to the right document.</p>
+          <a class="btn btn-secondary" href={telHref} data-track="phone_click" data-placement="service_parts">Call {site.phone.display}</a>
+        </div>
+      </div>
+      <p class="new">Looking to buy or replace a fireplace or grill instead? <a class="link link-arrow" href="/start-here/">Start here</a></p>
+    </div>
+  </section>
+  <section class="section section-tint"><div class="wrap wrap-narrow"><h2>Service questions</h2><div class="gap"><FaqList group="service" /></div></div></section>
+</Base>
+<style>
+  h1 { margin-block: 0.6rem 1rem; }
+  .routes { display: grid; gap: 1.5rem; margin-top: 2.25rem; }
+  @media (min-width: 900px) { .routes { grid-template-columns: repeat(3, 1fr); } }
+  .route { padding: 1.6rem; display: grid; gap: 0.9rem; align-content: start; justify-items: start; }
+  .route h2 { font-size: 1.5rem; }
+  .new { margin-top: 2.5rem; font-size: 1.1rem; }
+  .gap { margin-top: 1.75rem; }
+</style>

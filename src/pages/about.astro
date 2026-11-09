@@ -1,0 +1,35 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import CtaBand from '../components/CtaBand.astro';
+import Process from '../components/Process.astro';
+import { site } from '../data/site';
+import showroom from '../assets/showroom/showroom-142.jpg';
+---
+<Base title="About Our Team" description={`${site.name}: ${site.teamStatement}`}>
+  <section class="section">
+    <div class="wrap cols">
+      <div>
+        <p class="eyebrow">About our team</p>
+        <h1>One in-house team, from the first conversation to the finished installation.</h1>
+        <p class="lede">{site.name} is {site.teamStatement.charAt(0).toLowerCase() + site.teamStatement.slice(1)}</p>
+        <div class="prose">
+          <p>That matters because a fireplace or an outdoor kitchen is never just a product. It has to suit the room, the building and the way you live, and then it has to be installed properly. Having design, installation and service under one roof means the advice you get at the start is given by people who know what happens at the end.</p>
+          <p>We work with homeowners directly and alongside designers, architects, builders and contractors. Some customers want us to handle the whole project. Others want the right equipment and clear specifications for their own team. Both are fine.</p>
+          <p>Our showroom in Maspeth, Queens is where most projects begin: with a conversation in front of a working fireplace.</p>
+        </div>
+      </div>
+      <div><Image src={showroom} alt="Fireplace displays in the Maspeth showroom" widths={[480, 800, 1100]} sizes="(min-width: 900px) 540px, 100vw" class="photo" loading="eager" /></div>
+    </div>
+  </section>
+  <section class="section section-tint"><div class="wrap"><h2>How we work with you</h2><div class="gap"><Process /></div></div></section>
+  <CtaBand placement="about_band" />
+</Base>
+<style>
+  .cols { display: grid; gap: 2.5rem; align-items: start; }
+  @media (min-width: 900px) { .cols { grid-template-columns: 1.1fr 0.9fr; gap: 4rem; } }
+  h1 { margin-block: 0.6rem 1rem; }
+  .prose { margin-top: 1.5rem; color: var(--color-ink-2); }
+  .photo { border-radius: var(--radius-card); width: 100%; height: auto; box-shadow: var(--shadow-card); }
+  .gap { margin-top: 2rem; }
+</style>

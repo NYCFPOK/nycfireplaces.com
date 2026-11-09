@@ -1,349 +1,179 @@
 @import "tailwindcss";
+@import "@fontsource-variable/fraunces";
+@import "@fontsource-variable/figtree";
 
 /* =========================================================================
-   NYC Fireplaces & Outdoor Kitchens — Design System
-   Fresh, original design. Warm, editorial, premium hearth aesthetic.
+   NYC Fireplaces & Outdoor Kitchens — design system
+   Warm paper, charcoal ink, one restrained ember accent taken from the logo.
    ========================================================================= */
 
 @theme {
-  /* Palette — from the client-approved "Fire, Perfected" concept:
-     ink blacks, warm cream, live ember orange, deep maroon, dusk violet */
-  --color-coal-950: #0d0a09; /* ink */
-  --color-coal-900: #161110; /* ink-2 */
-  --color-coal-850: #1c1512;
-  --color-coal-800: #241c17;
-  --color-coal-700: #3a3024;
-  --color-stone-100: #f2e7d8; /* cream */
-  --color-stone-200: #e8dac5;
-  --color-stone-300: #d5c4a9;
-  --color-stone-400: #b3a68e;
-  --color-ember-600: #e07514; /* ember, deepened for AA on ink */
-  --color-ember-500: #ff8c2e; /* ember */
-  --color-ember-400: #ffc46b; /* ember-hot */
-  --color-maroon-600: #943634;
-  --color-dusk-900: #1a1626;
-  --color-ash-600: #6b6253;
+  --color-paper: #fbf7f1;
+  --color-paper-2: #f3ece1;
+  --color-paper-3: #e7dccb;
+  --color-line: #ddd0bd;
+  --color-ink: #231c17;
+  --color-ink-2: #4a3f36;
+  --color-ink-3: #6d6157;
+  --color-char: #1c1613;
+  --color-char-2: #2a211c;
+  --color-ember: #b4470f; /* AA on paper and with white text */
+  --color-ember-dark: #8f370a;
+  --color-ember-soft: #fbe6d4;
+  --color-flame: #f58220; /* logo orange — decorative only */
+  --color-ok: #2f6b3f;
 
-  /* Fine-detail accent (eyebrows, hairlines) — warm ember-gold */
-  --color-gold-500: #d99a52;
-  --color-gold-400: #ecb96f;
-  --color-gold-300: #ffd98c;
+  --font-display: "Fraunces Variable", Georgia, "Times New Roman", serif;
+  --font-sans: "Figtree Variable", system-ui, -apple-system, "Segoe UI", sans-serif;
 
-  /* Depth */
-  --shadow-luxe: 0 30px 70px -25px rgba(0, 0, 0, 0.65), 0 12px 24px -18px rgba(0, 0, 0, 0.55);
-  --shadow-card: 0 24px 55px -28px rgba(10, 6, 3, 0.55);
-  --ease-lux: cubic-bezier(0.22, 1, 0.36, 1);
-
-  /* Typography — concept pairing */
-  --font-display: "Cormorant Garamond", "Playfair Display", Georgia, serif;
-  --font-sans: "Jost", "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --shadow-card: 0 1px 2px rgb(35 28 23 / 0.06), 0 12px 32px -18px rgb(35 28 23 / 0.28);
+  --radius-card: 14px;
 }
 
 @layer base {
-  :root {
-    color-scheme: dark;
-  }
-
   html {
-    scroll-behavior: smooth;
-    -webkit-font-smoothing: antialiased;
-    text-rendering: optimizeLegibility;
+    -webkit-text-size-adjust: 100%;
+    scroll-padding-top: 6rem;
   }
-
   body {
-    background-color: var(--color-coal-950);
-    color: var(--color-stone-200);
+    background: var(--color-paper);
+    color: var(--color-ink);
     font-family: var(--font-sans);
-    font-size: 1rem;
-    line-height: 1.65;
+    font-size: 1.0625rem;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
   }
-
-  h1, h2, h3, h4 {
+  h1, h2, h3 {
     font-family: var(--font-display);
-    font-weight: 500;
-    line-height: 1.04;
-    color: var(--color-stone-100);
-    letter-spacing: -0.015em;
+    font-weight: 560;
+    line-height: 1.12;
+    letter-spacing: -0.012em;
+    text-wrap: balance;
   }
-
-  /* Serif italic accent — flame-gradient text, the concept's signature */
-  .display-accent {
-    font-style: italic;
-    font-weight: 300;
-    background: linear-gradient(100deg, var(--color-ember-400), var(--color-ember-500) 60%, var(--color-maroon-600));
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
+  h1 { font-size: clamp(2.1rem, 5.2vw, 3.6rem); }
+  h2 { font-size: clamp(1.65rem, 3.4vw, 2.5rem); }
+  h3 { font-size: 1.3rem; line-height: 1.25; }
+  p { text-wrap: pretty; }
+  a { color: inherit; }
+  :focus-visible {
+    outline: 3px solid var(--color-ember);
+    outline-offset: 3px;
+    border-radius: 4px;
   }
-  /* On cream sections the maroon end keeps contrast; on ink it glows. */
-
-  body {
-    font-weight: 300;
-  }
-
-  ::selection {
-    background: var(--color-ember-600);
-    color: var(--color-coal-950);
-  }
-}
-
-/* =========================================================================
-   Motion system — cinematic, restrained (plan §19.1). Reveal-on-scroll,
-   hero Ken Burns, refined hover. All gated on .js + prefers-reduced-motion.
-   ========================================================================= */
-@layer base {
-  /* Reveal-on-scroll: only active when JS is present, so no-JS still shows all */
-  html.js [data-reveal] {
-    opacity: 0;
-    transform: translateY(28px);
-    transition:
-      opacity 0.9s var(--ease-lux),
-      transform 0.9s var(--ease-lux);
-    will-change: opacity, transform;
-  }
-  html.js [data-reveal].is-visible {
-    opacity: 1;
-    transform: none;
-  }
-  /* Stagger children within a revealed group */
-  html.js [data-reveal-group].is-visible > * {
-    animation: rise 0.9s var(--ease-lux) both;
-  }
-  html.js [data-reveal-group].is-visible > *:nth-child(2) { animation-delay: 0.08s; }
-  html.js [data-reveal-group].is-visible > *:nth-child(3) { animation-delay: 0.16s; }
-  html.js [data-reveal-group].is-visible > *:nth-child(4) { animation-delay: 0.24s; }
-  html.js [data-reveal-group].is-visible > *:nth-child(5) { animation-delay: 0.32s; }
-  html.js [data-reveal-group].is-visible > *:nth-child(6) { animation-delay: 0.4s; }
-
-  @keyframes rise {
-    from { opacity: 0; transform: translateY(26px); }
-    to { opacity: 1; transform: none; }
-  }
-
-  /* Hero Ken Burns — slow, cinematic drift */
-  @keyframes kenburns {
-    from { transform: scale(1.08) translate3d(0, 0, 0); }
-    to { transform: scale(1.18) translate3d(-1.5%, -1.5%, 0); }
-  }
-  .kenburns {
-    animation: kenburns 22s ease-out forwards;
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    html.js [data-reveal],
-    html.js [data-reveal-group].is-visible > * {
-      opacity: 1 !important;
-      transform: none !important;
-      animation: none !important;
-    }
-    .kenburns { animation: none !important; }
-  }
+  img { max-width: 100%; height: auto; }
+  summary { cursor: pointer; }
 }
 
 @layer components {
-  .container-page {
-    width: 100%;
-    max-width: 80rem;
-    margin-inline: auto;
-    padding-inline: 1.5rem;
-  }
+  .wrap { width: 100%; max-width: 74rem; margin-inline: auto; padding-inline: 1.25rem; }
+  @media (min-width: 768px) { .wrap { padding-inline: 2rem; } }
+  .wrap-narrow { max-width: 50rem; }
 
-  /* Eyebrow — refined gold, with a short lead rule for an editorial feel */
+  .section { padding-block: clamp(3.25rem, 7vw, 5.5rem); }
+  .section-tint { background: var(--color-paper-2); }
+  .section-dark { background: var(--color-char); color: #f3ece1; }
+  .section-dark .muted { color: #cdbfae; }
+
   .eyebrow {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.85rem;
-    font-family: var(--font-sans);
-    text-transform: uppercase;
-    letter-spacing: 0.28em;
-    font-size: 0.7rem;
-    font-weight: 600;
-    color: var(--color-gold-400);
+    font-size: 0.8125rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--color-ember);
   }
-  .eyebrow::before {
-    content: "";
-    width: 2rem;
-    height: 1px;
-    background: currentColor;
-    opacity: 0.6;
-  }
-  .eyebrow-center {
-    justify-content: center;
-  }
+  .section-dark .eyebrow { color: #f6a968; }
+  .lede { font-size: clamp(1.1rem, 1.6vw, 1.25rem); color: var(--color-ink-2); max-width: 44rem; }
+  .section-dark .lede { color: #dccfbe; }
+  .muted { color: var(--color-ink-3); }
 
   .btn {
-    position: relative;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.55rem;
-    padding: 0.95rem 1.9rem;
-    font-family: var(--font-sans);
-    font-weight: 600;
-    font-size: 0.82rem;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    border-radius: 2px;
-    transition: transform 0.35s var(--ease-lux), background 0.35s var(--ease-lux),
-      color 0.35s var(--ease-lux), border-color 0.35s var(--ease-lux), box-shadow 0.35s var(--ease-lux);
-    cursor: pointer;
-    overflow: hidden;
+    display: inline-flex; align-items: center; justify-content: center; gap: 0.55rem;
+    min-height: 3rem; padding: 0.7rem 1.35rem; border-radius: 999px;
+    font-weight: 700; font-size: 1rem; line-height: 1.2; text-decoration: none; text-align: center;
+    border: 2px solid transparent; cursor: pointer;
+    transition: background-color 0.15s, border-color 0.15s, color 0.15s;
+  }
+  .btn-primary { background: var(--color-ember); color: #fff; }
+  .btn-primary:hover { background: var(--color-ember-dark); }
+  .btn-secondary { background: transparent; color: var(--color-ink); border-color: var(--color-ink); }
+  .btn-secondary:hover { background: var(--color-ink); color: var(--color-paper); }
+  .section-dark .btn-secondary, .on-dark .btn-secondary { color: #fff; border-color: #fff; }
+  .section-dark .btn-secondary:hover, .on-dark .btn-secondary:hover { background: #fff; color: var(--color-char); }
+  .btn-lg { min-height: 3.4rem; padding-inline: 1.7rem; font-size: 1.0625rem; }
+
+  .link {
+    color: var(--color-ember); font-weight: 650; text-decoration: underline;
+    text-decoration-thickness: 1.5px; text-underline-offset: 3px;
+  }
+  .link:hover { color: var(--color-ember-dark); }
+  .section-dark .link { color: #f9b47a; }
+  .link-arrow::after { content: " →"; white-space: nowrap; }
+
+  .card {
+    background: #fff; border: 1px solid var(--color-line); border-radius: var(--radius-card);
+    box-shadow: var(--shadow-card); overflow: hidden;
+  }
+  .card-body { padding: 1.35rem 1.4rem 1.5rem; }
+  .card-link { text-decoration: none; display: block; transition: transform 0.18s, box-shadow 0.18s; }
+  .card-link:hover { transform: translateY(-3px); box-shadow: 0 2px 4px rgb(35 28 23 / 0.08), 0 22px 40px -20px rgb(35 28 23 / 0.38); }
+
+  .chip {
+    display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.2rem 0.7rem; border-radius: 999px;
+    font-size: 0.8125rem; font-weight: 650; background: var(--color-paper-2); color: var(--color-ink-2);
+    border: 1px solid var(--color-line);
   }
 
-  .btn-primary {
-    background: linear-gradient(135deg, var(--color-ember-500), var(--color-ember-600));
-    color: var(--color-coal-950);
-    box-shadow: 0 12px 30px -12px color-mix(in srgb, var(--color-ember-600) 65%, transparent);
-  }
-  .btn-primary:hover {
-    background: linear-gradient(135deg, var(--color-ember-400), var(--color-ember-500));
-    transform: translateY(-2px);
-    box-shadow: 0 18px 40px -14px color-mix(in srgb, var(--color-ember-500) 70%, transparent);
+  .ticks { list-style: none; padding: 0; display: grid; gap: 0.55rem; }
+  .ticks li { position: relative; padding-left: 1.7rem; }
+  .ticks li::before {
+    content: ""; position: absolute; left: 0; top: 0.45em; width: 1rem; height: 0.55rem;
+    border-left: 2.5px solid var(--color-ember); border-bottom: 2.5px solid var(--color-ember);
+    transform: rotate(-45deg) scale(0.8);
   }
 
-  .btn-ghost {
-    border: 1px solid color-mix(in srgb, var(--color-stone-400) 55%, transparent);
-    color: var(--color-stone-100);
-    backdrop-filter: blur(2px);
-  }
-  .btn-ghost:hover {
-    border-color: var(--color-gold-400);
-    color: var(--color-gold-300);
-    transform: translateY(-2px);
-  }
+  .prose > * + * { margin-top: 1.05em; }
+  .prose h2 { margin-top: 2em; font-size: clamp(1.45rem, 2.6vw, 1.9rem); }
+  .prose h3 { margin-top: 1.6em; }
+  .prose ul { list-style: disc; padding-left: 1.3rem; }
+  .prose ol { list-style: decimal; padding-left: 1.3rem; }
+  .prose li + li { margin-top: 0.35em; }
+  .prose a { color: var(--color-ember); text-decoration: underline; text-underline-offset: 3px; }
 
-  /* Animated link underline — grows from the left on hover/focus */
-  .link-underline {
-    position: relative;
-    display: inline-block;
+  .field label, .field legend { display: block; font-weight: 650; margin-bottom: 0.35rem; }
+  .field .hint { font-size: 0.9rem; color: var(--color-ink-3); font-weight: 400; }
+  .input {
+    width: 100%; min-height: 3rem; padding: 0.65rem 0.85rem; border-radius: 10px;
+    border: 1.5px solid #b9aa95; background: #fff; color: var(--color-ink); font: inherit;
   }
-  .link-underline::after {
-    content: "";
-    position: absolute;
-    left: 0;
-    bottom: -3px;
-    width: 100%;
-    height: 1px;
-    background: currentColor;
-    transform: scaleX(0);
-    transform-origin: left;
-    transition: transform 0.4s var(--ease-lux);
-  }
-  .link-underline:hover::after,
-  .link-underline:focus-visible::after {
-    transform: scaleX(1);
-  }
+  textarea.input { min-height: 6.5rem; }
+  .input:focus-visible { outline-offset: 1px; }
+  .input[aria-invalid="true"] { border-color: #b3261e; }
+  .field-error { color: #9c1c15; font-weight: 600; font-size: 0.95rem; margin-top: 0.3rem; }
 
-  .hairline {
-    border-top: 1px solid color-mix(in srgb, var(--color-stone-400) 22%, transparent);
-  }
+  .table-wrap { overflow-x: auto; border: 1px solid var(--color-line); border-radius: var(--radius-card); background: #fff; }
+  .compare { width: 100%; border-collapse: collapse; min-width: 38rem; font-size: 0.98rem; }
+  .compare th, .compare td { text-align: left; vertical-align: top; padding: 0.85rem 1rem; border-bottom: 1px solid var(--color-line); }
+  .compare thead th { background: var(--color-paper-2); font-family: var(--font-display); font-size: 1.05rem; }
+  .compare tbody th { font-weight: 650; width: 11rem; }
+  .compare tr:last-child > * { border-bottom: 0; }
 
-  /* Luxury card — depth + refined image reveal on hover */
-  .card-luxe {
-    position: relative;
-    overflow: hidden;
-    border-radius: 3px;
-    box-shadow: var(--shadow-card);
-    transition: transform 0.5s var(--ease-lux), box-shadow 0.5s var(--ease-lux);
+  .faq details { border-bottom: 1px solid var(--color-line); }
+  .faq summary {
+    list-style: none; display: flex; justify-content: space-between; gap: 1rem; align-items: baseline;
+    padding: 1.1rem 0; font-weight: 650; font-size: 1.1rem;
   }
-  .card-luxe:hover {
-    transform: translateY(-4px);
-    box-shadow: var(--shadow-luxe);
-  }
-  .card-luxe img {
-    transition: transform 1.2s var(--ease-lux);
-  }
-  .card-luxe:hover img {
-    transform: scale(1.06);
-  }
-
-  /* Light editorial sections — plan §19.2 warns against excessive black
-     backgrounds; cream/stone sections carry most of the page. */
-  .section-light {
-    background: var(--color-stone-100);
-    color: var(--color-coal-700);
-  }
-  .section-light :is(h1, h2, h3, h4) {
-    color: var(--color-coal-900);
-  }
-  .section-light .eyebrow {
-    color: var(--color-ember-600);
-  }
-  .section-cream {
-    background: var(--color-stone-200);
-    color: var(--color-coal-700);
-  }
-  .section-cream :is(h1, h2, h3, h4) {
-    color: var(--color-coal-900);
-  }
-  .section-cream .eyebrow {
-    color: var(--color-ember-600);
-  }
+  .faq summary::-webkit-details-marker { display: none; }
+  .faq summary::after { content: "+"; font-size: 1.5rem; line-height: 1; color: var(--color-ember); flex: none; }
+  .faq details[open] summary::after { content: "–"; }
+  .faq .answer { padding: 0 0 1.25rem; color: var(--color-ink-2); max-width: 46rem; }
 }
 
-/* =========================================================================
-   Accessibility (WCAG 2.1 AA)
-   ========================================================================= */
-@layer base {
-  /* Visible keyboard focus on every interactive element */
-  a:focus-visible,
-  button:focus-visible,
-  input:focus-visible,
-  textarea:focus-visible,
-  select:focus-visible,
-  [tabindex]:focus-visible {
-    outline: 2px solid var(--color-ember-400);
-    outline-offset: 2px;
-    border-radius: 2px;
-  }
+.skip-link {
+  position: absolute; left: 0.75rem; top: -4rem; z-index: 100; background: var(--color-ink); color: #fff;
+  padding: 0.7rem 1rem; border-radius: 8px;
+}
+.skip-link:focus { top: 0.75rem; }
 
-  /* Skip-to-content link — first focusable element */
-  .skip-link {
-    position: absolute;
-    left: 1rem;
-    top: -3rem;
-    z-index: 100;
-    background: var(--color-ember-500);
-    color: var(--color-coal-950);
-    padding: 0.6rem 1rem;
-    font-weight: 600;
-    border-radius: 2px;
-    transition: top 0.18s ease;
-  }
-  .skip-link:focus {
-    top: 1rem;
-  }
+/* Room for the mobile action bar so it never covers the end of the page. */
+@media (max-width: 767px) { body { padding-bottom: 4.75rem; } }
 
-  /* Screen-reader-only text */
-  .sr-only {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    white-space: nowrap;
-    border: 0;
-  }
-
-  /* Honor reduced-motion preferences */
-  @media (prefers-reduced-motion: reduce) {
-    *,
-    *::before,
-    *::after {
-      animation-duration: 0.01ms !important;
-      animation-iteration-count: 1 !important;
-      transition-duration: 0.01ms !important;
-      scroll-behavior: auto !important;
-    }
-  }
-
-  /* Ensure minimum target size for touch (WCAG 2.5.5 / 2.5.8) */
-  @media (pointer: coarse) {
-    a[data-cta],
-    .btn {
-      min-height: 44px;
-    }
-  }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition: none !important; animation: none !important; scroll-behavior: auto !important; }
 }

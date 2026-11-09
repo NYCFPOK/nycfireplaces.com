@@ -1,0 +1,278 @@
+---
+// The one reusable inquiry form. It posts to /project-help/ (server-rendered),
+// works without JavaScript, and is re-rendered there with the visitor's
+// values and visible errors if validation fails.
+import { PROJECT_TYPES, type LeadKind, type LeadValues, type LeadErrors } from '../lib/leads';
+import { site, telHref } from '../data/site';
+
+interface Props {
+  kind?: LeadKind;
+  values?: LeadValues;
+  errors?: LeadErrors;
+  /** Product or solution name to prefill on product inquiries. */
+  product?: string;
+  /** Preselected project type. */
+  projectType?: string;
+  /** Page context recorded with the lead. Defaults to the current path. */
+  page?: string;
+  id?: string;
+}
+const { kind = 'project', values = {}, errors = {}, product = '', projectType = '', page, id = `lead-${kind}` } = Astro.props;
+const v = (k: string, fallback = '') => values[k] ?? fallback;
+const err = (k: string) => errors[k];
+const submitLabel: Record<LeadKind, string> = {
+  project: site.cta.help,
+  product: 'Ask About This Product',
+  trade: 'Discuss a Project',
+  service: 'Request Service',
+  parts: 'Request a Part',
+};
+const turnstileKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY;
+const selectedType = v('project_type', projectType);
+const productName = v('product', product);
+const hasErrors = Object.keys(errors).length > 0;
+const isSales = kind === 'project' || kind === 'product';
+---
+<form id={id} class="lead-form" method="post" action={`/project-help/#${id}`} enctype="multipart/form-data" data-lead-form={kind} novalidate={false}>
+  <input type="hidden" name="kind" value={kind} />
+  <input type="hidden" name="page" value={v('page', page ?? Astro.url.pathname)} />
+  <input type="hidden" name="ts" value="" data-ts />
+  {['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content', 'gclid'].map((k) => <input type="hidden" name={k} value={v(k)} data-attr={k} />)}
+  <div class="hp" aria-hidden="true">
+    <label>Leave this field empty <input type="text" name="fax_number" tabindex="-1" autocomplete="off" /></label>
+  </div>
+
+  {hasErrors && (
+    <div class="error-summary" role="alert" tabindex="-1">
+      <p><strong>{errors.form ?? 'Please check the highlighted fields below.'}</strong></p>
+      {!errors.form && <ul>{Object.entries(errors).filter(([k]) => k !== 'form').map(([, msg]) => <li>{msg}</li>)}</ul>}
+      <p>Prefer to talk? Call <a href={telHref}>{site.phone.display}</a>.</p>
+    </div>
+  )}
+
+  {kind === 'product' && productName && (
+    <p class="asking">You are asking about: <strong>{productName}</strong><input type="hidden" name="product" value={productName} /></p>
+  )}
+
+  <div class="field">
+    <label for={`${id}-name`}>Your name</label>
+    <input class="input" id={`${id}-name`} name="name" type="text" autocomplete="name" required value={v('name')} aria-invalid={err('name') ? 'true' : undefined} aria-describedby={err('name') ? `${id}-name-err` : undefined} />
+    {err('name') && <p class="field-error" id={`${id}-name-err`}>{err('name')}</p>}
+  </div>
+
+  <fieldset class="field contact">
+    <legend>How can we reach you? <span class="hint">Phone or email. One is enough.</span></legend>
+    {err('contact') && <p class="field-error">{err('contact')}</p>}
+    <div class="two">
+      <div>
+        <label class="sub" for={`${id}-phone`}>Phone</label>
+        <input class="input" id={`${id}-phone`} name="phone" type="tel" autocomplete="tel" inputmode="tel" value={v('phone')} aria-invalid={err('phone') || err('contact') ? 'true' : undefined} />
+        {err('phone') && <p class="field-error">{err('phone')}</p>}
+      </div>
+      <div>
+        <label class="sub" for={`${id}-email`}>Email</label>
+        <input class="input" id={`${id}-email`} name="email" type="email" autocomplete="email" value={v('email')} aria-invalid={err('email') || err('contact') ? 'true' : undefined} />
+        {err('email') && <p class="field-error">{err('email')}</p>}
+      </div>
+    </div>
+  </fieldset>
+
+  {isSales && (
+    <div class="two">
+      <div class="field">
+        <label for={`${id}-type`}>What are you planning?</label>
+        <select class="input" id={`${id}-type`} name="project_type" required aria-invalid={err('project_type') ? 'true' : undefined}>
+          <option value="" disabled selected={!selectedType}>Choose the closest option</option>
+          {PROJECT_TYPES.map(([val, label]) => <option value={val} selected={selectedType === val}>{label}</option>)}
+        </select>
+        {err('project_type') && <p class="field-error">{err('project_type')}</p>}
+      </div>
+      <div class="field">
+        <label for={`${id}-zip`}>Project ZIP code <span class="hint">helps us confirm coverage</span></label>
+        <input class="input" id={`${id}-zip`} name="zip" type="text" inputmode="numeric" autocomplete="postal-code" maxlength="10" value={v('zip')} aria-invalid={err('zip') ? 'true' : undefined} />
+        {err('zip') && <p class="field-error">{err('zip')}</p>}
+      </div>
+    </div>
+  )}
+
+  {kind === 'trade' && (
+    <div class="two">
+      <div class="field">
+        <label for={`${id}-company`}>Company <span class="hint">optional</span></label>
+        <input class="input" id={`${id}-company`} name="company" type="text" autocomplete="organization" value={v('company')} />
+      </div>
+      <div class="field">
+        <label for={`${id}-role`}>Your role <span class="hint">optional</span></label>
+        <select class="input" id={`${id}-role`} name="role">
+          <option value="">Choose one</option>
+          {['Architect', 'Interior designer', 'Builder / general contractor', 'Landscape architect or designer', 'Developer', 'Hospitality / commercial', 'Other'].map((o) => <option selected={v('role') === o}>{o}</option>)}
+        </select>
+      </div>
+      <div class="field">
+        <label for={`${id}-loc`}>Project location <span class="hint">town or ZIP</span></label>
+        <input class="input" id={`${id}-loc`} name="project_location" type="text" value={v('project_location')} />
+      </div>
+      <div class="field">
+        <label for={`${id}-stage`}>Project stage <span class="hint">optional</span></label>
+        <select class="input" id={`${id}-stage`} name="project_stage">
+          <option value="">Choose one</option>
+          {['Early planning', 'Design', 'Permitting', 'Construction', 'Product selection'].map((o) => <option selected={v('project_stage') === o}>{o}</option>)}
+        </select>
+      </div>
+    </div>
+  )}
+
+  {kind === 'service' && (
+    <>
+      <fieldset class="field">
+        <legend>Did NYC Fireplaces sell and install this unit?</legend>
+        <div class="radios">
+          {[['yes', 'Yes'], ['no', 'No'], ['not-sure', 'Not sure']].map(([val, label]) => (
+            <label><input type="radio" name="sold_by_us" value={val} required checked={v('sold_by_us') === val} /> {label}</label>
+          ))}
+        </div>
+        {err('sold_by_us') && <p class="field-error">{err('sold_by_us')}</p>}
+      </fieldset>
+      <div class="two">
+        <div class="field">
+          <label for={`${id}-zip`}>ZIP code where the unit is installed</label>
+          <input class="input" id={`${id}-zip`} name="zip" type="text" inputmode="numeric" autocomplete="postal-code" maxlength="10" required value={v('zip')} aria-invalid={err('zip') ? 'true' : undefined} />
+          {err('zip') && <p class="field-error">{err('zip')}</p>}
+        </div>
+        <div class="field">
+          <label for={`${id}-order`}>Sales order number <span class="hint">if you have it</span></label>
+          <input class="input" id={`${id}-order`} name="order_number" type="text" value={v('order_number')} />
+        </div>
+      </div>
+    </>
+  )}
+
+  {(kind === 'service' || kind === 'parts') && (
+    <div class="two">
+      <div class="field">
+        <label for={`${id}-brand`}>Brand <span class="hint">if known</span></label>
+        <input class="input" id={`${id}-brand`} name="brand" type="text" value={v('brand')} />
+      </div>
+      <div class="field">
+        <label for={`${id}-model`}>Model <span class="hint">if known</span></label>
+        <input class="input" id={`${id}-model`} name="model" type="text" value={v('model')} />
+      </div>
+    </div>
+  )}
+
+  <div class="field">
+    <label for={`${id}-msg`}>
+      {kind === 'service' ? 'What is happening with the unit?' : kind === 'parts' ? 'Which part do you need?' : 'Anything you want us to know?'}
+      {(isSales || kind === 'trade') && <span class="hint"> optional</span>}
+    </label>
+    <textarea class="input" id={`${id}-msg`} name="message" rows="4" required={kind === 'service' || kind === 'parts'} aria-invalid={err('message') ? 'true' : undefined}
+      placeholder={isSales ? 'A sentence or two is plenty. You do not need a model number or a finished plan.' : undefined}>{v('message')}</textarea>
+    {err('message') && <p class="field-error">{err('message')}</p>}
+  </div>
+
+  <details class="more" open={Boolean(err('files') || err('files_note') || v('timeline') || v('budget') || v('preferred_contact'))}>
+    <summary>{kind === 'trade' ? 'Send plans or drawings (optional)' : kind === 'service' || kind === 'parts' ? 'Add photos (optional)' : 'Add photos, plans or more detail (optional)'}</summary>
+    <div class="more-body">
+      <div class="field">
+        <label for={`${id}-files`}>Photos, plans or drawings <span class="hint">up to 5 files, JPG, PNG, HEIC or PDF, 10 MB each</span></label>
+        <input class="input file" id={`${id}-files`} name="files" type="file" multiple accept="image/jpeg,image/png,image/webp,image/heic,application/pdf,.heic" />
+        {err('files') && <p class="field-error">{err('files')}</p>}
+        {err('files_note') && <p class="field-error">{err('files_note')}</p>}
+      </div>
+      {isSales && (
+        <div class="two">
+          <div class="field">
+            <label for={`${id}-timeline`}>Timeline</label>
+            <select class="input" id={`${id}-timeline`} name="timeline">
+              <option value="">No preference</option>
+              {['Just exploring', 'Within the next 3 months', '3 to 6 months', 'More than 6 months', 'Tied to a renovation or build schedule'].map((o) => <option selected={v('timeline') === o}>{o}</option>)}
+            </select>
+          </div>
+          <div class="field">
+            <label for={`${id}-budget`}>Budget range</label>
+            <select class="input" id={`${id}-budget`} name="budget">
+              <option value="">Prefer not to say</option>
+              {['Not sure yet', 'Under $5,000', '$5,000 to $15,000', '$15,000 to $40,000', 'Over $40,000'].map((o) => <option selected={v('budget') === o}>{o}</option>)}
+            </select>
+          </div>
+        </div>
+      )}
+      <div class="field">
+        <label for={`${id}-pref`}>Preferred way to hear back</label>
+        <select class="input" id={`${id}-pref`} name="preferred_contact">
+          <option value="">No preference</option>
+          {['Phone call', 'Text message', 'Email'].map((o) => <option selected={v('preferred_contact') === o}>{o}</option>)}
+        </select>
+      </div>
+    </div>
+  </details>
+
+  {isSales && (
+    <label class="optin">
+      <input type="checkbox" name="newsletter" value="yes" checked={v('newsletter') === 'yes'} />
+      <span>Also send me occasional emails with project ideas and showroom news. Optional, and not needed to get help.</span>
+    </label>
+  )}
+
+  {turnstileKey && <div class="cf-turnstile" data-sitekey={turnstileKey}></div>}
+
+  <div class="submit-row">
+    <button type="submit" class="btn btn-primary btn-lg">{submitLabel[kind]}</button>
+    <p class="or">or call <a class="link" href={telHref} data-track="phone_click" data-placement={`form_${kind}`}>{site.phone.display}</a></p>
+  </div>
+  <p class="fine muted">
+    {isSales || kind === 'trade'
+      ? 'Sending this does not book an appointment. A member of our team will reply to talk through next steps.'
+      : 'Sending this does not schedule a visit. Our team will review the request and contact you.'}
+    {' '}See our <a href="/privacy/">privacy policy</a>.
+  </p>
+</form>
+{turnstileKey && <script is:inline src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>}
+
+<script>
+  // Timing signal for spam filtering and campaign attribution. No personal data.
+  const KEYS = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content', 'gclid'];
+  try {
+    const qs = new URLSearchParams(location.search);
+    for (const k of KEYS) { const val = qs.get(k); if (val) sessionStorage.setItem(`attr_${k}`, val.slice(0, 150)); }
+  } catch {}
+  document.querySelectorAll<HTMLFormElement>('form[data-lead-form]').forEach((form) => {
+    const ts = form.querySelector<HTMLInputElement>('[data-ts]');
+    if (ts) ts.value = String(Date.now());
+    form.querySelectorAll<HTMLInputElement>('[data-attr]').forEach((input) => {
+      try { if (!input.value) input.value = sessionStorage.getItem(`attr_${input.dataset.attr}`) || ''; } catch {}
+    });
+    form.addEventListener('submit', () => {
+      const btn = form.querySelector<HTMLButtonElement>('button[type=submit]');
+      if (btn) { btn.setAttribute('aria-disabled', 'true'); btn.textContent = 'Sending…'; }
+    });
+  });
+  document.querySelector<HTMLElement>('.error-summary')?.focus();
+</script>
+
+<style>
+  .lead-form { display: grid; gap: 1.15rem; }
+  .hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+  .two { display: grid; gap: 1.15rem; }
+  @media (min-width: 560px) { .two { grid-template-columns: 1fr 1fr; } }
+  fieldset { border: 0; padding: 0; margin: 0; min-width: 0; }
+  .sub { font-weight: 500 !important; font-size: 0.95rem; color: var(--color-ink-2); }
+  .radios { display: flex; flex-wrap: wrap; gap: 0.5rem 1.5rem; }
+  .radios label { font-weight: 500; display: inline-flex; align-items: center; gap: 0.45rem; min-height: 2.75rem; margin: 0; }
+  input[type='radio'], input[type='checkbox'] { width: 1.2rem; height: 1.2rem; accent-color: var(--color-ember); flex: none; }
+  .asking { background: var(--color-ember-soft); border-radius: 10px; padding: 0.7rem 0.95rem; }
+  .more { border: 1px solid var(--color-line); border-radius: 10px; background: var(--color-paper); }
+  .more summary { padding: 0.85rem 1rem; font-weight: 650; }
+  .more-body { padding: 0.25rem 1rem 1.1rem; display: grid; gap: 1.1rem; }
+  .file { padding: 0.55rem; }
+  .optin { display: flex; gap: 0.65rem; align-items: flex-start; font-size: 0.95rem; color: var(--color-ink-2); }
+  .optin input { margin-top: 0.2rem; }
+  .submit-row { display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem 1.25rem; margin-top: 0.25rem; }
+  .or { font-weight: 600; }
+  .fine { font-size: 0.9rem; }
+  .fine a { text-decoration: underline; }
+  .error-summary { border: 2px solid #b3261e; background: #fdf0ee; border-radius: 10px; padding: 0.9rem 1.1rem; display: grid; gap: 0.4rem; }
+  .error-summary ul { list-style: disc; padding-left: 1.2rem; }
+  .error-summary a { font-weight: 700; text-decoration: underline; }
+  button[aria-disabled='true'] { opacity: 0.7; pointer-events: none; }
+</style>

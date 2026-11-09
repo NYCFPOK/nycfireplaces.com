@@ -1,0 +1,161 @@
+---
+// Shared layout for the project-led solution pages (new fireplace, existing
+// fireplace, outdoor kitchen, outdoor fire & heating).
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import PageHero from './PageHero.astro';
+import OptionCard from './OptionCard.astro';
+import ProjectCard from './ProjectCard.astro';
+import FaqList from './FaqList.astro';
+import ShowroomInfo from './ShowroomInfo.astro';
+import LeadForm from './LeadForm.astro';
+import { site, telHref } from '../data/site';
+
+interface Props {
+  path: 'new-fireplace' | 'existing-fireplace' | 'outdoor-kitchen' | 'outdoor-living';
+  metaTitle: string;
+  metaDescription: string;
+  eyebrow: string;
+  title: string;
+  lede: string;
+  heroProject: string;
+  heroAlt: string;
+  whoFor: string[];
+  optionsHeading: string;
+  optionsIntro: string;
+  compare?: { caption: string; columns: string[]; rows: [string, ...string[]][] };
+  questions: string[];
+  projectCategories: string[];
+  faqGroup: string;
+  projectType: string;
+  crumbs: [string, string][];
+}
+const p = Astro.props;
+const options = (await getCollection('options')).filter((o) => o.data.path === p.path).sort((a, b) => a.data.order - b.data.order).slice(0, 3);
+const types = (await getCollection('types')).filter((t) => t.data.path === p.path).sort((a, b) => a.data.order - b.data.order);
+const allProjects = await getCollection('projects', (x) => !x.data.draft);
+const hero = allProjects.find((x) => x.id === p.heroProject)!;
+const projects = allProjects
+  .filter((x) => p.projectCategories.includes(x.data.category))
+  .sort((a, b) => Number(b.data.featured) - Number(a.data.featured) || (b.data.year ?? 0) - (a.data.year ?? 0) || (b.data.legacyId ?? 0) - (a.data.legacyId ?? 0))
+  .slice(0, 3);
+---
+<Base title={p.metaTitle} description={p.metaDescription}>
+  <PageHero eyebrow={p.eyebrow} title={p.title} lede={p.lede} image={hero.data.images[0]} imageAlt={p.heroAlt} placement={`${p.path}_hero`} helpQuery={`?type=${p.projectType}`} crumbs={p.crumbs}>
+    <p class="reassure">You don’t need a model number or measurements to call.</p>
+  </PageHero>
+
+  <section class="section">
+    <div class="wrap two-col">
+      <div>
+        <h2>Is this the right starting point?</h2>
+        <p class="lede">This page is for you if:</p>
+      </div>
+      <ul class="ticks who">{p.whoFor.map((w) => <li>{w}</li>)}</ul>
+    </div>
+  </section>
+
+  {options.length > 0 && (
+    <section class="section section-tint">
+      <div class="wrap">
+        <p class="eyebrow">Start with these options</p>
+        <h2>{p.optionsHeading}</h2>
+        <p class="lede">{p.optionsIntro}</p>
+        <div class="grid3">{options.map((o) => <OptionCard option={o} />)}</div>
+      </div>
+    </section>
+  )}
+
+  {p.compare && (
+    <section class="section">
+      <div class="wrap">
+        <h2>The differences, in plain English</h2>
+        <div class="table-wrap gap" tabindex="0" role="region" aria-label={p.compare.caption}>
+          <table class="compare">
+            <caption class="sr-only">{p.compare.caption}</caption>
+            <thead><tr><td></td>{p.compare.columns.map((c) => <th scope="col">{c}</th>)}</tr></thead>
+            <tbody>{p.compare.rows.map(([head, ...cells]) => <tr><th scope="row">{head}</th>{cells.map((c) => <td>{c}</td>)}</tr>)}</tbody>
+          </table>
+        </div>
+        <p class="muted small">This is general guidance to help you compare. What suits your home is confirmed once we know the details, and every installation follows the manufacturer’s instructions.</p>
+      </div>
+    </section>
+  )}
+
+  <section class="section section-tint">
+    <div class="wrap">
+      <p class="eyebrow">Our work</p>
+      <h2>Recent projects like this</h2>
+      <div class="grid3">{projects.map((x) => <ProjectCard project={x} />)}</div>
+      <p class="after"><a class="link link-arrow" href="/projects/">See more completed projects</a></p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap two-col">
+      <div>
+        <h2>Questions we’ll work through together</h2>
+        <p class="lede">You do not need the answers before you call. These are simply the things that shape the recommendation.</p>
+        <ul class="ticks who gap">{p.questions.map((q) => <li>{q}</li>)}</ul>
+      </div>
+      <div class="card contact-card">
+        <ShowroomInfo placement={`${p.path}_contact`} />
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-tint">
+    <div class="wrap wrap-narrow">
+      <h2>Common questions</h2>
+      <div class="gap"><FaqList group={p.faqGroup} limit={7} /></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap final">
+      <div>
+        <h2>Tell us about your project</h2>
+        <p class="lede">A few details are enough. We will get back to you to talk it through.</p>
+        <p class="bigphone"><a href={telHref} data-track="phone_click" data-placement={`${p.path}_final`}>{site.phone.display}</a></p>
+      </div>
+      <div class="card form-card"><LeadForm kind="project" projectType={p.projectType} id="lead-page" /></div>
+    </div>
+  </section>
+
+  {types.length > 0 && (
+    <section class="section section-tint more">
+      <div class="wrap">
+        <h2 class="h3">Explore more</h2>
+        <p class="muted">For when you already know the type you are looking for.</p>
+        <ul class="type-links">
+          {types.map((t) => <li><a href={`/${t.id}/`}>{t.data.navLabel}</a></li>)}
+          <li><a href="/products/">All product types</a></li>
+          <li><a href="/brands/">Brands we work with</a></li>
+        </ul>
+      </div>
+    </section>
+  )}
+</Base>
+<style>
+  .reassure { margin-top: 1.1rem; font-weight: 650; }
+  .two-col { display: grid; gap: 2rem; }
+  @media (min-width: 900px) { .two-col { grid-template-columns: 1fr 1fr; gap: 4rem; align-items: start; } }
+  .who { font-size: 1.1rem; }
+  .grid3 { display: grid; gap: 1.5rem; margin-top: 2rem; }
+  @media (min-width: 640px) { .grid3 { grid-template-columns: repeat(2, 1fr); } }
+  @media (min-width: 900px) { .grid3 { grid-template-columns: repeat(3, 1fr); } }
+  .lede { margin-top: 0.8rem; }
+  .gap { margin-top: 1.75rem; }
+  .small { font-size: 0.93rem; margin-top: 1rem; max-width: 46rem; }
+  .after { margin-top: 2rem; }
+  .contact-card { padding: 1.6rem; }
+  .final { display: grid; gap: 2.5rem; align-items: start; }
+  @media (min-width: 900px) { .final { grid-template-columns: 0.85fr 1.15fr; gap: 4rem; } }
+  .bigphone a { font-family: var(--font-display); font-size: clamp(2rem, 4vw, 2.75rem); color: var(--color-ember); text-decoration: none; display: inline-block; margin-top: 1rem; }
+  .form-card { padding: clamp(1.25rem, 3vw, 2rem); }
+  .more { padding-block: 2.5rem; border-top: 1px solid var(--color-line); }
+  .h3 { font-size: 1.4rem; }
+  .type-links { list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 1rem; }
+  .type-links a { display: inline-flex; align-items: center; min-height: 2.75rem; padding: 0.4rem 1rem; border: 1px solid var(--color-line); border-radius: 999px; background: #fff; text-decoration: none; font-weight: 600; }
+  .type-links a:hover { border-color: var(--color-ember); color: var(--color-ember); }
+</style>

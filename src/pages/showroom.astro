@@ -1,0 +1,119 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import ShowroomInfo from '../components/ShowroomInfo.astro';
+import FaqList from '../components/FaqList.astro';
+import LeadForm from '../components/LeadForm.astro';
+import { site, showroom, addressLine } from '../data/site';
+import a from '../assets/showroom/showroom-158.jpg';
+import b from '../assets/showroom/showroom-141.jpg';
+import c from '../assets/showroom/showroom-145.jpg';
+import d from '../assets/showroom/showroom-136.jpg';
+import e from '../assets/showroom/showroom-165.jpg';
+import f from '../assets/showroom/showroom-32.jpg';
+const gallery = [
+  [b, 'Showroom floor with linear and traditional fireplace displays'],
+  [c, 'Traditional mantel fireplaces beside a see-through linear fireplace'],
+  [d, 'Corner display with a marble surround and a classic white mantel'],
+  [e, 'Stone-faced fireplace wall with a linear unit and a television above'],
+  [f, 'Close view of a gas insert burning in a stacked-stone surround'],
+] as const;
+const extras = [['Appointments', showroom.appointments], ['Parking', showroom.parking], ['Accessibility', showroom.accessibility]].filter(([, v]) => v);
+---
+<Base title="Visit Our Maspeth Showroom — Address, Hours & Directions" description={`See working fireplaces and outdoor kitchen equipment in person at ${addressLine}. Open Monday to Friday 9 to 5 and Saturday 10 to 3. Call 718-326-4328.`}>
+  <section class="top">
+    <div class="wrap top-grid">
+      <div>
+        <p class="eyebrow">{showroom.area}</p>
+        <h1>See the options in person. Leave with a clearer plan.</h1>
+        <p class="lede">A flame looks different in person than in a photo. In the showroom you can stand in front of working fireplaces, compare sizes and styles side by side, and talk your project through with our team.</p>
+        <div class="card info"><ShowroomInfo placement="showroom_top" heading="Address and hours" /></div>
+      </div>
+      <div class="lead-photo"><Image src={a} alt="Inside the Maspeth showroom: fireplace displays around a seating area" widths={[480, 800, 1200]} sizes="(min-width: 900px) 560px, 100vw" loading="eager" fetchpriority="high" /></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap cols">
+      <div>
+        <h2>Why visiting helps</h2>
+        <ul class="ticks big">
+          <li>See real flame, glass and finishes, not just catalog photos.</li>
+          <li>Compare a linear fireplace with a traditional one, or an insert with a log set.</li>
+          <li>Get straight answers about what could work in your space.</li>
+          <li>Leave knowing the next step, even if that step is “measure the opening”.</li>
+        </ul>
+        <p class="note">Not every model we sell is on the floor. If you want to see a particular one, call ahead and we will tell you whether it is on display.</p>
+      </div>
+      <div class="card bring">
+        <h2>Helpful to bring, if you have them</h2>
+        <ul class="ticks">
+          <li>Photos of the space</li>
+          <li>Approximate dimensions</li>
+          <li>Inspiration images</li>
+          <li>Plans or drawings</li>
+        </ul>
+        <p class="muted">None of this is required. You can visit or call with nothing more than an idea.</p>
+        {extras.length > 0 && <dl class="extras">{extras.map(([k, v]) => (<><dt>{k}</dt><dd>{v}</dd></>))}</dl>}
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-tint">
+    <div class="wrap">
+      <h2>Inside the showroom</h2>
+      <div class="gallery">{gallery.map(([img, alt]) => <Image src={img} alt={alt} widths={[360, 600, 900]} sizes="(min-width: 900px) 360px, (min-width: 600px) 50vw, 100vw" width={900} height={600} fit="cover" />)}</div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap cols">
+      <div>
+        <h2>Getting here</h2>
+        <p class="lede">{addressLine}</p>
+        <p class="acts"><a class="btn btn-primary" href={showroom.directionsUrl} target="_blank" rel="noopener" data-track="directions_click" data-placement="showroom_map">Get Directions</a></p>
+        {site.otherLocations.filter((l) => l.status !== 'hidden').map((l) => (
+          <p class="other muted"><strong>{l.name}</strong> ({l.street}, {l.city}): {l.publicNote}</p>
+        ))}
+      </div>
+      <div class="map">
+        <iframe src={showroom.mapEmbedUrl} title="Map showing NYC Fireplaces & Outdoor Kitchens in Maspeth, Queens" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-tint"><div class="wrap wrap-narrow"><h2>Visiting questions</h2><div class="gap"><FaqList group="showroom" /></div></div></section>
+
+  <section class="section">
+    <div class="wrap cols">
+      <div>
+        <h2>Planning a visit?</h2>
+        <p class="lede">Let us know what you would like to see and we will make sure the right person and the right displays are ready.</p>
+      </div>
+      <div class="card form-card"><LeadForm kind="project" projectType="showroom-visit" id="lead-showroom" /></div>
+    </div>
+  </section>
+</Base>
+<style>
+  .top { background: var(--color-paper-2); border-bottom: 1px solid var(--color-line); padding-block: clamp(2rem, 5vw, 4rem); }
+  .top-grid, .cols { display: grid; gap: 2.5rem; align-items: start; }
+  @media (min-width: 900px) { .top-grid, .cols { grid-template-columns: 1fr 1fr; gap: 4rem; } }
+  h1 { margin-block: 0.6rem 1rem; }
+  .info, .bring { padding: 1.6rem; margin-top: 1.75rem; }
+  .bring { margin-top: 0; display: grid; gap: 0.9rem; }
+  .bring h2 { font-size: 1.4rem; }
+  .lead-photo :global(img) { border-radius: var(--radius-card); width: 100%; height: auto; box-shadow: var(--shadow-card); }
+  .big { font-size: 1.1rem; margin-top: 1.25rem; }
+  .note { margin-top: 1.5rem; padding: 1rem 1.2rem; background: var(--color-ember-soft); border-radius: 10px; }
+  .extras { display: grid; gap: 0.2rem; margin-top: 0.5rem; }
+  .extras dt { font-weight: 700; margin-top: 0.6rem; }
+  .gallery { display: grid; gap: 1rem; margin-top: 1.75rem; }
+  @media (min-width: 600px) { .gallery { grid-template-columns: repeat(2, 1fr); } }
+  @media (min-width: 900px) { .gallery { grid-template-columns: repeat(3, 1fr); } }
+  .gallery :global(img) { width: 100%; height: 100%; aspect-ratio: 3 / 2; object-fit: cover; border-radius: 12px; }
+  .acts { margin-top: 1.25rem; }
+  .other { margin-top: 2rem; font-size: 0.97rem; }
+  .map iframe { width: 100%; aspect-ratio: 4 / 3; border: 0; border-radius: var(--radius-card); background: var(--color-paper-3); }
+  .gap { margin-top: 1.75rem; }
+  .form-card { padding: clamp(1.25rem, 3vw, 2rem); }
+</style>

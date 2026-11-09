@@ -1,0 +1,50 @@
+---
+import { Image } from 'astro:assets';
+import { getEntry, getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import PageHero from '../../components/PageHero.astro';
+import FaqList from '../../components/FaqList.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import ProjectCard from '../../components/ProjectCard.astro';
+import showroom from '../../assets/showroom/showroom-141.jpg';
+const imgNew = (await getEntry('projects', 'modern-fireplace'))!.data.images[0];
+const imgOld = (await getEntry('projects', 'wood-to-gas-fireplace-conversion'))!.data.images[0];
+const projects = (await getCollection('projects', (p) => p.data.category.startsWith('fireplace') && !p.data.draft))
+  .sort((a, b) => Number(b.data.featured) - Number(a.data.featured) || (b.data.year ?? 0) - (a.data.year ?? 0)).slice(0, 3);
+---
+<Base title="Fireplaces — New Fireplaces, Inserts & Upgrades in NYC" description="Adding a fireplace or improving the one you have? Start with one simple question and we will help you narrow the options. Showroom in Maspeth, Queens. Call 718-326-4328.">
+  <PageHero eyebrow="Fireplaces" title="Start with one question: is there a fireplace there now?" lede="Everything else follows from that. Pick the path that sounds like your home. If you are not sure, call and we will work it out together." image={showroom} imageAlt="Working fireplace displays in our Maspeth showroom" placement="fireplaces_hero" />
+  <section class="section">
+    <div class="wrap fork">
+      <a class="card card-link" href="/fireplaces/new/">
+        <div class="media"><Image src={imgNew} alt="" widths={[480, 760]} sizes="(min-width: 800px) 540px, 100vw" width={760} height={480} fit="cover" /></div>
+        <div class="card-body"><p class="eyebrow">No fireplace there today</p><h2>Add a new fireplace</h2><p>For new spaces, renovations and new construction. Gas, electric and other options that do not need a chimney.</p><span class="link link-arrow">See how to start</span></div>
+      </a>
+      <a class="card card-link" href="/fireplaces/upgrade-existing/">
+        <div class="media"><Image src={imgOld} alt="" widths={[480, 760]} sizes="(min-width: 800px) 540px, 100vw" width={760} height={480} fit="cover" /></div>
+        <div class="card-body"><p class="eyebrow">There is a fireplace already</p><h2>Upgrade an existing fireplace</h2><p>For inserts, wood-to-gas conversions, and new doors, mantels and surrounds.</p><span class="link link-arrow">See how to start</span></div>
+      </a>
+    </div>
+  </section>
+  <section class="section section-tint">
+    <div class="wrap">
+      <h2>Fireplace projects we have completed</h2>
+      <div class="grid3">{projects.map((p) => <ProjectCard project={p} />)}</div>
+      <p class="after"><a class="link link-arrow" href="/projects/type/fireplaces/">See more fireplace projects</a></p>
+    </div>
+  </section>
+  <section class="section"><div class="wrap wrap-narrow"><h2>Common questions</h2><div class="gap"><FaqList group="fireplaces" /></div></div></section>
+  <CtaBand placement="fireplaces_band" />
+</Base>
+<style>
+  .fork { display: grid; gap: 1.5rem; }
+  @media (min-width: 800px) { .fork { grid-template-columns: 1fr 1fr; } }
+  .media { aspect-ratio: 16 / 10; overflow: hidden; }
+  .media :global(img) { width: 100%; height: 100%; object-fit: cover; }
+  .card-body { display: grid; gap: 0.6rem; }
+  .card-body h2 { font-size: 1.8rem; }
+  .grid3 { display: grid; gap: 1.5rem; margin-top: 2rem; }
+  @media (min-width: 640px) { .grid3 { grid-template-columns: repeat(2, 1fr); } }
+  @media (min-width: 900px) { .grid3 { grid-template-columns: repeat(3, 1fr); } }
+  .after, .gap { margin-top: 2rem; }
+</style>

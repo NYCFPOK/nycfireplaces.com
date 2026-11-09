@@ -1,19 +1,26 @@
 {
   "name": "nycfireplaces",
   "type": "module",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
   "scripts": {
     "dev": "astro dev",
-    "start": "astro dev",
     "build": "astro build",
-    "preview": "astro preview",
-    "astro": "astro"
+    "start": "node server/index.mjs",
+    "preview": "npm run build && node server/index.mjs",
+    "check": "node scripts/check-site.mjs",
+    "migrate:redirects": "node migration/build-redirects.mjs",
+    "migrate:projects": "node migration/import-projects.mjs"
   },
   "dependencies": {
+    "@astrojs/node": "^9.5.5",
     "@astrojs/sitemap": "^3.7.3",
+    "@fontsource-variable/figtree": "^5.3.0",
+    "@fontsource-variable/fraunces": "^5.3.0",
     "@tailwindcss/vite": "^4.1.0",
     "astro": "^5.7.0",
+    "nodemailer": "^10.4.0",
+    "sirv": "^3.0.2",
     "tailwindcss": "^4.1.0"
   },
   "allowScripts": {

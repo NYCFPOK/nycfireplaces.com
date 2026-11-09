@@ -1,0 +1,26 @@
+title: Built-in electric fireplace
+path: new-fireplace
+order: 3
+homepage: true
+whatItIs: An electric fireplace recessed into a wall or media unit. It needs power, with no gas line and no vent.
+goodFor: Apartments, condos and co-ops, bedrooms, and any room where venting or gas is not practical.
+benefit: The simplest way to add a fireplace to a room that could not otherwise have one.
+facts:
+  - No venting or gas connection is needed.
+  - Flame effects run with or without heat, so it can be used year-round.
+considerations:
+  - The electrical supply at the location.
+  - Recessed into the wall or mounted on it.
+  - It is chosen mainly for the look. Tell us if you are counting on it for heat.
+  - Building rules, if you are in a co-op or condo.
+included:
+  - The fireplace appliance as specified in your quote.
+separate:
+  - Electrical work to the location.
+  - Wall framing and finish.
+exampleBrands: [Modern Flames, Dimplex, Napoleon, SimpliFire]
+showroomDisplay: call-to-confirm
+image: ../../assets/projects/simplifire-inception-36-electric-fireplace/1.webp
+imagePosition: bottom
+imageAlt: Electric fireplace built into a tiled wall beneath a framed screen
+relatedProjects: [simplifire-inception-36-electric-fireplace, modern-flames-landscape-pro-linear, dimplex-ignite-100-electric-fireplace-installed-in-beautiful-nyc-luxur]

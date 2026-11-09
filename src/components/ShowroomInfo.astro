@@ -1,0 +1,35 @@
+---
+// Address, hours, phone and directions. Reused on the homepage, showroom page,
+// product and solution pages so the practical details are always nearby.
+import { site, showroom, telHref, hoursRows, hoursClientData } from '../data/site';
+interface Props { placement: string; heading?: string; compact?: boolean }
+const { placement, heading = 'Maspeth showroom', compact = false } = Astro.props;
+---
+<div class:list={['showroom-info', { compact }]}>
+  <p class="si-heading">{heading}</p>
+  <address>
+    {site.name}<br />
+    {showroom.street}<br />
+    {showroom.city}, {showroom.region} {showroom.postalCode}
+  </address>
+  <dl class="si-hours">
+    {hoursRows.map((r) => (<><dt>{r.label}</dt><dd>{r.value}</dd></>))}
+  </dl>
+  <p class="si-status" data-open-status={hoursClientData} hidden></p>
+  <div class="si-actions">
+    <a class="btn btn-primary" href={telHref} data-track="phone_click" data-placement={placement}>{site.cta.call}</a>
+    <a class="btn btn-secondary" href={showroom.directionsUrl} target="_blank" rel="noopener" data-track="directions_click" data-placement={placement}>Get Directions</a>
+  </div>
+</div>
+<style>
+  .showroom-info { font-size: 1.05rem; }
+  .si-heading { font-family: var(--font-display); font-size: 1.35rem; font-weight: 560; margin-bottom: 0.6rem; }
+  address { font-style: normal; line-height: 1.5; }
+  .si-hours { display: grid; grid-template-columns: auto 1fr; gap: 0.2rem 1.25rem; margin-top: 1rem; }
+  .si-hours dt { font-weight: 650; }
+  .si-status { margin-top: 0.6rem; font-weight: 650; font-size: 0.95rem; }
+  .si-status[data-state='open'] { color: var(--color-ok); }
+  :global(.section-dark) .si-status[data-state='open'] { color: #8fd8a2; }
+  .si-actions { display: flex; flex-wrap: wrap; gap: 0.7rem; margin-top: 1.35rem; }
+  .compact .si-actions .btn { min-height: 2.75rem; }
+</style>

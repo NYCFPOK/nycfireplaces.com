@@ -1,0 +1,31 @@
+---
+import { Image } from 'astro:assets';
+import type { CollectionEntry } from 'astro:content';
+interface Props { option: CollectionEntry<'options'> }
+const { option } = Astro.props;
+const o = option.data;
+---
+<article class="card option">
+  <a href={`/products/${option.id}/`} class="media" tabindex="-1" aria-hidden="true">
+    <Image src={o.image} alt="" widths={[360, 560, 760]} sizes="(min-width: 1024px) 360px, (min-width: 640px) 50vw, 100vw" width={760} height={570} fit="cover" position={o.imagePosition} />
+  </a>
+  <div class="card-body">
+    <h3><a href={`/products/${option.id}/`}>{o.title}</a></h3>
+    <p class="what">{o.whatItIs}</p>
+    <p><strong>A good starting point for:</strong> {o.goodFor}</p>
+    <ul class="ticks facts">{o.facts.slice(0, 2).map((f) => <li>{f}</li>)}</ul>
+    <p class="display muted">{o.showroomDisplay === 'confirmed' ? 'On display in our Maspeth showroom.' : 'Call to confirm which models are on display.'}</p>
+    <a class="link link-arrow" href={`/products/${option.id}/`}>Explore this option</a>
+  </div>
+</article>
+<style>
+  .option { display: flex; flex-direction: column; }
+  .media { display: block; aspect-ratio: 4 / 3; overflow: hidden; background: var(--color-paper-3); }
+  .media :global(img) { width: 100%; height: 100%; object-fit: cover; }
+  .card-body { display: grid; gap: 0.7rem; align-content: start; flex: 1; }
+  h3 a { text-decoration: none; }
+  h3 a:hover { color: var(--color-ember); }
+  .what { color: var(--color-ink-2); }
+  .facts { font-size: 0.97rem; color: var(--color-ink-2); }
+  .display { font-size: 0.9rem; }
+</style>

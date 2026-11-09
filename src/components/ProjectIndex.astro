@@ -1,0 +1,40 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import ProjectCard from './ProjectCard.astro';
+import CtaBand from './CtaBand.astro';
+interface Props { filter: 'all' | 'fireplaces' | 'outdoor-kitchens' | 'outdoor-living' }
+const { filter } = Astro.props;
+const FILTERS = {
+  all: { label: 'All projects', cats: null, href: '/projects/', title: 'Our Projects — Completed Fireplaces & Outdoor Kitchens' },
+  fireplaces: { label: 'Fireplaces', cats: ['fireplace-new', 'fireplace-upgrade'], href: '/projects/type/fireplaces/', title: 'Fireplace Projects — Completed Installations' },
+  'outdoor-kitchens': { label: 'Outdoor kitchens', cats: ['outdoor-kitchen'], href: '/projects/type/outdoor-kitchens/', title: 'Outdoor Kitchen Projects — Completed Work' },
+  'outdoor-living': { label: 'Fire pits & heating', cats: ['outdoor-living'], href: '/projects/type/outdoor-living/', title: 'Fire Pit & Outdoor Heating Projects' },
+};
+const f = FILTERS[filter];
+const projects = (await getCollection('projects', (p) => !p.data.draft && (!f.cats || f.cats.includes(p.data.category))))
+  .sort((a, b) => Number(b.data.featured) - Number(a.data.featured) || a.data.order - b.data.order || (b.data.year ?? 0) - (a.data.year ?? 0) || (b.data.legacyId ?? 0) - (a.data.legacyId ?? 0));
+---
+<Base title={f.title} description="Photos from fireplaces, outdoor kitchens and fire features our team has supplied, designed and installed across New York City and Long Island.">
+  <section class="section">
+    <div class="wrap">
+      <p class="eyebrow">Our projects</p>
+      <h1>Real work, from our own job sites</h1>
+      <p class="lede">Every photo here is from a project our team supplied, designed or installed. Browse for ideas, then tell us which ones are close to what you have in mind.</p>
+      <nav class="filters" aria-label="Filter projects">
+        {Object.entries(FILTERS).map(([key, v]) => <a href={v.href} aria-current={key === filter ? 'page' : undefined}>{v.label}</a>)}
+      </nav>
+      <div class="grid3">{projects.map((p, i) => <ProjectCard project={p} eager={i < 3} />)}</div>
+    </div>
+  </section>
+  <CtaBand placement="projects_band" heading="See something close to what you want?" text="Tell us which project caught your eye. You do not need to know what the products are called." />
+</Base>
+<style>
+  h1 { margin-block: 0.6rem 1rem; }
+  .filters { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 2rem; }
+  .filters a { display: inline-flex; align-items: center; min-height: 2.75rem; padding: 0.4rem 1.1rem; border: 1.5px solid var(--color-line); border-radius: 999px; text-decoration: none; font-weight: 650; background: #fff; }
+  .filters a[aria-current='page'] { background: var(--color-ink); color: #fff; border-color: var(--color-ink); }
+  .grid3 { display: grid; gap: 1.5rem; margin-top: 2rem; }
+  @media (min-width: 640px) { .grid3 { grid-template-columns: repeat(2, 1fr); } }
+  @media (min-width: 900px) { .grid3 { grid-template-columns: repeat(3, 1fr); } }
+</style>

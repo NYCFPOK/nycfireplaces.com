@@ -1,0 +1,19 @@
+title: Add a pizza oven
+path: outdoor-kitchen
+order: 3
+homepage: false
+whatItIs: A gas, wood or hybrid pizza oven on a countertop, on its own cart, or built into the kitchen.
+goodFor: A new kitchen plan, or an existing patio that needs one more reason to cook outside.
+benefit: Restaurant-style heat for pizza, bread and roasting, in your own yard.
+facts:
+  - Ovens are available for gas, wood, or both.
+  - A countertop oven needs a base that can carry its weight and depth.
+considerations:
+  - Gas, wood or hybrid.
+  - Countertop, cart or built-in.
+  - Clearance above and around the oven.
+exampleBrands: [Alfa Forni, Gozney, Fontana Forni]
+showroomDisplay: call-to-confirm
+image: ../../assets/projects/hybrid-fuel-pizzaoven-moderno-line/1.webp
+imageAlt: Yellow pizza oven on a stone outdoor kitchen counter
+relatedProjects: [hybrid-fuel-pizzaoven-moderno-line, moderno-line-hybrid-fuel-pizzaoven, classico-2-pizze-oven-and-outdoor-refrigeration]
