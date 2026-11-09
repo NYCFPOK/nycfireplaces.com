@@ -1,0 +1,31 @@
+---
+// Two-field inline version (name and phone). Posts to the same endpoint with
+// the same field names, and works without JavaScript.
+import { site, telHref } from '../data/site';
+interface Props { product?: string; projectType?: string; label?: string; id?: string }
+const { product = '', projectType = 'not-sure', label = 'Request a call back', id = 'lead-quick' } = Astro.props;
+---
+<form id={id} class="quick" method="post" action="/project-help/" data-lead-form="quick">
+  <input type="hidden" name="kind" value={product ? 'product' : 'project'} />
+  <input type="hidden" name="project_type" value={projectType} />
+  {product && <input type="hidden" name="product" value={product} />}
+  <input type="hidden" name="page" value={Astro.url.pathname} />
+  <input type="hidden" name="ts" value="" data-ts />
+  <div class="hp" aria-hidden="true"><label>Leave this field empty <input type="text" name="fax_number" tabindex="-1" autocomplete="off" /></label></div>
+  <div class="q-field"><label for={`${id}-n`}>Name</label><input class="input" id={`${id}-n`} name="name" autocomplete="name" required /></div>
+  <div class="q-field"><label for={`${id}-p`}>Phone</label><input class="input" id={`${id}-p`} name="phone" type="tel" inputmode="tel" autocomplete="tel" required minlength="10" /></div>
+  <button class="btn btn-primary" type="submit">{label}</button>
+  <p class="q-fine">We will call you back during showroom hours. Or call <a href={telHref} data-track="phone_click" data-placement="quick_form">{site.phone.display}</a> now.</p>
+</form>
+<script>
+  document.querySelectorAll<HTMLInputElement>('form.quick [data-ts]').forEach((i) => (i.value = String(Date.now())));
+</script>
+<style>
+  .quick { display: grid; gap: 0.8rem; align-items: end; }
+  @media (min-width: 720px) { .quick { grid-template-columns: 1fr 1fr auto; } .q-fine { grid-column: 1 / -1; } }
+  .hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+  .q-field { display: grid; gap: 0.3rem; }
+  .q-field label { font-weight: 650; font-size: 0.95rem; }
+  .q-fine { font-size: 0.9rem; opacity: 0.85; }
+  .q-fine a { font-weight: 700; text-decoration: underline; }
+</style>

@@ -22,14 +22,16 @@ interface Props {
   eager?: boolean;
   ratio?: string;
   position?: string;
+  /** Fill the parent box (parent sets the size) instead of using the photo's own shape. */
+  fill?: boolean;
   video?: { webm?: string; mp4: string };
   id?: string;
   class?: string;
 }
-const { src, alt, effects = [], motion = 'none', widths = [480, 800, 1124, 1600], sizes = '100vw', eager = false, ratio, position = 'center', video, id, class: cls } = Astro.props;
+const { src, alt, effects = [], motion = 'none', widths = [480, 800, 1124, 1600], sizes = '100vw', eager = false, ratio, position = 'center', fill = false, video, id, class: cls } = Astro.props;
 const fire = effects.length > 0 && !video;
 ---
-<div class:list={['living', cls, { 'has-fire': fire, 'no-crop': !ratio }]} data-living={fire || video ? '' : undefined} data-effects={fire ? JSON.stringify(effects) : undefined} data-motion={motion} data-living-id={id} style={ratio ? `aspect-ratio:${ratio}` : undefined}>
+<div class:list={['living', cls, { 'has-fire': fire, 'no-crop': !ratio && !fill }]} data-living={fire || video ? '' : undefined} data-effects={fire ? JSON.stringify(effects) : undefined} data-motion={motion} data-living-id={id} style={ratio ? `aspect-ratio:${ratio}` : undefined}>
   <Image src={src} alt={alt} widths={widths.filter((w) => w <= Math.max(src.width, 480))} sizes={sizes} loading={eager ? 'eager' : 'lazy'} fetchpriority={eager ? 'high' : undefined} style={`object-position:${position}`} />
   {video && (
     <video muted loop playsinline preload="none" aria-hidden="true" data-src={video.mp4} style={`object-position:${position}`}>

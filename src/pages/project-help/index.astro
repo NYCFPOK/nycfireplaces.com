@@ -3,6 +3,7 @@
 // re-renders the same form with the visitor's values and visible messages.
 import Base from '../../layouts/Base.astro';
 import LeadForm from '../../components/LeadForm.astro';
+import QuoteFlow from '../../components/QuoteFlow.astro';
 import ShowroomInfo from '../../components/ShowroomInfo.astro';
 import { handleLead, LEAD_KINDS, PROJECT_TYPES, type LeadKind, type LeadValues, type LeadErrors } from '../../lib/leads';
 import { site, telHref } from '../../data/site';
@@ -20,6 +21,10 @@ if (Astro.request.method === 'POST') {
     const result = await handleLead(Astro.request, Astro.clientAddress);
     kind = result.kind;
     formId = `lead-${kind}`;
+    // The multi-step form asks for JSON; plain form posts get the redirect.
+    if ((Astro.request.headers.get('accept') || '').includes('application/json')) {
+      return new Response(JSON.stringify({ ok: result.ok, errors: result.errors }), { status: result.ok ? 200 : 422, headers: { 'content-type': 'application/json', 'cache-control': 'no-store' } });
+    }
     if (result.ok) return Astro.redirect(`/thank-you/?kind=${kind}`, 303);
     values = result.values;
     errors = result.errors;
@@ -57,7 +62,8 @@ const COPY: Record<LeadKind, { h: string; p: string }> = {
         <div class="card info"><ShowroomInfo placement="help_page" compact /></div>
       </div>
       <div class="card form-card">
-        <LeadForm kind={kind} values={values} errors={errors} projectType={projectType} product={product} id={formId} page={values.page || (Astro.request.headers.get('referer') ? new URL(Astro.request.headers.get('referer')!).pathname : '/project-help/')} />
+        {kind === 'project' && Astro.request.method === 'GET' ? <QuoteFlow initial={q.get('plan') ?? ''} projectType={projectType} id="lead-project" /> :
+        <LeadForm kind={kind} values={values} errors={errors} projectType={projectType} product={product} id={formId} page={values.page || (Astro.request.headers.get('referer') ? new URL(Astro.request.headers.get('referer')!).pathname : '/project-help/')} />}
       </div>
     </div>
   </section>

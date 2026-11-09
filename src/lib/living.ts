@@ -10,9 +10,30 @@
 export type EffectType = 'flames' | 'embers' | 'glow' | 'shimmer' | 'smoke';
 export interface Effect { t: EffectType; r: [number, number, number, number]; i?: number }
 
+/** How the photo sits inside its box (object-fit: cover), as fractions of the box. */
+export function fit(el: HTMLElement) {
+  const img = el.querySelector('img');
+  const box = el.getBoundingClientRect();
+  if (!img || !img.naturalWidth || !box.width || !box.height) return { ox: 0, oy: 0, sx: 1, sy: 1 };
+  const ir = img.naturalWidth / img.naturalHeight, br = box.width / box.height;
+  const pos = getComputedStyle(img).objectPosition.split(' ').map((v) => (v.endsWith('%') ? parseFloat(v) / 100 : 0.5));
+  if (ir > br) { const sx = ir / br; return { ox: (1 - sx) * (pos[0] ?? 0.5), oy: 0, sx, sy: 1 }; }
+  const sy = br / ir; return { ox: 0, oy: (1 - sy) * (pos[1] ?? 0.5), sx: 1, sy };
+}
+/** Image-percent rectangle -> box-percent rectangle. */
+export function toBox(el: HTMLElement, r: number[]): [number, number, number, number] {
+  const f = fit(el);
+  return [f.ox * 100 + r[0] * f.sx, f.oy * 100 + r[1] * f.sy, r[2] * f.sx, r[3] * f.sy];
+}
+/** Box-percent rectangle -> image-percent rectangle. */
+export function fromBox(el: HTMLElement, r: number[]): [number, number, number, number] {
+  const f = fit(el);
+  return [(r[0] - f.ox * 100) / f.sx, (r[1] - f.oy * 100) / f.sy, r[2] / f.sx, r[3] / f.sy];
+}
+
 interface Particle { x: number; y: number; vx: number; vy: number; life: number; max: number; size: number }
 interface Instance {
-  el: HTMLElement; canvas: HTMLCanvasElement; ctx: CanvasRenderingContext2D; effects: Effect[];
+  el: HTMLElement; canvas: HTMLCanvasElement; ctx: CanvasRenderingContext2D; effects: Effect[]; raw: Effect[];
   visible: boolean; ignite: number; ignited: boolean; particles: Map<number, Particle[]>; w: number; h: number; shimmer: HTMLElement[];
 }
 
@@ -36,6 +57,7 @@ function size(inst: Instance) {
   inst.h = Math.max(1, Math.round(rect.height * scale));
   inst.canvas.width = inst.w;
   inst.canvas.height = inst.h;
+  inst.effects = inst.raw.map((e) => ({ ...e, r: toBox(inst.el, e.r) }));
 }
 
 function drawFlames(inst: Instance, e: Effect, idx: number, t: number, k: number) {
@@ -164,7 +186,8 @@ function buildShimmer(inst: Instance) {
   inst.effects.filter((e) => e.t === 'shimmer').forEach((e) => {
     const d = document.createElement('div');
     d.className = 'living-shimmer';
-    d.style.cssText = `left:${e.r[0]}%;top:${e.r[1]}%;width:${e.r[2]}%;height:${e.r[3]}%;background-image:url("${img.currentSrc || img.src}");background-size:${10000 / e.r[2]}% ${10000 / e.r[3]}%;background-position:${e.r[0] / Math.max(100 - e.r[2], 1) * 100}% ${e.r[1] / Math.max(100 - e.r[3], 1) * 100}%`;
+    const box = inst.el.getBoundingClientRect(), f = fit(inst.el);
+    d.style.cssText = `left:${e.r[0]}%;top:${e.r[1]}%;width:${e.r[2]}%;height:${e.r[3]}%;background-image:url("${img.currentSrc || img.src}");background-size:${f.sx * box.width}px ${f.sy * box.height}px;background-position:${(f.ox - e.r[0] / 100) * box.width}px ${(f.oy - e.r[1] / 100) * box.height}px`;
     inst.el.appendChild(d);
     inst.shimmer.push(d);
   });
@@ -176,10 +199,10 @@ function buildShimmer(inst: Instance) {
 export function refresh(el: HTMLElement) {
   const inst = instances.find((i) => i.el === el);
   if (!inst) return;
-  inst.effects = JSON.parse(el.dataset.effects || '[]');
+  inst.raw = JSON.parse(el.dataset.effects || '[]');
   inst.particles.clear();
-  buildShimmer(inst);
   size(inst);
+  buildShimmer(inst);
   draw(inst, performance.now() / 1000, 0);
   schedule();
 }
@@ -211,10 +234,12 @@ export function init() {
     el.appendChild(canvas);
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
-    const inst: Instance = { el, canvas, ctx, effects: JSON.parse(el.dataset.effects || '[]'), visible: false, ignite: 0, ignited: false, particles: new Map(), w: 1, h: 1, shimmer: [] };
+    const inst: Instance = { el, canvas, ctx, effects: [], raw: JSON.parse(el.dataset.effects || '[]'), visible: false, ignite: 0, ignited: false, particles: new Map(), w: 1, h: 1, shimmer: [] };
     instances.push(inst);
     size(inst);
     buildShimmer(inst);
+    const img = el.querySelector('img');
+    if (img && !img.complete) img.addEventListener('load', () => { size(inst); buildShimmer(inst); }, { once: true });
     io.observe(el);
     new ResizeObserver(() => { size(inst); if (isStatic && inst.ignited) draw(inst, 12.34, 0); }).observe(el);
   });

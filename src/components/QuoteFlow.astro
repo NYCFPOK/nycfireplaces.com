@@ -1,0 +1,28 @@
+---
+// The multi-step inquiry. The plain form is rendered first and stays as the
+// fallback when JavaScript is unavailable; the island replaces it once loaded.
+import { getImage } from 'astro:assets';
+import { getEntry } from 'astro:content';
+import LeadForm from './LeadForm.astro';
+import MultiStepForm from './islands/MultiStepForm.tsx';
+import { site, telHref, showroom } from '../data/site';
+interface Props { initial?: string; projectType?: string; id?: string }
+const { initial = '', projectType = '', id = 'lead-quote' } = Astro.props;
+const defs = [
+  ['fireplace', 'Fireplace', 'New, or an upgrade', 'stylish-napoleon-56-linear-gas-fireplace'],
+  ['outdoor-kitchen', 'Outdoor kitchen', 'Layout, cabinetry, appliances', 'xo-42-gas-grill-and-gozney-dome-dual-fuel-pizza-oven-with-challenger-o'],
+  ['grill', 'Grill', 'Built-in or freestanding', 'dream-outdoor-kitchen-setup'],
+  ['pizza-oven', 'Pizza oven', 'Gas, wood or both', 'hybrid-fuel-pizzaoven-moderno-line'],
+  ['fire-feature', 'Fire feature', 'Fire pit, heaters, outdoor fireplace', 'outdoor-fireplace-fire-pit-with-warming-trends-gas-burner'],
+  ['service', 'Service', 'For a unit we installed', 'living-room-upgrade-kozy-heat-nordic-34-gas-insert'],
+] as const;
+const cards = await Promise.all(defs.map(async ([cid, label, hint, slug]) => {
+  const entry = (await getEntry('projects', slug))!;
+  const img = await getImage({ src: entry.data.images[0], width: 320, height: 220, fit: 'cover', format: 'webp', quality: 60 });
+  return { id: cid, label, hint, img: img.src };
+}));
+---
+<div class="quote-flow">
+  <div id={`${id}-fallback`}><LeadForm kind="project" projectType={projectType} id={id} /></div>
+  <MultiStepForm client:visible cards={cards} phone={site.phone.display} tel={telHref} directions={showroom.directionsUrl} page={Astro.url.pathname} initial={initial} fallbackId={`${id}-fallback`} />
+</div>

@@ -1,0 +1,37 @@
+---
+const steps = [
+  ['Tell us about your project', 'Call, visit, or send a short inquiry. Share what you know. A photo and a rough idea are plenty.'],
+  ['Narrow the options', 'We look at the space, what you like and the practical requirements, then point you to the few products that suit.'],
+  ['Plan the complete setup', 'We confirm the scope, the compatible components and who is responsible for what, in a written quote.'],
+  ['Installed', 'For eligible projects our in-house team installs to the manufacturer’s specifications, coordinating with your contractor or designer where needed. Supply-only is fine too.'],
+];
+---
+<ol class="timeline" data-timeline>
+  {steps.map(([t, d], i) => (
+    <li data-reveal style={`--d:${i * 90}ms`}>
+      <span class="n" aria-hidden="true">{i + 1}</span>
+      <div><h3>{t}</h3><p>{d}</p></div>
+    </li>
+  ))}
+</ol>
+<p class="muted note">Every project is different, so the exact steps depend on yours.</p>
+<script>
+  // The line fills as the section scrolls through the viewport. Scroll-linked, never looping.
+  const tl = document.querySelector<HTMLElement>('[data-timeline]');
+  if (tl && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    let ticking = false;
+    const update = () => { ticking = false; const r = tl.getBoundingClientRect(); tl.style.setProperty('--fill', String(Math.max(0, Math.min(1, (innerHeight * 0.7 - r.top) / r.height)))); };
+    addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(update); } }, { passive: true });
+    update();
+  } else tl?.style.setProperty('--fill', '1');
+</script>
+<style>
+  .timeline { list-style: none; padding: 0; position: relative; display: grid; gap: 2.25rem; max-width: 44rem; }
+  .timeline::before, .timeline::after { content: ''; position: absolute; left: 1.3rem; top: 0.5rem; bottom: 0.5rem; width: 2px; margin-left: -1px; background: var(--color-line); }
+  .timeline::after { background: var(--color-ember); transform-origin: top; transform: scaleY(var(--fill, 0)); transition: transform 0.3s linear; }
+  li { position: relative; z-index: 1; display: grid; grid-template-columns: 2.6rem 1fr; gap: 1.25rem; align-items: start; }
+  .n { display: grid; place-items: center; width: 2.6rem; height: 2.6rem; border-radius: 50%; background: var(--color-paper); border: 2px solid var(--color-ember); color: var(--color-ember); font-family: var(--font-display); font-size: 1.25rem; }
+  h3 { margin-bottom: 0.35rem; font-size: 1.4rem; }
+  p { color: var(--color-ink-2); }
+  .note { margin-top: 2rem; font-size: 0.95rem; }
+</style>

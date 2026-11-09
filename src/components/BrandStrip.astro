@@ -1,0 +1,34 @@
+---
+// A slow strip of makers we work with, set as text wordmarks until logo
+// usage rights are confirmed. Static (wrapping) under reduced motion.
+import { getCollection } from 'astro:content';
+const pick = ['kozy-heat', 'napoleon', 'montigo', 'davinci-custom-fireplaces', 'fireplace-xtrordinair', 'town-and-country-gas-fireplaces', 'modern-flames', 'real-fyre-gas-logs', 'twin-eagles', 'lynx', 'danver', 'alfa-forni', 'gozney', 'bromic', 'infratech', 'true-residential'];
+const all = await getCollection('brands');
+const brands = pick.map((id) => all.find((b) => b.id === id)).filter(Boolean);
+---
+<div class="strip">
+  <p class="label">Makers we work with</p>
+  <div class="track-wrap">
+    <ul class="track">
+      {brands.map((b) => <li><a href={`/${b!.id}/`}>{b!.data.name}</a></li>)}
+      {brands.map((b) => <li aria-hidden="true" class="dup"><a href={`/${b!.id}/`} tabindex="-1">{b!.data.name}</a></li>)}
+    </ul>
+  </div>
+  <p class="all"><a class="link link-arrow" href="/brands/">All brands</a></p>
+</div>
+<style>
+  .strip { padding-block: 2.25rem; border-block: 1px solid var(--color-line); text-align: center; }
+  .label { font-size: 0.8125rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--color-ink-3); margin-bottom: 1.1rem; }
+  .track-wrap { overflow: hidden; -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); }
+  .track { list-style: none; padding: 0; margin: 0; display: flex; width: max-content; gap: 3rem; animation: strip 80s linear infinite; }
+  .track:hover, .track:focus-within { animation-play-state: paused; }
+  .track a { font-family: var(--font-display); font-size: 1.35rem; color: var(--color-ink-2); text-decoration: none; white-space: nowrap; display: inline-block; padding-block: 0.6rem; }
+  .track a:hover { color: var(--color-ember); }
+  .all { margin-top: 1rem; font-size: 0.95rem; }
+  @keyframes strip { to { transform: translateX(calc(-50% - 1.5rem)); } }
+  @media (prefers-reduced-motion: reduce) {
+    .track { animation: none; width: auto; flex-wrap: wrap; justify-content: center; gap: 0.25rem 2rem; }
+    .dup { display: none; }
+    .track-wrap { -webkit-mask-image: none; mask-image: none; }
+  }
+</style>

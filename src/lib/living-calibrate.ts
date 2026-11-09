@@ -1,7 +1,7 @@
 // Calibration overlay for LivingImage effects. Open any page with ?calibrate=1
 // (never available in production). Drag a box to move it, drag its corner to
 // resize, then copy the values into the `effects` prop of that image.
-import { refresh, type Effect, type EffectType } from './living';
+import { refresh, toBox, fromBox, type Effect, type EffectType } from './living';
 
 const COLORS: Record<EffectType, string> = { flames: '#ff8a2a', embers: '#ffd24a', glow: '#ff5fa2', shimmer: '#4ad2ff', smoke: '#c8c8c8' };
 const TYPES = Object.keys(COLORS) as EffectType[];
@@ -46,23 +46,25 @@ export function start() {
     read(el).forEach((e, idx) => {
       const box = document.createElement('div');
       box.className = 'cal-box' + (el === current && idx === selected ? ' sel' : '');
-      box.style.cssText = `--c:${COLORS[e.t]};left:${e.r[0]}%;top:${e.r[1]}%;width:${e.r[2]}%;height:${e.r[3]}%`;
+      const b = toBox(el, e.r);
+      box.style.cssText = `--c:${COLORS[e.t]};left:${b[0]}%;top:${b[1]}%;width:${b[2]}%;height:${b[3]}%`;
       box.innerHTML = `<span>${e.t} ${e.r.join(', ')}</span><i></i>`;
       box.addEventListener('pointerdown', (down) => {
         down.preventDefault(); down.stopPropagation();
         select(el, idx);
         const resize = (down.target as HTMLElement).tagName === 'I';
         const rect = el.getBoundingClientRect();
-        const start = [...e.r];
+        const start = toBox(el, e.r);
         const move = (ev: PointerEvent) => {
           const dx = (ev.clientX - down.clientX) / rect.width * 100, dy = (ev.clientY - down.clientY) / rect.height * 100;
           const fx = read(el);
-          fx[idx].r = resize
-            ? [start[0], start[1], round(Math.max(1, Math.min(100 - start[0], start[2] + dx))), round(Math.max(1, Math.min(100 - start[1], start[3] + dy)))]
-            : [round(Math.max(0, Math.min(100 - start[2], start[0] + dx))), round(Math.max(0, Math.min(100 - start[3], start[1] + dy))), start[2], start[3]];
+          const nb = resize
+            ? [start[0], start[1], Math.max(1, start[2] + dx), Math.max(1, start[3] + dy)]
+            : [start[0] + dx, start[1] + dy, start[2], start[3]];
+          fx[idx].r = fromBox(el, nb).map(round) as Effect['r'];
           el.dataset.effects = JSON.stringify(fx);
           const r = fx[idx].r;
-          box.style.left = r[0] + '%'; box.style.top = r[1] + '%'; box.style.width = r[2] + '%'; box.style.height = r[3] + '%';
+          box.style.left = nb[0] + '%'; box.style.top = nb[1] + '%'; box.style.width = nb[2] + '%'; box.style.height = nb[3] + '%';
           box.querySelector('span')!.textContent = `${e.t} ${r.join(', ')}`;
           refresh(el); show();
         };

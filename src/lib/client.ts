@@ -100,6 +100,20 @@ if (!calm) {
   }
 }
 
+// Count-up for verified numbers only.
+document.querySelectorAll<HTMLElement>('[data-count]').forEach((el) => {
+  const target = Number(el.dataset.count);
+  if (calm || !target) return;
+  el.textContent = '0';
+  new IntersectionObserver((entries, obs) => {
+    if (!entries[0].isIntersecting) return;
+    obs.disconnect();
+    const t0 = performance.now();
+    const tick = (now: number) => { const p = Math.min(1, (now - t0) / 900); el.textContent = String(Math.round(target * (1 - Math.pow(1 - p, 3)))); if (p < 1) requestAnimationFrame(tick); };
+    requestAnimationFrame(tick);
+  }, { threshold: 0.6 }).observe(el);
+});
+
 // Fire engine and calibration tool load only on pages that use them.
 if (document.querySelector('[data-living]')) {
   import('./living').then((m) => {
