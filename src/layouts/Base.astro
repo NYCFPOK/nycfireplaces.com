@@ -13,8 +13,11 @@ interface Props {
   schema?: object[];
   /** Hide the sticky mobile bar on pages where it would compete with a form. */
   hideMobileBar?: boolean;
+  /** Product or category pages: the dock's quote button carries this product into the form. */
+  quote?: { href: string; label?: string };
+  breadcrumbs?: [string, string][];
 }
-const { title, description, noindex = false, ogImage, schema = [], hideMobileBar = false } = Astro.props;
+const { title, description, noindex = false, ogImage, schema = [], hideMobileBar = false, quote, breadcrumbs = [] } = Astro.props;
 const canonical = new URL(Astro.url.pathname, site.url).href;
 const fullTitle = title.includes('NYC Fireplaces') ? title : `${title} | ${site.name}`;
 const og = ogImage ? new URL(ogImage, site.url).href : new URL('/og-default.jpg', site.url).href;
@@ -60,6 +63,7 @@ const localBusiness = {
     <meta property="og:image" content={og} />
     <meta name="twitter:card" content="summary_large_image" />
     <script type="application/ld+json" set:html={JSON.stringify(localBusiness)} />
+    {breadcrumbs.length > 0 && <script type="application/ld+json" set:html={JSON.stringify({ '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: [['Home', '/'], ...breadcrumbs].map(([name, path], i) => ({ '@type': 'ListItem', position: i + 1, name, item: new URL(path, site.url).href })) })} />}
     {schema.map((s) => <script type="application/ld+json" set:html={JSON.stringify(s)} />)}
     {gtmId && (
       <script is:inline define:vars={{ gtmId }}>
@@ -75,7 +79,7 @@ const localBusiness = {
     <Header />
     <main id="main"><slot /></main>
     <Footer />
-    {!hideMobileBar && <MobileBar />}
+    {!hideMobileBar && <MobileBar quote={quote} />}
     <script>
       import '../lib/client';
     </script>

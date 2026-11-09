@@ -1,0 +1,40 @@
+---
+// Dark, cinematic hero used only where fire lives: product and category pages.
+import LivingImage from './LivingImage.astro';
+import type { Effect } from '../lib/living';
+import { site, telHref } from '../data/site';
+interface Props { image: ImageMetadata; alt: string; effects?: Effect[]; eyebrow?: string; title: string; lede: string; crumbs?: [string, string][]; placement: string; quoteHref: string; quoteLabel?: string; position?: string; id?: string }
+const { image, alt, effects = [], eyebrow, title, lede, crumbs = [], placement, quoteHref, quoteLabel = 'Get a quote on this', position = 'center', id } = Astro.props;
+---
+<section class="lhero cinema">
+  <div class="wrap grid">
+    <div class="copy">
+      {crumbs.length > 0 && <nav aria-label="Breadcrumb" class="crumbs"><a href="/">Home</a>{crumbs.map(([l, h]) => <><span aria-hidden="true"> / </span><a href={h}>{l}</a></>)}</nav>}
+      {eyebrow && <p class="eyebrow" data-reveal>{eyebrow}</p>}
+      <h1 data-reveal style="--d:80ms">{title}</h1>
+      <p class="lede" data-reveal style="--d:160ms">{lede}</p>
+      <div class="acts" data-reveal style="--d:240ms">
+        <a class="btn btn-primary btn-lg" data-magnetic href={telHref} data-track="phone_click" data-placement={placement}>{site.cta.call}</a>
+        <a class="btn btn-secondary btn-lg" href={quoteHref} data-track="help_cta_click" data-placement={placement}>{quoteLabel}</a>
+      </div>
+      <slot />
+    </div>
+    <div class="media">
+      <LivingImage src={image} alt={alt} effects={effects} eager motion={effects.length ? 'none' : 'reveal'} ratio="4 / 5" position={position} id={id} sizes="(min-width: 900px) 46vw, 100vw" widths={[480, 720, 1000, 1400]} />
+      <p class="cap">Photo from one of our completed projects</p>
+    </div>
+  </div>
+</section>
+<style>
+  .lhero { padding-block: clamp(1.5rem, 4vw, 3.5rem); }
+  .grid { display: grid; gap: 1.75rem; align-items: center; }
+  @media (min-width: 900px) { .grid { grid-template-columns: 1.05fr 0.95fr; gap: 3.5rem; } }
+  .crumbs { font-size: 0.9rem; color: #cdbfae; margin-bottom: 1rem; }
+  .crumbs a { text-decoration: underline; text-underline-offset: 2px; }
+  h1 { color: #fff; margin-block: 0.5rem 1rem; max-width: 18ch; }
+  .acts { display: flex; flex-wrap: wrap; gap: 0.8rem; margin-top: 1.6rem; }
+  .media :global(.living) { border-radius: var(--radius-card); max-height: 78svh; width: 100%; }
+  .cap { font-size: 0.8rem; color: #a99a88; margin-top: 0.5rem; }
+  @media (max-width: 899px) { .media { order: -1; } .media :global(.living) { aspect-ratio: 4 / 3 !important; } }
+  @media (max-width: 479px) { .acts .btn { width: 100%; } }
+</style>

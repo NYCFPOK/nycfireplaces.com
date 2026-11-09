@@ -6,9 +6,9 @@ import CtaBand from './CtaBand.astro';
 interface Props { filter: 'all' | 'fireplaces' | 'outdoor-kitchens' | 'outdoor-living' }
 const { filter } = Astro.props;
 const FILTERS = {
-  all: { label: 'All projects', cats: null, href: '/projects/', title: 'Our Projects — Completed Fireplaces & Outdoor Kitchens' },
-  fireplaces: { label: 'Fireplaces', cats: ['fireplace-new', 'fireplace-upgrade'], href: '/projects/type/fireplaces/', title: 'Fireplace Projects — Completed Installations' },
-  'outdoor-kitchens': { label: 'Outdoor kitchens', cats: ['outdoor-kitchen'], href: '/projects/type/outdoor-kitchens/', title: 'Outdoor Kitchen Projects — Completed Work' },
+  all: { label: 'All projects', cats: null, href: '/projects/', title: 'Our Projects: Completed Fireplaces & Outdoor Kitchens' },
+  fireplaces: { label: 'Fireplaces', cats: ['fireplace-new', 'fireplace-upgrade'], href: '/projects/type/fireplaces/', title: 'Fireplace Projects: Completed Installations' },
+  'outdoor-kitchens': { label: 'Outdoor kitchens', cats: ['outdoor-kitchen'], href: '/projects/type/outdoor-kitchens/', title: 'Outdoor Kitchen Projects: Completed Work' },
   'outdoor-living': { label: 'Fire pits & heating', cats: ['outdoor-living'], href: '/projects/type/outdoor-living/', title: 'Fire Pit & Outdoor Heating Projects' },
 };
 const f = FILTERS[filter];

@@ -202,7 +202,7 @@ export async function handleLead(request: Request, clientIp: string): Promise<Le
     await deliver(lead, files.map((f, i) => ({ filename: stored[i].name, content: f.buf, contentType: f.type.mime })));
   } catch (err) {
     const failure = { id, at: new Date().toISOString(), error: String((err as Error)?.message ?? err) };
-    console.error('[leads] DELIVERY FAILED — lead is stored and needs manual follow-up', failure);
+    console.error('[leads] DELIVERY FAILED: lead is stored and needs manual follow-up', failure);
     await appendFile(path.join(dir, 'delivery-failures.jsonl'), JSON.stringify(failure) + '\n').catch(() => {});
     const alert = env('LEAD_ALERT_WEBHOOK_URL');
     if (alert) {
@@ -251,13 +251,13 @@ async function deliver(lead: Record<string, unknown>, attachments: { filename: s
   });
   const kind = lead.kind as LeadKind;
   const lines = Object.entries(LABELS).filter(([k]) => lead[k]).map(([k, label]) => `${label}: ${lead[k]}`);
-  const staging = lead.environment !== 'production' ? '[TEST — not a real customer] ' : '';
+  const staging = lead.environment !== 'production' ? '[TEST: not a real customer] ' : '';
   const totalBytes = attachments.reduce((s, a) => s + a.content.length, 0);
   await transport.sendMail({
     from: env('LEAD_FROM', 'website@nycfireplaces.com'),
     to,
     replyTo: lead.email ? String(lead.email) : undefined,
-    subject: `${staging}${SUBJECT[kind]} — ${lead.name}${lead.product ? ` — ${lead.product}` : ''}`,
+    subject: `${staging}${SUBJECT[kind]}: ${lead.name}${lead.product ? `: ${lead.product}` : ''}`,
     text: `${SUBJECT[kind]} from the website\nReference: ${lead.id}\n\n${lines.join('\n')}\n\nFiles: ${attachments.length ? attachments.map((a) => a.filename).join(', ') : 'none'}${totalBytes > 18 * 1024 * 1024 ? '\n(Files were too large to attach. They are saved on the server under this reference.)' : ''}\n`,
     attachments: totalBytes > 18 * 1024 * 1024 ? [] : attachments,
   });

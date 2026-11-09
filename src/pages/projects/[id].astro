@@ -4,6 +4,7 @@ import { getCollection } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import ProjectCard from '../../components/ProjectCard.astro';
 import CtaBand from '../../components/CtaBand.astro';
+import ProjectGallery from '../../components/ProjectGallery.astro';
 
 export async function getStaticPaths() {
   const all = await getCollection('projects', (p) => !p.data.draft);
@@ -26,7 +27,7 @@ const fallback = `${p.title}, a completed ${catLabel.toLowerCase()} project by N
 const source = p.summary ?? p.description ?? '';
 const description = (source.length >= 60 ? source : fallback).slice(0, 158);
 ---
-<Base title={`${p.title} — Completed Project`} description={description}>
+<Base title={`${p.title}: Completed Project`} description={description} breadcrumbs={[['Our Projects', '/projects/'], [p.title, `/projects/${project.id}/`]]}>
   <article class="section">
     <div class="wrap">
       <nav aria-label="Breadcrumb" class="crumbs"><a href="/">Home</a> / <a href="/projects/">Our Projects</a></nav>
@@ -35,9 +36,7 @@ const description = (source.length >= 60 ? source : fallback).slice(0, 158);
       {p.summary && <p class="lede">{p.summary}</p>}
       <div class="layout">
         <div class="gallery">
-          {p.images.map((img, i) => (
-            <Image src={img} alt={`${p.title}, photo ${i + 1} of ${p.images.length}`} widths={[480, 800, 1200]} sizes="(min-width: 900px) 700px, 100vw" loading={i === 0 ? 'eager' : 'lazy'} />
-          ))}
+          <ProjectGallery layout="stack" images={p.images.map((src, i) => ({ src, alt: `${p.title}, photo ${i + 1} of ${p.images.length}` }))} />
           {p.beforeAfter && <p class="muted small">These photos include the space before the work.</p>}
         </div>
         <aside>
@@ -71,7 +70,6 @@ const description = (source.length >= 60 ? source : fallback).slice(0, 158);
   .layout { display: grid; gap: 2.5rem; margin-top: 2rem; }
   @media (min-width: 900px) { .layout { grid-template-columns: 1.5fr 1fr; gap: 3.5rem; align-items: start; } aside { position: sticky; top: 8rem; } }
   .gallery { display: grid; gap: 1rem; }
-  .gallery :global(img) { width: 100%; height: auto; border-radius: var(--radius-card); background: var(--color-paper-3); }
   .small { font-size: 0.93rem; }
   aside { display: grid; gap: 1.25rem; }
   aside h2 { font-size: 1.3rem; }

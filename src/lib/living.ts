@@ -68,29 +68,34 @@ function drawFlames(inst: Instance, e: Effect, idx: number, t: number, k: number
   // Warm light spilling onto the surfaces around the fire, pulsing with the flame.
   const cx = x + rw / 2, cy = y + rh * 0.6, rad = Math.max(rw, rh * 2) * 1.5;
   const spill = ctx.createRadialGradient(cx, cy, 0, cx, cy, rad);
-  spill.addColorStop(0, `rgba(255,150,60,${0.2 * power * flick})`);
+  spill.addColorStop(0, `rgba(255,150,60,${0.16 * power * flick})`);
   spill.addColorStop(0.4, `rgba(255,110,40,${0.07 * power * flick})`);
   spill.addColorStop(1, 'rgba(255,90,20,0)');
   ctx.fillStyle = spill;
   ctx.fillRect(cx - rad, cy - rad, rad * 2, rad * 2);
-  // Tongues of flame with their own height and sway.
-  const tongues = Math.max(3, Math.min(26, Math.round(rw / Math.max(rh * 0.42, 5))));
+  // Soft tongues of light that flicker over the real flames. Deliberately faint
+  // and narrow: this adds life to fire that is already in the photo, it does not paint a new one.
+  const tongues = Math.max(7, Math.min(34, Math.round(rw / Math.max(rh * 0.16, 4))));
   const base = y + rh;
+  const slot = rw / tongues;
   for (let j = 0; j < tongues; j++) {
     const seed = idx * 31 + j * 7.3;
-    const fx = x + ((j + 0.5) / tongues) * rw + (noise(t * 0.9 + seed) - 0.5) * (rw / tongues) * 0.9;
-    const fh = rh * (0.35 + 0.75 * noise(t * 2.6 + seed * 1.7)) * (0.6 + 0.4 * k);
-    const fw = (rw / tongues) * (0.55 + 0.5 * noise(t * 1.3 + seed * 0.6));
-    const sway = (noise(t * 1.7 + seed * 2.1) - 0.5) * fw * 1.3;
+    const live = noise(t * 1.1 + seed * 3.3);
+    if (live < 0.28) continue; // gaps open and close along the burner
+    const fx = x + (j + 0.5) * slot + (noise(t * 0.9 + seed) - 0.5) * slot;
+    const fh = rh * (0.3 + 0.6 * noise(t * 2.6 + seed * 1.7)) * (0.5 + 0.5 * k);
+    const fw = slot * (0.35 + 0.35 * noise(t * 1.3 + seed * 0.6));
+    const sway = (noise(t * 1.7 + seed * 2.1) - 0.5) * fw * 2;
+    const a = power * (0.1 + 0.12 * live);
     const g = ctx.createLinearGradient(0, base, 0, base - fh);
-    g.addColorStop(0, `rgba(255,214,140,${0.42 * power})`);
-    g.addColorStop(0.45, `rgba(255,140,48,${0.3 * power})`);
-    g.addColorStop(1, 'rgba(255,70,10,0)');
+    g.addColorStop(0, `rgba(255,205,130,${a})`);
+    g.addColorStop(0.5, `rgba(255,150,60,${a * 0.7})`);
+    g.addColorStop(1, 'rgba(255,90,20,0)');
     ctx.fillStyle = g;
     ctx.beginPath();
     ctx.moveTo(fx - fw, base);
-    ctx.quadraticCurveTo(fx - fw * 0.7 + sway * 0.3, base - fh * 0.55, fx + sway, base - fh);
-    ctx.quadraticCurveTo(fx + fw * 0.7 + sway * 0.3, base - fh * 0.55, fx + fw, base);
+    ctx.bezierCurveTo(fx - fw * 1.1, base - fh * 0.45, fx - fw * 0.15 + sway, base - fh * 0.8, fx + sway, base - fh);
+    ctx.bezierCurveTo(fx + fw * 0.15 + sway, base - fh * 0.8, fx + fw * 1.1, base - fh * 0.45, fx + fw, base);
     ctx.closePath();
     ctx.fill();
   }

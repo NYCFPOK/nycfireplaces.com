@@ -6,6 +6,12 @@ import Base from '../layouts/Base.astro';
 import ProjectCard from '../components/ProjectCard.astro';
 import OptionCard from '../components/OptionCard.astro';
 import CtaBand from '../components/CtaBand.astro';
+import LivingHero from '../components/LivingHero.astro';
+import ProjectGallery from '../components/ProjectGallery.astro';
+import BeforeAfter from '../components/BeforeAfter.astro';
+import FaqList from '../components/FaqList.astro';
+import FitHelper from '../components/islands/FitHelper.tsx';
+import { fireForProject } from '../data/fire';
 import { site, telHref } from '../data/site';
 
 export async function getStaticPaths() {
@@ -46,11 +52,24 @@ if (kind === 'type') {
   matched = projects.filter((p) => cat.includes(p.data.category) && words.some((w: string) => norm(p.data.title).includes(stem(w)))).sort((a, b) => (b.data.year ?? 0) - (a.data.year ?? 0)).slice(0, 3);
   options = (await getCollection('options')).filter((o) => o.data.path === d.path).sort((a, b) => a.data.order - b.data.order).slice(0, 3);
 }
+// Category hero: a real project photo for this type. Fire is simulated only on calibrated photos.
+const HERO: Record<string, string> = {
+  'direct-vent-gas-fireplaces': 'stylish-napoleon-56-linear-gas-fireplace', 'electric-fireplaces': 'simplifire-inception-36-electric-fireplace',
+  'gas-inserts': 'living-room-upgrade-kozy-heat-nordic-34-gas-insert', 'gas-logs': 'real-fyre-g31-wood-to-gas-conversion',
+  'fireplace-doors': 'beautiful-set-of-stollindustries-fireplace-doors-with-a-grouted-instal', 'built-in-grills': 'dream-outdoor-kitchen-setup',
+  'outdoor-kitchen-islands': 'xo-42-gas-grill-and-gozney-dome-dual-fuel-pizza-oven-with-challenger-o', 'pizza-ovens': 'hybrid-fuel-pizzaoven-moderno-line',
+  'firepits-fire-features': 'sleek-outdoor-kitchen-with-firepit', 'outdoor-fireplaces': 'outdoor-fireplace-fire-pit-with-warming-trends-gas-burner',
+};
+const heroProject = kind === 'type' ? projects.find((p) => p.id === HERO[entry.id]) ?? matched[0] : undefined;
+const isFireplaceType = kind === 'type' && (d.path === 'new-fireplace' || d.path === 'existing-fireplace');
+const gallery = kind === 'type' ? matched.flatMap((p) => p.data.images.slice(0, 2).map((src) => ({ src, alt: p.data.title }))).slice(0, 6) : [];
+const FAQ = { 'new-fireplace': 'fireplaces', 'existing-fireplace': 'existing', 'outdoor-kitchen': 'outdoor-kitchens', 'outdoor-living': 'outdoor-kitchens' } as const;
+const quoteHref = kind === 'legal' ? '' : `/project-help/?kind=product&product=${encodeURIComponent(kind === 'brand' ? d.name : d.title)}&type=${parent![2]}`;
 const Legal = kind === 'legal' ? (await render(entry)).Content : null;
-const title = kind === 'brand' ? `${d.name} — Help Choosing & Planning in NYC` : kind === 'type' ? `${d.title} — Plain-English Guide & Help Choosing` : d.title;
+const title = kind === 'brand' ? `${d.name}: Help Choosing and Planning in NYC` : kind === 'type' ? `${d.title}: Plain-English Guide and Help Choosing` : d.title;
 const description = kind === 'brand' ? `${d.name}: ${d.summary} Talk to our team about models, availability and installation. Call ${site.phone.display}.` : d.description;
 ---
-<Base title={title} description={description}>
+<Base title={title} description={description} quote={kind === 'legal' ? undefined : { href: quoteHref, label: 'Get a quote on this' }} breadcrumbs={kind === 'legal' ? [] : [[parent![0], parent![1]], [kind === 'brand' ? d.name : d.title, `/${entry.id}/`]]}>
   {kind === 'legal' && (
     <article class="section"><div class="wrap wrap-narrow">
       <h1>{d.title}</h1>
@@ -59,9 +78,14 @@ const description = kind === 'brand' ? `${d.name}: ${d.summary} Talk to our team
     </div></article>
   )}
 
+  {kind === 'type' && heroProject && (
+    <LivingHero image={heroProject.data.images[0]} alt={heroProject.data.title} effects={fireForProject(heroProject.id)} eyebrow={parent![0]} title={d.title} lede={d.intro} crumbs={[[parent![0], parent![1]]]} placement="type_hero" quoteHref={quoteHref} id={`type-${entry.id}`} />
+  )}
+
   {kind !== 'legal' && (
     <section class="section">
       <div class="wrap wrap-narrow">
+        {!(kind === 'type' && heroProject) && (<>
         <nav aria-label="Breadcrumb" class="crumbs"><a href="/">Home</a> / <a href={parent![1]}>{parent![0]}</a>{kind === 'brand' && <> / <a href="/brands/">Brands</a></>}</nav>
         <p class="eyebrow">{kind === 'brand' ? d.group : parent![0]}</p>
         <h1>{kind === 'brand' ? d.name : d.title}</h1>
@@ -71,6 +95,7 @@ const description = kind === 'brand' ? `${d.name}: ${d.summary} Talk to our team
           <a class="btn btn-primary" href={telHref} data-track="phone_click" data-placement={`${kind}_page`}>{site.cta.call}</a>
           <a class="btn btn-secondary" href={kind === 'brand' ? `/project-help/?product=${encodeURIComponent(d.name)}&type=${parent![2]}` : `/project-help/?type=${parent![2]}`} data-track="help_cta_click" data-placement={`${kind}_page`}>{kind === 'brand' ? `Ask us about ${d.name}` : site.cta.help}</a>
         </div>
+        </>)}
 
         {kind === 'type' && (
           <div class="two">
@@ -102,6 +127,34 @@ const description = kind === 'brand' ? `${d.name}: ${d.summary} Talk to our team
     </div></section>
   )}
 
+  {isFireplaceType && (
+    <section class="section">
+      <div class="wrap cols2">
+        <div>
+          <p class="eyebrow">From a real install</p>
+          <h2>{d.path === 'existing-fireplace' ? 'Before and after' : 'From bare wall to finished fireplace'}</h2>
+          <BeforeAfter pair={d.path === 'existing-fireplace' ? 'insert' : 'new'} />
+        </div>
+        <div class="card fit-card">
+          <p class="eyebrow">Will it fit?</p>
+          <h2>Tell us about the opening</h2>
+          <FitHelper client:visible phone={site.phone.display} tel={telHref} />
+        </div>
+      </div>
+    </section>
+  )}
+
+  {gallery.length > 0 && (
+    <section class="section section-tint"><div class="wrap">
+      <h2>Real installs</h2>
+      <ProjectGallery images={gallery} />
+    </div></section>
+  )}
+
+  {kind === 'type' && (
+    <section class="section"><div class="wrap wrap-narrow"><h2>Common questions</h2><FaqList group={FAQ[d.path as keyof typeof FAQ]} limit={6} /><p class="muted small">Planning the budget? Ask us about financing through Acorn Finance.</p></div></section>
+  )}
+
   {matched.length > 0 && (
     <section class="section"><div class="wrap">
       <h2>{kind === 'brand' ? `Our projects featuring ${d.name}` : 'Related projects'}</h2>
@@ -129,4 +182,7 @@ const description = kind === 'brand' ? `${d.name}: ${d.summary} Talk to our team
   @media (min-width: 900px) { .grid3 { grid-template-columns: repeat(3, 1fr); } }
   .after { margin-top: 2rem; }
   .legal { margin-top: 2rem; }
+  .cols2 { display: grid; gap: 2.5rem; align-items: start; }
+  @media (min-width: 900px) { .cols2 { grid-template-columns: 1fr 1fr; gap: 4rem; } }
+  .fit-card { padding: clamp(1.25rem, 3vw, 1.9rem); display: grid; gap: 0.8rem; }
 </style>

@@ -55,6 +55,8 @@ const options = defineCollection({
       imagePosition: z.enum(['center', 'top', 'bottom']).default('center'),
       relatedProjects: z.array(reference('projects')).default([]),
       documents: z.array(z.object({ label: z.string(), url: z.string() })).default([]),
+      // Fire on/off, media or finish choices. Each needs its own real photo of the same unit.
+      variants: z.array(z.object({ group: z.string(), label: z.string(), image: image() })).default([]),
       // Pricing is only shown when the owner approves a figure for it.
       priceNote: z.string().optional(),
     }),

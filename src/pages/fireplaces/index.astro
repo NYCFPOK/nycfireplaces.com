@@ -12,7 +12,7 @@ const imgOld = (await getEntry('projects', 'wood-to-gas-fireplace-conversion'))!
 const projects = (await getCollection('projects', (p) => p.data.category.startsWith('fireplace') && !p.data.draft))
   .sort((a, b) => Number(b.data.featured) - Number(a.data.featured) || (b.data.year ?? 0) - (a.data.year ?? 0)).slice(0, 3);
 ---
-<Base title="Fireplaces — New Fireplaces, Inserts & Upgrades in NYC" description="Adding a fireplace or improving the one you have? Start with one simple question and we will help you narrow the options. Showroom in Maspeth, Queens. Call 718-326-4328.">
+<Base title="Fireplaces: New Fireplaces, Inserts & Upgrades in NYC" description="Adding a fireplace or improving the one you have? Start with one simple question and we will help you narrow the options. Showroom in Maspeth, Queens. Call 718-326-4328.">
   <PageHero eyebrow="Fireplaces" title="Start with one question: is there a fireplace there now?" lede="Everything else follows from that. Pick the path that sounds like your home. If you are not sure, call and we will work it out together." image={showroom} imageAlt="Working fireplace displays in our Maspeth showroom" placement="fireplaces_hero" />
   <section class="section">
     <div class="wrap fork">

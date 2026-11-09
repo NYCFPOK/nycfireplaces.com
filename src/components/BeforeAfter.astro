@@ -1,0 +1,24 @@
+---
+// Before/after from a real install. Only two projects have usable pairs today.
+import { getImage } from 'astro:assets';
+import { getEntry } from 'astro:content';
+import ImageCompare from './islands/ImageCompare.tsx';
+interface Props { pair?: 'insert' | 'new' }
+const { pair = 'insert' } = Astro.props;
+const PAIRS = {
+  insert: { slug: 'living-room-upgrade-kozy-heat-nordic-34-gas-insert', before: 1, after: 0, beforeLabel: 'Before', afterLabel: 'After', caption: 'An existing fireplace before and after a Kozy Heat Nordic 34 gas insert.' },
+  new: { slug: 'before-and-after-kozy-heat-installation', before: 0, after: 3, beforeLabel: 'During', afterLabel: 'After', caption: 'A Kozy Heat fireplace during installation and after the stone surround was finished.' },
+} as const;
+const p = PAIRS[pair];
+const project = (await getEntry('projects', p.slug))!;
+const make = (i: number) => getImage({ src: project.data.images[i], width: 900, height: 1125, fit: 'cover', format: 'webp', quality: 72 });
+const [before, after] = await Promise.all([make(p.before), make(p.after)]);
+---
+<figure class="ba">
+  <ImageCompare client:visible before={before.src} after={after.src} beforeAlt={`${p.beforeLabel}: ${project.data.title}`} afterAlt={`${p.afterLabel}: ${project.data.title}`} beforeLabel={p.beforeLabel} afterLabel={p.afterLabel} />
+  <figcaption>{p.caption} <a class="link" href={`/projects/${project.id}/`}>See the project</a></figcaption>
+</figure>
+<style>
+  .ba { max-width: 30rem; }
+  figcaption { margin-top: 0.8rem; font-size: 0.95rem; color: var(--color-ink-2); }
+</style>

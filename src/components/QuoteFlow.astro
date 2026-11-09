@@ -23,6 +23,11 @@ const cards = await Promise.all(defs.map(async ([cid, label, hint, slug]) => {
 }));
 ---
 <div class="quote-flow">
-  <div id={`${id}-fallback`}><LeadForm kind="project" projectType={projectType} id={id} /></div>
+  <div id={`${id}-fallback`} class="qf-fallback"><LeadForm kind="project" projectType={projectType} id={id} /></div>
   <MultiStepForm client:visible cards={cards} phone={site.phone.display} tel={telHref} directions={showroom.directionsUrl} page={Astro.url.pathname} initial={initial} fallbackId={`${id}-fallback`} />
 </div>
+<style is:global>
+  /* With JavaScript the multi-step form shows; without it, the plain form does. */
+  .js .qf-fallback { display: none; }
+  html:not(.js) .quote-flow astro-island { display: none; }
+</style>

@@ -1,6 +1,13 @@
 ---
 // A showroom product/solution page built for a conversation, not a checkout.
 import { Image } from 'astro:assets';
+import LivingHero from '../../components/LivingHero.astro';
+import ProjectGallery from '../../components/ProjectGallery.astro';
+import BeforeAfter from '../../components/BeforeAfter.astro';
+import FaqList from '../../components/FaqList.astro';
+import OptionCard from '../../components/OptionCard.astro';
+import FitHelper from '../../components/islands/FitHelper.tsx';
+import { fireForOption } from '../../data/fire';
 import { getCollection, getEntries } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import ProjectCard from '../../components/ProjectCard.astro';
@@ -22,29 +29,29 @@ const PARENT = {
 } as const;
 const TYPE = { 'new-fireplace': 'new-fireplace', 'existing-fireplace': 'existing-fireplace', 'outdoor-kitchen': 'outdoor-kitchen', 'outdoor-living': 'outdoor-fire-heat' } as const;
 const [parentLabel, parentHref] = PARENT[o.path];
+const quoteHref = `/project-help/?kind=product&product=${encodeURIComponent(o.title)}&type=${TYPE[o.path]}`;
+const isFireplace = o.path === 'new-fireplace' || o.path === 'existing-fireplace';
+const siblings = (await getCollection('options')).filter((x) => x.data.path === o.path && x.id !== option.id).sort((a, b) => a.data.order - b.data.order);
+const installs = related.flatMap((p) => p.data.images.slice(0, 2).map((src) => ({ src, alt: p.data.title }))).slice(0, 6);
+const FAQ = { 'new-fireplace': 'fireplaces', 'existing-fireplace': 'existing', 'outdoor-kitchen': 'outdoor-kitchens', 'outdoor-living': 'outdoor-kitchens' } as const;
+const productSchema = { '@context': 'https://schema.org', '@type': 'Product', name: o.title, description: o.whatItIs, image: new URL(o.image.src, site.url).href, category: parentLabel, brand: { '@type': 'Organization', name: site.name } };
 ---
-<Base title={`${o.title} — What It Is & Who It Suits`} description={`${o.whatItIs} ${o.goodFor}`.slice(0, 158)}>
-  <section class="top">
-    <div class="wrap top-grid">
-      <div class="media">
-        <Image src={o.image} alt={o.imageAlt} widths={[480, 760, 1100]} sizes="(min-width: 900px) 560px, 100vw" loading="eager" fetchpriority="high" />
-        <p class="muted cap">Photo from one of our completed projects.</p>
+<Base title={`${o.title}: What It Is and Who It Suits`} description={`${o.whatItIs} ${o.goodFor}`.slice(0, 158)} quote={{ href: quoteHref, label: 'Get a quote on this' }} breadcrumbs={[[parentLabel, parentHref], [o.title, `/products/${option.id}/`]]} schema={[productSchema]}>
+  <LivingHero image={o.image} alt={o.imageAlt} effects={fireForOption(option.id)} eyebrow={parentLabel} title={o.title} lede={o.whatItIs} crumbs={[[parentLabel, parentHref]]} placement="product_top" quoteHref={quoteHref} position={o.imagePosition} id={`product-${option.id}`}>
+    <p class="good"><strong>A good starting point for:</strong> {o.goodFor}</p>
+    <p class="price">{o.priceNote ?? 'Contact us for pricing. The appliance is one part of the cost; we quote the complete project once we understand it.'}</p>
+    <p class="display">{o.showroomDisplay === 'confirmed' ? 'On display in our Maspeth showroom.' : 'Want to see one running? Call ahead and we will tell you which models are on display in Maspeth.'}</p>
+  </LivingHero>
+
+  {o.variants.length > 0 && (
+    <section class="section variants" data-variants>
+      <div class="wrap">
+        <h2>See it your way</h2>
+        <div class="v-stage">{o.variants.map((v, i) => <Image src={v.image} alt={`${o.title}: ${v.label}`} widths={[480, 800, 1200]} sizes="(min-width: 900px) 800px, 100vw" class:list={[{ 'is-on': i === 0 }]} data-variant={i} />)}</div>
+        <div class="v-controls" role="group" aria-label="Choose a look">{o.variants.map((v, i) => <button type="button" aria-pressed={i === 0} data-variant-btn={i}><small>{v.group}</small>{v.label}</button>)}</div>
       </div>
-      <div>
-        <nav aria-label="Breadcrumb" class="crumbs"><a href="/">Home</a> / <a href={parentHref}>{parentLabel}</a></nav>
-        <h1>{o.title}</h1>
-        <p class="lede">{o.whatItIs}</p>
-        <p class="good"><strong>A good starting point for:</strong> {o.goodFor}</p>
-        <p class="benefit">{o.benefit}</p>
-        <div class="acts">
-          <a class="btn btn-primary btn-lg" href={telHref} data-track="phone_click" data-placement="product_top">Call about this: {site.phone.display}</a>
-          <a class="btn btn-secondary btn-lg" href="#ask" data-track="product_inquiry_start" data-placement="product_top">Ask about this product</a>
-        </div>
-        <p class="price muted">{o.priceNote ?? 'Contact us for pricing. The appliance is one part of the cost; we quote the complete project once we understand it.'}</p>
-        <p class="display">{o.showroomDisplay === 'confirmed' ? 'On display in our Maspeth showroom.' : 'Want to see one running? Call ahead and we will tell you which models are on display in Maspeth.'}</p>
-      </div>
-    </div>
-  </section>
+    </section>
+  )}
 
   <section class="section">
     <div class="wrap cols">
@@ -83,12 +90,42 @@ const [parentLabel, parentHref] = PARENT[o.path];
     </div>
   </section>
 
-  {related.length > 0 && (
+  {isFireplace && (
     <section class="section section-tint">
-      <div class="wrap">
-        <h2>Projects like this</h2>
-        <div class="grid3">{related.map((p) => <ProjectCard project={p} />)}</div>
+      <div class="wrap cols">
+        <div>
+          <p class="eyebrow">From a real install</p>
+          <h2>{o.path === 'existing-fireplace' ? 'Before and after' : 'From bare wall to finished fireplace'}</h2>
+          <p class="lede">Drag the handle to compare.</p>
+          <div class="gap"><BeforeAfter pair={o.path === 'existing-fireplace' ? 'insert' : 'new'} /></div>
+        </div>
+        <div class="card fit-card">
+          <p class="eyebrow">Will it fit?</p>
+          <h2>Tell us about the opening</h2>
+          <p class="muted">Three quick answers point you to the right type. Our team confirms the actual fit.</p>
+          <div class="gap"><FitHelper client:visible phone={site.phone.display} tel={telHref} /></div>
+        </div>
       </div>
+    </section>
+  )}
+
+  {installs.length > 0 && (
+    <section class="section">
+      <div class="wrap">
+        <h2>Real installs</h2>
+        <p class="lede">Tap any photo to enlarge.</p>
+        <div class="gap"><ProjectGallery images={installs} /></div>
+        <ul class="proj-links">{related.map((p) => <li><a class="link link-arrow" href={`/projects/${p.id}/`}>{p.data.title}</a></li>)}</ul>
+      </div>
+    </section>
+  )}
+
+  <section class="section section-tint"><div class="wrap wrap-narrow"><h2>Common questions</h2><div class="gap"><FaqList group={FAQ[o.path]} limit={6} /></div></div></section>
+
+  {siblings.length > 0 && (
+    <section class="section">
+      <div class="wrap"><h2>Related options</h2><div class="grid3">{siblings.map((x) => <OptionCard option={x} />)}</div>
+      <p class="finance muted">Planning the budget? Ask us about financing through Acorn Finance.</p></div>
     </section>
   )}
 
@@ -103,12 +140,30 @@ const [parentLabel, parentHref] = PARENT[o.path];
     </div>
   </section>
 
-  <div class="sticky-call" role="region" aria-label="Call about this product">
-    <span>{o.title}</span>
-    <a class="btn btn-primary" href={telHref} data-track="phone_click" data-placement="product_sticky">Call {site.phone.display}</a>
-  </div>
 </Base>
+<script>
+  document.querySelectorAll<HTMLElement>('[data-variants]').forEach((root) => {
+    root.querySelectorAll<HTMLButtonElement>('[data-variant-btn]').forEach((btn) => btn.addEventListener('click', () => {
+      root.querySelectorAll('[data-variant]').forEach((img) => img.classList.toggle('is-on', (img as HTMLElement).dataset.variant === btn.dataset.variantBtn));
+      root.querySelectorAll('[data-variant-btn]').forEach((b) => b.setAttribute('aria-pressed', String(b === btn)));
+    }));
+  });
+</script>
 <style>
+  .good { margin-top: 1.1rem; }
+  .price { margin-top: 0.8rem; font-size: 0.95rem; color: #cdbfae; }
+  .display { margin-top: 0.4rem; font-weight: 600; font-size: 0.95rem; }
+  .gap { margin-top: 1.5rem; }
+  .fit-card { padding: clamp(1.25rem, 3vw, 1.9rem); align-self: start; }
+  .proj-links { list-style: none; padding: 0; margin-top: 1.5rem; display: flex; flex-wrap: wrap; gap: 0.5rem 1.75rem; }
+  .finance { margin-top: 2rem; }
+  .v-stage { display: grid; margin-top: 1.25rem; }
+  .v-stage :global(img) { grid-area: 1 / 1; width: 100%; height: auto; border-radius: var(--radius-card); opacity: 0; transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1); }
+  .v-stage :global(img.is-on) { opacity: 1; }
+  .v-controls { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1rem; }
+  .v-controls button { min-height: 2.9rem; padding: 0.3rem 1rem; border-radius: 999px; border: 1.5px solid #b9aa95; background: #fff; font: inherit; font-weight: 600; cursor: pointer; display: grid; text-align: left; }
+  .v-controls button[aria-pressed='true'] { border-color: var(--color-ember); background: var(--color-ember-soft); }
+  .v-controls small { font-size: 0.7rem; color: var(--color-ink-3); text-transform: uppercase; letter-spacing: 0.08em; }
   .top { background: var(--color-paper-2); border-bottom: 1px solid var(--color-line); padding-block: clamp(1.5rem, 4vw, 3.5rem); }
   .top-grid { display: grid; gap: 2rem; align-items: start; }
   @media (min-width: 900px) { .top-grid { grid-template-columns: 1fr 1fr; gap: 3.5rem; } }
