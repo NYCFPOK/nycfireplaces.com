@@ -177,3 +177,38 @@
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { transition: none !important; animation: none !important; scroll-behavior: auto !important; }
 }
+
+/* ---------- Living fire ---------- */
+.living { position: relative; overflow: hidden; background: #120d0a; isolation: isolate; }
+.living > img, .living > video { display: block; width: 100%; height: 100%; object-fit: cover; }
+.living.no-crop > img { height: auto; }
+.living > video { position: absolute; inset: 0; }
+.living-canvas { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; mix-blend-mode: screen; filter: blur(0.6px); }
+.living-shimmer { position: absolute; pointer-events: none; filter: url(#living-shimmer-filter); -webkit-mask-image: radial-gradient(closest-side, #000 40%, transparent); mask-image: radial-gradient(closest-side, #000 40%, transparent); }
+/* Ignite: a fire feature fades from off to burning the first time it is seen. */
+.js .living.has-fire > img { filter: brightness(0.8) saturate(0.9); transition: filter 1.6s cubic-bezier(0.22, 1, 0.36, 1); }
+.js .living.has-fire.is-lit > img { filter: none; }
+.living[data-motion='parallax'] > img { transform: scale(1.08) translate3d(0, var(--py, 0px), 0); will-change: transform; }
+
+/* ---------- Calm motion: reveals and line-by-line text ---------- */
+.js [data-reveal] { opacity: 0; transform: translate3d(0, 22px, 0); transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1), transform 0.8s cubic-bezier(0.22, 1, 0.36, 1); transition-delay: var(--d, 0ms); }
+.js [data-reveal].is-in { opacity: 1; transform: none; }
+.lines .line { display: block; overflow: hidden; padding-bottom: 0.08em; }
+.js .lines .line > span { display: block; transform: translate3d(0, 105%, 0); transition: transform 0.9s cubic-bezier(0.22, 1, 0.36, 1); transition-delay: calc(var(--n, 0) * 110ms); }
+.js .lines.is-in .line > span { transform: none; }
+.btn[data-magnetic] { transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1), background-color 0.15s, border-color 0.15s, color 0.15s; }
+
+@media (prefers-reduced-motion: reduce) {
+  .js [data-reveal], .js .lines .line > span { opacity: 1 !important; transform: none !important; }
+  .js .living.has-fire > img { filter: none !important; }
+  .living[data-motion='parallax'] > img { transform: none !important; }
+}
+
+/* Dark, cinematic sections are used only where fire lives. */
+.cinema { background: #0f0b09; color: #f3ece1; }
+.cinema .lede { color: #dccfbe; }
+.cinema .eyebrow { color: #f6a968; }
+.cinema .btn-secondary { color: #fff; border-color: rgb(255 255 255 / 0.7); }
+.cinema .btn-secondary:hover { background: #fff; color: #1c1613; }
+.cinema .link { color: #f9b47a; }
+.cinema .muted { color: #cdbfae; }

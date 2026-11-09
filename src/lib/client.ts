@@ -65,3 +65,45 @@ document.querySelectorAll<HTMLElement>('[data-open-status]').forEach((el) => {
     el.hidden = false;
   } catch { /* leave the regular hours as they are */ }
 });
+
+// ---------- Calm motion (reveals, line-by-line headings, parallax, magnetic buttons) ----------
+const calm = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const seen = new IntersectionObserver((entries) => {
+  for (const e of entries) if (e.isIntersecting) { e.target.classList.add('is-in'); seen.unobserve(e.target); }
+}, { rootMargin: '0px 0px -8% 0px', threshold: 0.08 });
+document.querySelectorAll('[data-reveal], .lines').forEach((el) => seen.observe(el));
+
+if (!calm) {
+  const layers = [...document.querySelectorAll<HTMLElement>('.living[data-motion="parallax"]')];
+  if (layers.length) {
+    let ticking = false;
+    const update = () => {
+      ticking = false;
+      for (const el of layers) {
+        const r = el.getBoundingClientRect();
+        if (r.bottom < 0 || r.top > innerHeight) continue;
+        const progress = (r.top + r.height / 2 - innerHeight / 2) / innerHeight; // -1..1 through the viewport
+        el.style.setProperty('--py', `${(-progress * r.height * 0.05).toFixed(1)}px`);
+      }
+    };
+    addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(update); } }, { passive: true });
+    update();
+  }
+  if (matchMedia('(hover: hover) and (pointer: fine)').matches) {
+    document.querySelectorAll<HTMLElement>('[data-magnetic]').forEach((btn) => {
+      btn.addEventListener('pointermove', (e) => {
+        const r = btn.getBoundingClientRect();
+        btn.style.transform = `translate(${((e.clientX - r.left) / r.width - 0.5) * 8}px, ${((e.clientY - r.top) / r.height - 0.5) * 6}px)`;
+      });
+      btn.addEventListener('pointerleave', () => { btn.style.transform = ''; });
+    });
+  }
+}
+
+// Fire engine and calibration tool load only on pages that use them.
+if (document.querySelector('[data-living]')) {
+  import('./living').then((m) => {
+    m.init();
+    if (new URLSearchParams(location.search).has('calibrate') && document.documentElement.dataset.env !== 'production') import('./living-calibrate').then((c) => c.start());
+  });
+}

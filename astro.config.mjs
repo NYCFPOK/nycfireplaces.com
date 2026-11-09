@@ -4,6 +4,8 @@ import tailwindcss from '@tailwindcss/vite';
 import sitemap from '@astrojs/sitemap';
 import node from '@astrojs/node';
 
+import react from '@astrojs/react';
+
 // Pages are prerendered to static HTML. Only the inquiry form handler
 // (/project-help/) and the health check run on the server.
 // Hostnames the server answers on. Form posts are only accepted when the
@@ -17,6 +19,6 @@ export default defineConfig({
   trailingSlash: 'always',
   adapter: node({ mode: 'middleware' }),
   security: { checkOrigin: true, allowedDomains: hosts.map((hostname) => ({ hostname })) },
-  integrations: [sitemap({ filter: (page) => !/\/(thank-you|project-help|404|admin)\//.test(page) })],
+  integrations: [sitemap({ filter: (page) => !/\/(thank-you|project-help|404|admin)\//.test(page) }), react()],
   vite: { plugins: [tailwindcss()] },
 });
