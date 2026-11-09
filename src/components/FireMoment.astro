@@ -1,0 +1,29 @@
+---
+// A full-width dark band: one large photo with living fire and one line of text.
+import LivingImage from './LivingImage.astro';
+import type { Effect } from '../lib/living';
+interface Props { image: ImageMetadata; alt: string; effects: Effect[]; line: string; href?: string; cta?: string; position?: string; id: string; align?: 'left' | 'right'; /** Put the words at the top so the fire stays visible below them. */ top?: boolean; /** Zoom toward a point, e.g. '1.5 54% 78%'. */ zoom?: string }
+const { image, alt, effects, line, href, cta, position = 'center', id, align = 'left', top = false, zoom } = Astro.props;
+const [z, zx = '50%', zy = '50%'] = (zoom ?? '').split(' ');
+---
+<section class:list={['moment', 'cinema', align, { top, zoomed: !!zoom }]} style={zoom ? `--z:${z};--zo:${zx} ${zy}` : undefined}>
+  <LivingImage class="moment-bg" src={image} alt={alt} effects={effects} fill motion="parallax" position={position} id={id} sizes="100vw" widths={[480, 800, 1124, 1440]} />
+  <div class="shade" aria-hidden="true"></div>
+  <div class="wrap inner">
+    <p class="line" data-reveal>{line}</p>
+    {href && <p data-reveal style="--d:120ms"><a class="link link-arrow" href={href}>{cta}</a></p>}
+    <slot />
+  </div>
+</section>
+<style>
+  .moment { position: relative; min-height: min(78svh, 46rem); display: grid; align-items: end; overflow: hidden; }
+  .moment :global(.moment-bg) { position: absolute; inset: 0; height: 100%; }
+  .shade { position: absolute; inset: 0; background: linear-gradient(0deg, rgb(12 8 6 / 0.86) 0%, rgb(12 8 6 / 0.35) 45%, rgb(12 8 6 / 0.05) 75%); }
+  .zoomed :global(.moment-bg > img), .zoomed :global(.moment-bg > .living-canvas) { transform: scale(var(--z)) translate3d(0, var(--py, 0px), 0); transform-origin: var(--zo); }
+  .top { align-items: start; }
+  .top .shade { background: linear-gradient(180deg, rgb(12 8 6 / 0.88) 0%, rgb(12 8 6 / 0.4) 40%, rgb(12 8 6 / 0) 68%); }
+  .inner { position: relative; padding-block: clamp(2.5rem, 7vw, 4.5rem); display: grid; gap: 0.9rem; }
+  .right .inner { justify-items: end; text-align: right; }
+  .line { font-family: var(--font-display); font-size: clamp(1.9rem, 5vw, 3.4rem); line-height: 1.1; color: #fff; max-width: 18ch; text-wrap: balance; }
+  @media (max-width: 767px) { .moment { min-height: 68svh; } }
+</style>

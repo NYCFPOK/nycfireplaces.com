@@ -1,0 +1,46 @@
+---
+// Swipe carousel built on native scroll snapping: no library, works without
+// JavaScript, and arrows are added for mouse and keyboard users.
+interface Props { label: string; bleed?: boolean }
+const { label, bleed = true } = Astro.props;
+---
+<div class:list={['car', { bleed }]} data-carousel>
+  <div class="car-track" role="region" aria-label={label} tabindex="0"><slot /></div>
+  <div class="car-nav" aria-hidden="true">
+    <button type="button" data-dir="-1" tabindex="-1" aria-label="Previous">←</button>
+    <button type="button" data-dir="1" tabindex="-1" aria-label="Next">→</button>
+  </div>
+</div>
+<script>
+  document.querySelectorAll<HTMLElement>('[data-carousel]').forEach((root) => {
+    const track = root.querySelector<HTMLElement>('.car-track')!;
+    const smooth = !matchMedia('(prefers-reduced-motion: reduce)').matches;
+    root.querySelectorAll<HTMLButtonElement>('[data-dir]').forEach((b) => b.addEventListener('click', () => {
+      const slide = track.firstElementChild as HTMLElement | null;
+      track.scrollBy({ left: Number(b.dataset.dir) * ((slide?.offsetWidth ?? 300) + 16), behavior: smooth ? 'smooth' : 'auto' });
+    }));
+    const sync = () => {
+      const [prev, next] = root.querySelectorAll<HTMLButtonElement>('[data-dir]');
+      prev.disabled = track.scrollLeft < 8;
+      next.disabled = track.scrollLeft + track.clientWidth > track.scrollWidth - 8;
+    };
+    track.addEventListener('scroll', sync, { passive: true });
+    sync();
+  });
+</script>
+<style>
+  .car { position: relative; }
+  .car-track { display: flex; gap: 1rem; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; padding-block: 0.25rem; overscroll-behavior-x: contain; }
+  .car-track::-webkit-scrollbar { display: none; }
+  .car-track > :global(*) { scroll-snap-align: start; flex: none; }
+  /* Bleed to the screen edge so the next slide peeks in and invites a swipe. */
+  .bleed .car-track { margin-inline: -1.25rem; padding-inline: 1.25rem; scroll-padding-inline: 1.25rem; }
+  @media (min-width: 768px) { .bleed .car-track { margin-inline: -2rem; padding-inline: 2rem; scroll-padding-inline: 2rem; } }
+  .car-nav { display: none; }
+  @media (hover: hover) and (min-width: 900px) {
+    .car-nav { display: flex; gap: 0.5rem; position: absolute; right: 0; top: -3.6rem; }
+    .car-nav button { width: 2.9rem; height: 2.9rem; border-radius: 50%; border: 1.5px solid var(--color-ink); background: none; font-size: 1.1rem; cursor: pointer; transition: background-color 0.2s, color 0.2s, opacity 0.2s; }
+    .car-nav button:hover:not(:disabled) { background: var(--color-ink); color: var(--color-paper); }
+    .car-nav button:disabled { opacity: 0.25; cursor: default; }
+  }
+</style>

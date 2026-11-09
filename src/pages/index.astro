@@ -1,32 +1,29 @@
 ---
+// Homepage. Photography first, few words. Long explanations live on the
+// product and category pages; this page gets people to a path or a call.
 import { Image, getImage } from 'astro:assets';
 import { getCollection, getEntry } from 'astro:content';
 import Base from '../layouts/Base.astro';
-import OptionCard from '../components/OptionCard.astro';
-import ProjectCard from '../components/ProjectCard.astro';
-import Timeline from '../components/Timeline.astro';
-import BrandStrip from '../components/BrandStrip.astro';
 import LivingImage from '../components/LivingImage.astro';
-import QuoteFlow from '../components/QuoteFlow.astro';
-import QuickForm from '../components/QuickForm.astro';
+import FireMoment from '../components/FireMoment.astro';
+import Carousel from '../components/Carousel.astro';
 import Reviews from '../components/Reviews.astro';
 import FaqList from '../components/FaqList.astro';
-import ShowroomInfo from '../components/ShowroomInfo.astro';
-import { site, telHref, helpHref } from '../data/site';
-import heroShowroom from '../assets/showroom/showroom-141.jpg';
-import showroomWide from '../assets/showroom/showroom-158.jpg';
-import showroomDetail from '../assets/showroom/showroom-145.jpg';
+import QuoteFlow from '../components/QuoteFlow.astro';
+import { site, showroom, telHref, helpHref, addressLine, hoursCompact } from '../data/site';
+import showroomPhoto from '../assets/showroom/showroom-141.jpg';
 
-const heroSet = await Promise.all([480, 800, 1124].map(async (w) => `${(await getImage({ src: heroShowroom, width: w })).src} ${w}w`));
-const pathImages = {
-  new: (await getEntry('projects', 'modern-fireplace'))!.data.images[0],
-  existing: (await getEntry('projects', 'wood-to-gas-fireplace-conversion'))!.data.images[0],
-  kitchen: (await getEntry('projects', 'xo-42-gas-grill-and-gozney-dome-dual-fuel-pizza-oven-with-challenger-o'))!.data.images[0],
-};
+const photo = async (slug: string, n = 0) => (await getEntry('projects', slug))!.data.images[n];
+
+// HERO. Swap this for a 2400 px+ photo, or pass `video` to LivingImage, when supplied.
+const hero = await photo('stunning-wood-to-gas-hargrove-colonial-cannon-ball-spheres', 1);
+const heroSet = await Promise.all([480, 800, 1124, 1440].map(async (w) => `${(await getImage({ src: hero, width: w })).src} ${w}w`));
+const heroSizes = '100vw';
+
 const paths = [
-  { title: 'Add a new fireplace', text: 'For new spaces, renovations and new construction.', href: '/fireplaces/new/', image: pathImages.new, alt: 'Linear fireplace built into a stone media wall in a bright living room' },
-  { title: 'Upgrade an existing fireplace', text: 'For inserts, conversions and improving the opening you already have.', href: '/fireplaces/upgrade-existing/', image: pathImages.existing, alt: 'Existing fireplace converted to gas with a log set and glass doors' },
-  { title: 'Plan an outdoor kitchen', text: 'For grills, cabinetry, refrigeration, layout and outdoor cooking.', href: '/outdoor-kitchens/', image: pathImages.kitchen, alt: 'L-shaped outdoor kitchen with white cabinetry, a built-in grill and a pizza oven' },
+  { title: 'Add a new fireplace', href: '/fireplaces/new/', image: await photo('modern-fireplace'), alt: 'Linear fireplace built into a stone media wall' },
+  { title: 'Upgrade an existing fireplace', href: '/fireplaces/upgrade-existing/', image: await photo('wood-to-gas-fireplace-conversion'), alt: 'Existing fireplace converted to gas' },
+  { title: 'Plan an outdoor kitchen', href: '/outdoor-kitchens/', image: await photo('xo-42-gas-grill-and-gozney-dome-dual-fuel-pizza-oven-with-challenger-o'), alt: 'L-shaped outdoor kitchen with a built-in grill and pizza oven' },
 ];
 
 const order = ['new-fireplace', 'existing-fireplace', 'outdoor-kitchen'];
@@ -34,25 +31,30 @@ const options = (await getCollection('options'))
   .filter((o) => o.data.homepage)
   .sort((a, b) => order.indexOf(a.data.path) - order.indexOf(b.data.path) || a.data.order - b.data.order)
   .slice(0, 6);
+const projects = (await getCollection('projects', (p) => p.data.featured && !p.data.draft)).sort((a, b) => a.data.order - b.data.order).slice(0, 6);
+const LABEL = { 'fireplace-new': 'New fireplace', 'fireplace-upgrade': 'Fireplace upgrade', 'outdoor-kitchen': 'Outdoor kitchen', 'outdoor-living': 'Outdoor fire' } as const;
 
-const projects = (await getCollection('projects', (p) => p.data.featured && !p.data.draft)).sort((a, b) => a.data.order - b.data.order).slice(0, 3);
+const steps = [
+  ['Tell us about it', 'Call, visit or send a photo.'],
+  ['Narrow the options', 'We point you to the few that suit.'],
+  ['Plan the setup', 'Scope and parts, in a written quote.'],
+  ['Installed', 'By our team, or supplied to yours.'],
+];
 ---
 <Base
   title="Fireplaces & Outdoor Kitchens in NYC: Showroom, Design & Installation | NYC Fireplaces & Outdoor Kitchens"
   description="Find the right fireplace or outdoor kitchen with expert help. Visit our Maspeth, Queens showroom or call 718-326-4328. You don't need a model number to get started."
 >
-  <link slot="head" rel="preload" as="image" fetchpriority="high" imagesrcset={heroSet.join(', ')} imagesizes="(max-width: 767px) 62vw, 100vw" />
-  <!-- A. Hero: the one dark, cinematic moment. Real showroom, living fire. -->
+  <link slot="head" rel="preload" as="image" fetchpriority="high" imagesrcset={heroSet.join(', ')} imagesizes={heroSizes} />
+
+  <!-- Hero: fire first. -->
   <section class="hero cinema">
-    <LivingImage class="hero-bg" src={heroShowroom} alt="Our Maspeth showroom at dusk, with linear and traditional fireplaces burning" eager fill motion="parallax" id="home-hero" position="70% 60%" sizes="(max-width: 767px) 62vw, 100vw"
+    <LivingImage class="hero-bg" src={hero} alt="Gas fire burning over stone spheres in a dark marble fireplace we converted from wood" eager fill motion="parallax" id="home-hero" position="50% 52%" sizes={heroSizes} widths={[480, 800, 1124, 1440]}
       effects={[
-        { t: 'flames', r: [76.6, 62.2, 20.6, 4.6] },
-        { t: 'flames', r: [7.2, 51, 9.6, 2.6], i: 0.8 },
-        { t: 'flames', r: [37.2, 48.3, 4, 2.8], i: 0.8 },
-        { t: 'glow', r: [36.6, 68, 5, 7.5] },
-        { t: 'glow', r: [50.2, 73.5, 5.6, 6] },
-        { t: 'glow', r: [28.4, 61.6, 4.8, 5] },
-        { t: 'embers', r: [78, 60, 18, 5], i: 0.5 },
+        { t: 'flames', r: [41.5, 45.5, 7.5, 14.5] },
+        { t: 'flames', r: [57, 44.5, 7, 14] },
+        { t: 'glow', r: [27, 50, 46, 20], i: 0.55 },
+        { t: 'embers', r: [40, 46, 26, 10], i: 0.5 },
       ]} />
     <div class="hero-shade" aria-hidden="true"></div>
     <div class="wrap hero-inner">
@@ -61,231 +63,205 @@ const projects = (await getCollection('projects', (p) => p.data.featured && !p.d
         <span class="line" style="--n:1"><span>or outdoor kitchen,</span></span>
         <span class="line" style="--n:2"><span>with expert help.</span></span>
       </h1>
-      <p class="lede" data-reveal style="--d:380ms">Tell us about your room, renovation or backyard. Our team will help you narrow the options and plan the next step.</p>
-      <div class="acts" data-reveal style="--d:480ms">
+      <p class="lede" data-reveal style="--d:340ms">No model number or finished plan needed.</p>
+      <div class="acts" data-reveal style="--d:420ms">
         <a class="btn btn-primary btn-lg" data-magnetic href={telHref} data-track="phone_click" data-placement="hero">{site.cta.call}</a>
-        <a class="btn btn-secondary btn-lg" href={helpHref} data-track="help_cta_click" data-placement="hero">{site.cta.help}</a>
+        <a class="btn btn-secondary btn-lg help" href={helpHref} data-track="help_cta_click" data-placement="hero">{site.cta.help}</a>
       </div>
-      <p class="reassure" data-reveal style="--d:560ms">You don’t need a model number or a finished plan to get started.</p>
-      <p data-reveal style="--d:620ms"><a class="link link-arrow" href="/showroom/" data-track="showroom_info_click" data-placement="hero">{site.cta.visit}</a></p>
+      <p class="visit" data-reveal style="--d:500ms"><a class="link link-arrow" href="/showroom/" data-track="showroom_info_click" data-placement="hero">{site.cta.visit}</a></p>
     </div>
-    <p class="hero-cap">Our showroom in Maspeth, Queens</p>
   </section>
+  <p class="proof">Family-owned <span aria-hidden="true">·</span> <span data-count="30">30</span>+ years of team experience <span aria-hidden="true">·</span> Showroom in Maspeth, Queens</p>
 
-  <!-- Proof strip: verified facts only. One open showroom until Greenvale opens. -->
-  <section class="proof" aria-label="About us">
-    <ul class="wrap">
-      <li><strong><span data-count="30">30</span>+ years</strong><span>of experience on our in-house team</span></li>
-      <li><strong>Family-owned</strong><span>design, installation and service under one roof</span></li>
-      <li><strong>Homeowners and trade</strong><span>we work with designers, architects and builders</span></li>
-      <li><strong>Maspeth showroom</strong><span>working fireplaces you can stand in front of</span></li>
-    </ul>
-  </section>
-
-  <!-- C. Three starting paths -->
+  <!-- Three starting paths: photographs, not cards. -->
   <section class="section" aria-labelledby="paths-h">
     <div class="wrap">
-      <p class="eyebrow">Start here</p>
       <h2 id="paths-h" data-reveal>What are you planning?</h2>
       <div class="paths">
-        {paths.map((p) => (
-          <a class="card card-link path" data-reveal href={p.href} data-track="path_click" data-placement={p.href}>
-            <div class="media"><Image src={p.image} alt={p.alt} widths={[360, 560, 760]} sizes="(min-width: 900px) 370px, 100vw" width={760} height={520} fit="cover" /></div>
-            <div class="card-body">
-              <h3>{p.title}</h3>
-              <p>{p.text}</p>
-              <span class="link link-arrow">Start here</span>
-            </div>
+        {paths.map((p, i) => (
+          <a class="path" href={p.href} data-reveal style={`--d:${i * 90}ms`} data-track="path_click" data-placement={p.href}>
+            <Image src={p.image} alt={p.alt} widths={[400, 640, 900]} sizes="(min-width: 900px) 33vw, 100vw" width={900} height={1000} fit="cover" />
+            <span class="path-title">{p.title}<i aria-hidden="true">→</i></span>
           </a>
         ))}
       </div>
-      <p class="escape">Not sure which fits? <a class="link" href={telHref} data-track="phone_click" data-placement="paths">Call us at {site.phone.display}</a> and we’ll help you start, or <a class="link" href="/start-here/">answer three quick questions</a>.</p>
-      <p class="secondary-paths muted">Also planning a <a href="/outdoor-living/">fire pit, patio heating or pizza oven</a>? We help with those too.</p>
+      <p class="escape">Not sure? <a class="link" href={telHref} data-track="phone_click" data-placement="paths">Call {site.phone.display}</a> or <a class="link" href="/start-here/">answer three questions</a>.</p>
     </div>
   </section>
 
-  <!-- D. Curated core selection -->
-  <section class="section section-tint" aria-labelledby="options-h">
+  <!-- Fire moment 1 -->
+  <FireMoment image={await photo('before-and-after-kozy-heat-installation', 2)} alt="Gas insert burning in a stacked-stone fireplace we installed" id="home-moment-insert" position="50% 80%" top zoom="1.45 52% 80%"
+    effects={[{ t: 'flames', r: [44, 71, 24, 13] }, { t: 'glow', r: [36, 66, 38, 24], i: 0.5 }, { t: 'embers', r: [44, 70, 24, 8], i: 0.4 }]}
+    line="The fireplace you have, finally one you use." href="/fireplaces/upgrade-existing/" cta="Upgrade an existing fireplace" />
+
+  <!-- Featured options: swipe, one line each. -->
+  <section class="section" aria-labelledby="options-h">
     <div class="wrap">
-      <p class="eyebrow">Featured solutions</p>
       <h2 id="options-h" data-reveal>Start with these options</h2>
-      <p class="lede">Six of the directions we most often help customers plan. Each one explains what it is and who it suits, so you can rule things in or out quickly.</p>
-      <div class="grid3">
-        {options.map((o) => <OptionCard option={o} />)}
+      <div class="gap">
+        <Carousel label="Featured options">
+          {options.map((o) => (
+            <a class="slide" href={`/products/${o.id}/`}>
+              <Image src={o.data.image} alt={o.data.imageAlt} widths={[320, 520, 760]} sizes="(min-width: 900px) 30vw, 78vw" width={760} height={950} fit="cover" position={o.data.imagePosition} />
+              <strong>{o.data.title}</strong>
+              <span>{o.data.benefit}</span>
+            </a>
+          ))}
+        </Carousel>
       </div>
-      <p class="after">Looking for something specific? <a class="link" href="/products/">Explore more models and product types</a>, or <a class="link" href={telHref} data-track="phone_click" data-placement="options">ask us about a model</a>.</p>
+      <p class="after"><a class="link link-arrow" href="/products/">Explore more models</a></p>
     </div>
   </section>
 
-  <section class="callback" aria-labelledby="cb-h">
-    <div class="wrap cb">
-      <div><h2 id="cb-h">Rather have us call you?</h2><p>Leave a name and number. That is all we need to start.</p></div>
-      <QuickForm id="lead-quick-home" />
-    </div>
-  </section>
-
-  <!-- E. Process -->
-  <section class="section" aria-labelledby="process-h">
+  <!-- From idea to installed: four short steps. -->
+  <section class="section section-tint" aria-labelledby="process-h">
     <div class="wrap">
-      <p class="eyebrow">How it works</p>
       <h2 id="process-h" data-reveal>From idea to installed</h2>
-      <div class="gap"><Timeline /></div>
-      <div class="scopes">
-        <h3>Choosing the appliance is one part of the project</h3>
-        <p class="muted">We can help with as much or as little as you need. Each of these is a conversation and a written quote, not a fixed package.</p>
-        <div class="grid3 scope-grid">
-          <div><h4>Product selection</h4><p>Help choosing the right appliance for the space and how you will use it.</p></div>
-          <div><h4>Complete setup</h4><p>The appliance plus the confirmed compatible components, such as venting, trim, doors or cabinetry, so nothing is missed.</p></div>
-          <div><h4>Design and installation</h4><p>An agreed scope for eligible projects, coordinated with your contractor or designer where needed.</p></div>
-        </div>
-      </div>
+      <ol class="steps">
+        {steps.map(([t, d], i) => <li data-reveal style={`--d:${i * 80}ms`}><span class="n" aria-hidden="true">{i + 1}</span><strong>{t}</strong><span>{d}</span></li>)}
+      </ol>
     </div>
   </section>
 
-  <!-- F. Proof -->
-  <section class="section section-tint" aria-labelledby="proof-h">
+  <!-- Real projects: swipe. -->
+  <section class="section" aria-labelledby="proof-h">
     <div class="wrap">
-      <p class="eyebrow">Our work</p>
       <h2 id="proof-h" data-reveal>Real projects, from our own job sites</h2>
-      <p class="lede">These are photos from completed projects, not catalog images.</p>
-      <div class="grid3">
-        {projects.map((p) => <ProjectCard project={p} />)}
+      <div class="gap">
+        <Carousel label="Completed projects">
+          {projects.map((p) => (
+            <a class="slide wide" href={`/projects/${p.id}/`}>
+              <Image src={p.data.images[0]} alt={p.data.title} widths={[360, 600, 900]} sizes="(min-width: 900px) 44vw, 84vw" width={900} height={675} fit="cover" />
+              <strong>{p.data.title}</strong>
+              <span>{LABEL[p.data.category]}{p.data.location && ` · ${p.data.location}`}{p.data.year && ` · ${p.data.year}`}</span>
+            </a>
+          ))}
+        </Carousel>
       </div>
-      <p class="after"><a class="link link-arrow" href="/projects/">See more completed projects</a></p>
-      <div class="gap"><Reviews limit={3} /></div>
+      <p class="after"><a class="link link-arrow" href="/projects/">See all projects</a></p>
+      <Reviews limit={3} />
     </div>
   </section>
 
-  <!-- G. Showroom as a destination -->
-  <section class="section cinema" aria-labelledby="showroom-h" id="showroom">
-    <div class="wrap showroom">
-      <div>
-        <p class="eyebrow">{site.showroom.area}</p>
-        <h2 id="showroom-h">See the options in person. Leave with a clearer plan.</h2>
-        <p class="lede">Working fireplaces look and feel different in person than in a photo. Stand in front of the flame, compare sizes side by side, and ask us anything.</p>
-        <div class="bring">
-          <h3>Helpful to bring, if you have them</h3>
-          <ul class="ticks">
-            <li>Photos of the space</li>
-            <li>Approximate dimensions</li>
-            <li>Inspiration images</li>
-            <li>Plans or drawings</li>
-          </ul>
-          <p class="muted">Don’t have any of that yet? Come in or call anyway. If you want to see a particular model, call ahead and we’ll confirm it is on display.</p>
-        </div>
-        <ShowroomInfo placement="home_showroom" heading="Where to find us" />
-        <p class="more"><a class="link link-arrow" href="/showroom/">More about visiting</a></p>
-      </div>
-      <div class="showroom-media">
-        <LivingImage src={showroomDetail} alt="Traditional mantel fireplaces beside a see-through linear fireplace in the Maspeth showroom" motion="reveal" id="home-showroom-a" sizes="(min-width: 900px) 540px, 100vw"
-          effects={[{ t: 'flames', r: [55, 66, 44, 13], i: 0.7 }, { t: 'flames', r: [13.5, 77.5, 9, 5.5], i: 0.7 }, { t: 'glow', r: [52, 60, 48, 26], i: 0.5 }]} />
-        <LivingImage src={showroomWide} alt="Inside our Maspeth showroom: working fireplace displays around a seating area" motion="reveal" id="home-showroom-b" sizes="(min-width: 900px) 540px, 100vw"
-          effects={[{ t: 'flames', r: [57.5, 77.5, 8, 5] }, { t: 'glow', r: [41.5, 73, 9, 9] }, { t: 'flames', r: [36.5, 42, 9, 2.2], i: 0.7 }]} />
-      </div>
+  <!-- Fire moment 2: the showroom. -->
+  <FireMoment image={showroomPhoto} alt="Our Maspeth showroom, with linear and traditional fireplaces burning" id="home-moment-showroom" position="72% 60%" align="left"
+    effects={[
+      { t: 'flames', r: [76.6, 62.2, 20.6, 4.6] }, { t: 'flames', r: [7.2, 51, 9.6, 2.6], i: 0.8 }, { t: 'flames', r: [37.2, 48.3, 4, 2.8], i: 0.8 },
+      { t: 'glow', r: [36.6, 68, 5, 7.5] }, { t: 'glow', r: [50.2, 73.5, 5.6, 6] }, { t: 'glow', r: [28.4, 61.6, 4.8, 5] },
+    ]}
+    line="See it burning before you decide.">
+    <p class="where" data-reveal style="--d:120ms">{addressLine}<br />{hoursCompact}</p>
+    <div class="acts" data-reveal style="--d:200ms">
+      <a class="btn btn-primary" href={showroom.directionsUrl} target="_blank" rel="noopener" data-track="directions_click" data-placement="home_showroom">Get Directions</a>
+      <a class="btn btn-secondary" href="/showroom/" data-track="showroom_info_click" data-placement="home_showroom">Plan a visit</a>
     </div>
-  </section>
+  </FireMoment>
 
-  <div class="wrap"><BrandStrip /></div>
-
-  <!-- H. Designers and builders -->
-  <section class="section" aria-labelledby="trade-h">
-    <div class="wrap trade">
-      <div>
-        <p class="eyebrow">For the trade</p>
-        <h2 id="trade-h" data-reveal>A practical partner for designers and builders.</h2>
-        <p class="lede">Help with product selection, specifications, planning and coordination, from early drawings through installation. Supply-only is fine too.</p>
-      </div>
+  <!-- Designers and builders: one line. -->
+  <section class="section trade" aria-labelledby="trade-h">
+    <div class="wrap trade-in">
+      <h2 id="trade-h" data-reveal>A practical partner for designers and builders.</h2>
       <div class="acts">
         <a class="btn btn-primary" href="/project-help/?kind=trade" data-track="help_cta_click" data-placement="home_trade">Discuss a project</a>
-        <a class="btn btn-secondary" href="/project-help/?kind=trade#lead-trade" data-track="help_cta_click" data-placement="home_trade_plans">Send plans</a>
-        <a class="btn btn-secondary" href={telHref} data-track="phone_click" data-placement="home_trade">{site.phone.display}</a>
-        <p class="basis"><a class="link link-arrow" href="/designers-builders/">How we work with trade partners</a></p>
+        <a class="btn btn-secondary" href="/designers-builders/">How we work with the trade</a>
       </div>
     </div>
   </section>
 
-  <!-- I. FAQs -->
+  <!-- A few questions, then the form. -->
   <section class="section section-tint" aria-labelledby="faq-h">
     <div class="wrap wrap-narrow">
-      <p class="eyebrow">Common questions</p>
       <h2 id="faq-h">Before you call</h2>
-      <div class="gap"><FaqList group="home" /></div>
+      <div class="gap"><FaqList group="home" limit={4} /></div>
+      <p class="after"><a class="link link-arrow" href="/guides/">More questions and guides</a></p>
     </div>
   </section>
 
-  <!-- J. Final form -->
   <section class="section" aria-labelledby="form-h">
     <div class="wrap final">
       <div>
         <h2 id="form-h">Let’s make your project easier to figure out.</h2>
-        <p class="lede">Send a few details and we’ll get back to you to talk it through. Or skip the form and call.</p>
         <p class="bigphone"><a href={telHref} data-track="phone_click" data-placement="home_final">{site.phone.display}</a></p>
       </div>
-      <div class="card form-card"><QuoteFlow id="lead-home" /></div>
+      <div class="form-card"><QuoteFlow id="lead-home" /></div>
     </div>
   </section>
 </Base>
 
 <style>
-  .hero { position: relative; min-height: min(92svh, 54rem); display: grid; align-items: end; overflow: hidden; }
+  /* ---- Hero ---- */
+  .hero { position: relative; min-height: min(90svh, 56rem); display: grid; align-items: end; overflow: hidden; }
   .hero :global(.hero-bg) { position: absolute; inset: 0; height: 100%; }
-  .hero-shade { position: absolute; inset: 0; background: linear-gradient(90deg, rgb(12 8 6 / 0.88) 0%, rgb(12 8 6 / 0.62) 38%, rgb(12 8 6 / 0.05) 72%), linear-gradient(0deg, rgb(12 8 6 / 0.75) 0%, transparent 38%); }
-  .hero-inner { position: relative; padding-block: clamp(6rem, 16vh, 10rem) clamp(3rem, 8vh, 5.5rem); }
-  .hero h1 { max-width: 19ch; margin-bottom: 1.1rem; color: #fff; font-size: clamp(2.3rem, 6vw, 4.4rem); }
-  .hero .lede { max-width: 34rem; }
-  .acts { display: flex; flex-wrap: wrap; gap: 0.8rem; margin-top: 1.5rem; }
-  @media (max-width: 479px) { .hero .acts .btn { width: 100%; } }
-  .reassure { margin-top: 1.1rem; font-weight: 650; }
-  .hero-inner > p:last-child { margin-top: 0.7rem; }
-  .hero-cap { position: absolute; right: 1.25rem; bottom: 0.9rem; font-size: 0.8rem; color: rgb(255 255 255 / 0.7); }
+  /* Push the fire to the right of the frame so the headline never sits on it. */
+  .hero :global(.hero-bg > img), .hero :global(.hero-bg > .living-canvas) { transform: scale(1.28) translate3d(0, var(--py, 0px), 0); transform-origin: 0% 56%; }
+  .hero-shade { position: absolute; inset: 0; background: linear-gradient(90deg, rgb(12 8 6 / 0.82) 0%, rgb(12 8 6 / 0.5) 34%, rgb(12 8 6 / 0) 62%), linear-gradient(0deg, rgb(12 8 6 / 0.7) 0%, transparent 34%); }
+  .hero-inner { position: relative; padding-block: clamp(6rem, 16vh, 10rem) clamp(3rem, 8vh, 5rem); }
+  .hero h1 { color: #fff; font-size: clamp(2.1rem, 4.6vw, 3.9rem); max-width: 19ch; margin-bottom: 1rem; }
+  .hero .lede { font-weight: 600; color: #f0e6d8; }
+  .acts { display: flex; flex-wrap: wrap; gap: 0.8rem; margin-top: 1.4rem; }
+  .visit { margin-top: 1rem; }
   @media (max-width: 767px) {
-    .hero { min-height: 0; }
-    .hero-shade { background: linear-gradient(0deg, rgb(12 8 6 / 0.94) 0%, rgb(12 8 6 / 0.78) 55%, rgb(12 8 6 / 0.25) 100%); }
-    .hero-inner { padding-block: 9.5rem 2.75rem; }
-    .hero-cap { display: none; }
+    /* Phone: the fire fills the top of the first screen, the words sit beneath it. */
+    .hero { min-height: 0; display: block; }
+    .hero :global(.hero-bg) { position: relative; inset: auto; height: min(42svh, 22rem); }
+    .hero :global(.hero-bg > img), .hero :global(.hero-bg > .living-canvas) { transform: scale(1.5); transform-origin: 52% 60%; }
+    .hero-shade { height: min(42svh, 22rem); bottom: auto; background: linear-gradient(0deg, #0f0b09 0%, rgb(15 11 9 / 0) 30%); }
+    .hero-inner { padding-block: 0.4rem 1.6rem; }
+    .hero h1 { font-size: clamp(1.6rem, 7.3vw, 2.3rem); margin-bottom: 0.6rem; }
+    .acts { margin-top: 1rem; }
+    .acts .btn { width: 100%; }
+    .acts .help { display: none; } /* "Get a Quote" is always in the dock on phones */
+    .visit { margin-top: 0.8rem; }
   }
-  .proof { background: var(--color-char); color: #f3ece1; border-top: 1px solid #3a2e26; }
-  .proof ul { list-style: none; display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem 1.5rem; padding-block: 1.6rem; }
-  @media (min-width: 900px) { .proof ul { grid-template-columns: repeat(4, 1fr); } }
-  .proof li { display: grid; gap: 0.1rem; }
-  .proof strong { font-family: var(--font-display); font-weight: 560; font-size: 1.3rem; color: #fff; }
-  .proof li > span { font-size: 0.88rem; color: #cdbfae; line-height: 1.35; }
-  .callback { background: var(--color-char); color: #f3ece1; padding-block: 2.5rem; }
-  .cb { display: grid; gap: 1.5rem; align-items: center; }
-  @media (min-width: 900px) { .cb { grid-template-columns: 0.8fr 1.2fr; gap: 3rem; } }
-  .cb h2 { font-size: clamp(1.5rem, 2.6vw, 1.9rem); margin-bottom: 0.3rem; }
-  .cb p { color: #dccfbe; }
+  .proof { background: #0f0b09; color: #cdbfae; text-align: center; font-size: 0.9rem; padding: 0.9rem 1.25rem 1.1rem; border-top: 1px solid #2a211c; }
+  .proof span[aria-hidden] { margin-inline: 0.35rem; color: #6d5d50; }
+  @media (max-width: 767px) { .proof { padding-bottom: 5.5rem; } } /* clears the dock on the first screen */
 
-  .paths, .grid3 { display: grid; gap: 1.5rem; margin-top: 2rem; }
-  @media (min-width: 640px) { .grid3 { grid-template-columns: repeat(2, 1fr); } }
-  @media (min-width: 900px) { .paths, .grid3 { grid-template-columns: repeat(3, 1fr); } }
-  .path .media { aspect-ratio: 3 / 2; overflow: hidden; }
-  .path .media :global(img) { width: 100%; height: 100%; object-fit: cover; }
-  .path h3 { font-size: 1.5rem; margin-bottom: 0.4rem; }
-  .path p { color: var(--color-ink-2); margin-bottom: 0.8rem; }
-  .escape { margin-top: 2rem; font-size: 1.1rem; }
-  .secondary-paths { margin-top: 0.6rem; }
-  .secondary-paths a { text-decoration: underline; text-underline-offset: 3px; }
-  .lede { margin-top: 0.8rem; }
-  .after { margin-top: 2rem; }
-  .gap { margin-top: 2.25rem; }
-  .scopes { margin-top: 3.5rem; padding-top: 2.5rem; border-top: 1px solid var(--color-line); }
-  .scope-grid { margin-top: 1.25rem; }
-  .scope-grid > div { background: var(--color-paper-2); border-radius: var(--radius-card); padding: 1.25rem 1.35rem; }
-  h4 { font-weight: 700; margin-bottom: 0.3rem; }
-  .showroom { display: grid; gap: 2.5rem; }
-  @media (min-width: 900px) { .showroom { grid-template-columns: 1fr 1fr; gap: 4rem; align-items: start; } }
-  .bring { margin-block: 1.75rem; padding: 1.25rem 1.4rem; border: 1px solid #4a3d33; border-radius: var(--radius-card); display: grid; gap: 0.8rem; }
-  .bring h3 { font-size: 1.15rem; }
-  .more { margin-top: 1.25rem; }
-  .showroom-media { display: grid; gap: 1rem; }
-  .showroom-media :global(.living) { border-radius: var(--radius-card); }
-  .trade { display: grid; gap: 1.75rem; align-items: center; }
-  @media (min-width: 900px) { .trade { grid-template-columns: 1.2fr 1fr; gap: 3rem; } }
-  .trade .acts { margin-top: 0; }
-  .basis { flex-basis: 100%; }
-  .final { display: grid; gap: 2.5rem; align-items: start; }
-  @media (min-width: 900px) { .final { grid-template-columns: 0.85fr 1.15fr; gap: 4rem; } }
-  .bigphone a { font-family: var(--font-display); font-size: clamp(2rem, 4vw, 2.75rem); color: var(--color-ember); text-decoration: none; display: inline-block; margin-top: 1rem; }
-  .form-card { padding: clamp(1.25rem, 3vw, 2rem); }
+  /* ---- Shared ---- */
+  h2 { max-width: 22ch; }
+  .gap { margin-top: 1.75rem; }
+  .after { margin-top: 1.5rem; }
+  .section { padding-block: clamp(3.5rem, 9vw, 7rem); }
+
+  /* ---- Paths ---- */
+  .paths { display: grid; gap: 0.9rem; margin-top: 1.75rem; }
+  @media (min-width: 900px) { .paths { grid-template-columns: repeat(3, 1fr); gap: 1.25rem; } }
+  .path { position: relative; display: block; overflow: hidden; border-radius: 10px; aspect-ratio: 16 / 10; background: var(--color-paper-3); }
+  @media (min-width: 900px) { .path { aspect-ratio: 4 / 5; } }
+  .path :global(img) { width: 100%; height: 100%; object-fit: cover; transition: transform 0.9s cubic-bezier(0.22, 1, 0.36, 1); }
+  .path::after { content: ''; position: absolute; inset: 0; background: linear-gradient(0deg, rgb(12 8 6 / 0.78) 0%, rgb(12 8 6 / 0) 55%); }
+  .path-title { position: absolute; z-index: 1; left: 1.1rem; right: 1.1rem; bottom: 1rem; display: flex; justify-content: space-between; align-items: end; gap: 1rem; color: #fff; font-family: var(--font-display); font-size: clamp(1.35rem, 2.2vw, 1.75rem); line-height: 1.15; }
+  .path-title i { font-style: normal; transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1); }
+  @media (hover: hover) { .path:hover :global(img) { transform: scale(1.04); } .path:hover i { transform: translateX(5px); } }
+  .escape { margin-top: 1.5rem; }
+
+  /* ---- Carousel slides ---- */
+  .slide { width: 78vw; max-width: 22rem; display: grid; gap: 0.2rem; align-content: start; align-self: flex-start; text-decoration: none; }
+  .slide.wide { width: 84vw; max-width: 36rem; }
+  .slide.wide :global(img) { aspect-ratio: 4 / 3; }
+  .slide :global(img) { width: 100%; height: auto; aspect-ratio: 4 / 5; object-fit: cover; border-radius: 10px; background: var(--color-paper-3); margin-bottom: 0.7rem; }
+  .slide strong { font-family: var(--font-display); font-weight: 560; font-size: 1.3rem; line-height: 1.2; }
+  .slide span { color: var(--color-ink-3); font-size: 0.97rem; }
+  .slide:hover strong { color: var(--color-ember); }
+
+  /* ---- Steps ---- */
+  .steps { list-style: none; padding: 0; margin-top: 2rem; display: grid; gap: 1.4rem 2rem; grid-template-columns: 1fr 1fr; }
+  @media (min-width: 900px) { .steps { grid-template-columns: repeat(4, 1fr); } }
+  .steps li { display: grid; gap: 0.2rem; align-content: start; }
+  .steps .n { font-family: var(--font-display); font-size: 2.2rem; line-height: 1; color: var(--color-ember); margin-bottom: 0.4rem; }
+  .steps strong { font-size: 1.08rem; }
+  .steps li > span:last-child { color: var(--color-ink-2); font-size: 0.97rem; }
+
+  /* ---- Showroom moment ---- */
+  .where { color: #e9dfd0; }
+
+  /* ---- Trade ---- */
+  .trade-in { display: grid; gap: 1.5rem; align-items: center; }
+  @media (min-width: 900px) { .trade-in { grid-template-columns: 1.3fr 1fr; } .trade-in .acts { margin-top: 0; justify-content: end; } }
+
+  /* ---- Final ---- */
+  .final { display: grid; gap: 2rem; align-items: start; }
+  @media (min-width: 900px) { .final { grid-template-columns: 0.8fr 1.2fr; gap: 4rem; } }
+  .bigphone a { font-family: var(--font-display); font-size: clamp(2rem, 4vw, 2.75rem); color: var(--color-ember); text-decoration: none; display: inline-block; margin-top: 0.8rem; }
+  .form-card { background: #fff; border-radius: var(--radius-card); padding: clamp(1.1rem, 3vw, 2rem); box-shadow: var(--shadow-card); }
 </style>
