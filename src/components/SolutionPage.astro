@@ -3,7 +3,10 @@
 // fireplace, outdoor kitchen, outdoor fire & heating).
 import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
-import PageHero from './PageHero.astro';
+import LivingHero from './LivingHero.astro';
+import BeforeAfter from './BeforeAfter.astro';
+import FitHelper from './islands/FitHelper.tsx';
+import { fireForProject } from '../data/fire';
 import OptionCard from './OptionCard.astro';
 import ProjectCard from './ProjectCard.astro';
 import FaqList from './FaqList.astro';
@@ -40,10 +43,10 @@ const projects = allProjects
   .sort((a, b) => Number(b.data.featured) - Number(a.data.featured) || (b.data.year ?? 0) - (a.data.year ?? 0) || (b.data.legacyId ?? 0) - (a.data.legacyId ?? 0))
   .slice(0, 3);
 ---
-<Base title={p.metaTitle} description={p.metaDescription}>
-  <PageHero eyebrow={p.eyebrow} title={p.title} lede={p.lede} image={hero.data.images[0]} imageAlt={p.heroAlt} placement={`${p.path}_hero`} helpQuery={`?type=${p.projectType}`} crumbs={p.crumbs}>
+<Base title={p.metaTitle} description={p.metaDescription} breadcrumbs={[...p.crumbs, [p.eyebrow, Astro.url.pathname]]}>
+  <LivingHero image={hero.data.images[0]} alt={p.heroAlt} effects={fireForProject(hero.id)} eyebrow={p.eyebrow} title={p.title} lede={p.lede} crumbs={p.crumbs} placement={`${p.path}_hero`} quoteHref={`/project-help/?type=${p.projectType}`} quoteLabel={site.cta.help} id={`solution-${p.path}`}>
     <p class="reassure">You don’t need a model number or measurements to call.</p>
-  </PageHero>
+  </LivingHero>
 
   <section class="section">
     <div class="wrap two-col">
@@ -78,6 +81,24 @@ const projects = allProjects
           </table>
         </div>
         <p class="muted small">This is general guidance to help you compare. What suits your home is confirmed once we know the details, and every installation follows the manufacturer’s instructions.</p>
+      </div>
+    </section>
+  )}
+
+  {(p.path === 'new-fireplace' || p.path === 'existing-fireplace') && (
+    <section class="section">
+      <div class="wrap two-col">
+        <div>
+          <p class="eyebrow">From a real install</p>
+          <h2>{p.path === 'existing-fireplace' ? 'Before and after' : 'From bare wall to finished fireplace'}</h2>
+          <div class="gap"><BeforeAfter pair={p.path === 'existing-fireplace' ? 'insert' : 'new'} /></div>
+        </div>
+        <div class="card contact-card">
+          <p class="eyebrow">Will it fit?</p>
+          <h2>Tell us about the opening</h2>
+          <p class="muted">Three quick answers point you to the right type. Our team confirms the actual fit.</p>
+          <div class="gap"><FitHelper client:visible phone={site.phone.display} tel={telHref} /></div>
+        </div>
       </div>
     </section>
   )}

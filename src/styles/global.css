@@ -222,7 +222,7 @@
 .msf-progress span { display: block; height: 100%; background: var(--color-ember); transform-origin: left; transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1); }
 .msf-count { font-size: 0.85rem; font-weight: 650; color: var(--color-ink-3); font-variant-numeric: tabular-nums; }
 .msf-step { display: grid; gap: 1.1rem; min-height: 19rem; align-content: start; }
-.msf h3 { font-size: clamp(1.5rem, 3vw, 1.9rem); outline: none; }
+.msf .msf-q { font-size: clamp(1.5rem, 3vw, 1.9rem); outline: none; }
 .msf-hint { color: var(--color-ink-3); margin-top: -0.6rem; }
 .msf-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 0.7rem; }
 @media (min-width: 620px) { .msf-cards { grid-template-columns: repeat(3, 1fr); } }
@@ -294,3 +294,10 @@
 .fit-note { font-size: 0.9rem; color: var(--color-ink-3); }
 .fit-acts { display: flex; flex-wrap: wrap; align-items: center; gap: 0.8rem 1.2rem; }
 .fit-call { font-weight: 700; color: var(--color-ember); }
+
+/* The hero headline sets in line by line straight from CSS, so it never waits on JavaScript. */
+@keyframes line-in { from { transform: translate3d(0, 105%, 0); } to { transform: none; } }
+.js .hero .lines .line > span { transform: none; transition: none; animation: line-in 0.8s cubic-bezier(0.22, 1, 0.36, 1) both; animation-delay: calc(var(--n, 0) * 90ms); }
+.js .hero [data-reveal] { opacity: 1; transform: none; transition: none; animation: hero-in 0.8s cubic-bezier(0.22, 1, 0.36, 1) both; animation-delay: var(--d, 0ms); }
+@keyframes hero-in { from { opacity: 0; transform: translate3d(0, 18px, 0); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { .js .hero .lines .line > span, .js .hero [data-reveal] { animation: none !important; } }

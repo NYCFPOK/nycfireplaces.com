@@ -44,4 +44,9 @@ Copy `.env.example` to `.env` first. With the defaults, leads are stored in `.da
 - [docs/FACT-VERIFICATION.md](docs/FACT-VERIFICATION.md): what is verified, what is not, and what the site does about it.
 - [docs/EDITING-GUIDE.md](docs/EDITING-GUIDE.md): how staff change content.
 - [docs/LAUNCH-AND-OPERATIONS.md](docs/LAUNCH-AND-OPERATIONS.md): lead delivery, environment variables, tracking, launch checklist, rollback, limitations.
+- [docs/CONTENT-TODO.md](docs/CONTENT-TODO.md): reviews, burn videos, before/after pairs, specs and other content still needed.
 - [docs/redirect-map.csv](docs/redirect-map.csv): every old URL and where it goes.
+
+## Living fire
+
+`<LivingImage>` lays simulated fire over a real photo (`src/lib/living.ts`). Effects run only on photos calibrated in `src/data/fire.ts`. Open any preview page with `?calibrate=1` to drag and resize effect boxes and copy the values. React islands (`src/components/islands/`) are used for the multi-step form, gallery, before/after slider and fit helper, hydrated with `client:visible`.

@@ -152,7 +152,7 @@ export default function MultiStepForm({ cards, phone, tel, directions, page, ini
     return (
       <div className="msf msf-done" role="status">
         <p className="eyebrow">Message received</p>
-        <h3 tabIndex={-1} ref={heading}>Thank you, {a.name.trim().split(' ')[0]}. Your message reached our team.</h3>
+        <h2 className="msf-q" tabIndex={-1} ref={heading}>Thank you, {a.name.trim().split(' ')[0]}. Your message reached our team.</h2>
         <p>{isService ? 'Our service team will review the request and contact you. No visit has been scheduled yet.' : 'A member of our team will read it and get back to you to talk through next steps. No appointment has been booked yet.'}</p>
         <div className="msf-actions">
           <a className="btn btn-primary" href={tel} data-track="phone_click" data-placement="quote_done">Call now: {phone}</a>
@@ -177,7 +177,7 @@ export default function MultiStepForm({ cards, phone, tel, directions, page, ini
         <motion.div key={step} className="msf-step" {...slide}>
           {step === 0 && (
             <>
-              <h3 tabIndex={-1} ref={heading}>What are you planning?</h3>
+              <h2 className="msf-q" tabIndex={-1} ref={heading}>What are you planning?</h2>
               <div className="msf-cards">
                 {cards.map((c) => (
                   <button type="button" key={c.id} className={'msf-card' + (a.plan === c.id ? ' is-on' : '')} onClick={() => answer('plan', c.id, c.label)}>
@@ -190,7 +190,7 @@ export default function MultiStepForm({ cards, phone, tel, directions, page, ini
           )}
           {q && (
             <>
-              <h3 tabIndex={-1} ref={heading}>{q.q}</h3>
+              <h2 className="msf-q" tabIndex={-1} ref={heading}>{q.q}</h2>
               <div className="msf-options">
                 {q.options.map((o) => <button type="button" key={o} className={'msf-option' + (a[q.key] === o ? ' is-on' : '')} onClick={() => answer(q.key, o)}>{o}</button>)}
               </div>
@@ -198,7 +198,7 @@ export default function MultiStepForm({ cards, phone, tel, directions, page, ini
           )}
           {step === photoStep && (
             <>
-              <h3 tabIndex={-1} ref={heading}>{isService ? 'Have a photo of the unit?' : 'Have a photo of the space?'}</h3>
+              <h2 className="msf-q" tabIndex={-1} ref={heading}>{isService ? 'Have a photo of the unit?' : 'Have a photo of the space?'}</h2>
               <p className="msf-hint">Optional. A phone photo helps us give you a better answer. Up to 5 files, 10 MB each.</p>
               <label className="msf-drop">
                 <input type="file" multiple accept="image/jpeg,image/png,image/webp,image/heic,application/pdf,.heic" onChange={(e) => setFiles([...(e.target.files || [])].slice(0, 5))} />
@@ -212,7 +212,7 @@ export default function MultiStepForm({ cards, phone, tel, directions, page, ini
           )}
           {step === contactStep && (
             <>
-              <h3 tabIndex={-1} ref={heading}>Where should we reach you?</h3>
+              <h2 className="msf-q" tabIndex={-1} ref={heading}>Where should we reach you?</h2>
               <p className="msf-hint">Phone or email. One is enough.</p>
               {errors.form && <p className="msf-error" role="alert">{errors.form}</p>}
               <div className="msf-fields">

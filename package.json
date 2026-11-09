@@ -5,7 +5,7 @@
   "private": true,
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build",
+    "build": "astro build && node scripts/compress.mjs",
     "start": "node server/index.mjs",
     "preview": "npm run build && node server/index.mjs",
     "check": "node scripts/check-site.mjs",

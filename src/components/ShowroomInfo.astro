@@ -29,7 +29,7 @@ const { placement, heading = 'Maspeth showroom', compact = false } = Astro.props
   .si-hours dt { font-weight: 650; }
   .si-status { margin-top: 0.6rem; font-weight: 650; font-size: 0.95rem; }
   .si-status[data-state='open'] { color: var(--color-ok); }
-  :global(.section-dark) .si-status[data-state='open'] { color: #8fd8a2; }
+  :global(.section-dark) .si-status[data-state='open'], :global(.cinema) .si-status[data-state='open'] { color: #8fd8a2; }
   .si-actions { display: flex; flex-wrap: wrap; gap: 0.7rem; margin-top: 1.35rem; }
   .compact .si-actions .btn { min-height: 2.75rem; }
 </style>

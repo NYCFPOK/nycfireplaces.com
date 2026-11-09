@@ -2,6 +2,18 @@
 import { Image } from 'astro:assets';
 import logo from '../assets/logo.png';
 import { site, telHref, helpHref, hoursClientData } from '../data/site';
+import { getEntry } from 'astro:content';
+const photo = async (slug: string) => (await getEntry('projects', slug))!.data.images[0];
+const panels: Record<string, { label: string; text: string; href: string; img: ImageMetadata }[]> = {
+  '/fireplaces/': [
+    { label: 'Add a new fireplace', text: 'New spaces, renovations, new construction', href: '/fireplaces/new/', img: await photo('stylish-napoleon-56-linear-gas-fireplace') },
+    { label: 'Upgrade an existing fireplace', text: 'Inserts, conversions, doors and mantels', href: '/fireplaces/upgrade-existing/', img: await photo('wood-to-gas-fireplace-conversion') },
+  ],
+  '/outdoor-kitchens/': [
+    { label: 'Plan an outdoor kitchen', text: 'Grills, cabinetry, refrigeration, layout', href: '/outdoor-kitchens/', img: await photo('xo-42-gas-grill-and-gozney-dome-dual-fuel-pizza-oven-with-challenger-o') },
+    { label: 'Fire pits, heating and pizza ovens', text: 'More evenings outside', href: '/outdoor-living/', img: await photo('sleek-outdoor-kitchen-with-firepit') },
+  ],
+};
 
 const primary = [
   { label: 'Start Here', href: '/start-here/' },
@@ -38,7 +50,19 @@ const isCurrent = (href: string) => path === href || (href !== '/' && path.start
       <Image src={logo} alt={site.name} width={232} height={40} loading="eager" />
     </a>
     <nav class="primary" aria-label="Primary">
-      {primary.map((l) => <a href={l.href} aria-current={isCurrent(l.href) ? 'page' : undefined}>{l.label}</a>)}
+      {primary.map((l) => panels[l.href] ? (
+        <div class="has-panel">
+          <a href={l.href} aria-current={isCurrent(l.href) ? 'page' : undefined}>{l.label}</a>
+          <div class="panel">
+            {panels[l.href].map((c) => (
+              <a href={c.href} class="panel-card">
+                <Image src={c.img} alt="" width={260} height={170} fit="cover" loading="lazy" />
+                <strong>{c.label}</strong><span>{c.text}</span>
+              </a>
+            ))}
+          </div>
+        </div>
+      ) : <a href={l.href} aria-current={isCurrent(l.href) ? 'page' : undefined}>{l.label}</a>)}
     </nav>
     <div class="actions">
       <a href={telHref} class="phone" data-track="phone_click" data-placement="header">
@@ -75,6 +99,15 @@ const isCurrent = (href: string) => path === href || (href !== '/' && path.start
   .primary { display: none; gap: 1.5rem; margin-inline: auto; }
   .primary a { text-decoration: none; font-weight: 650; font-size: 0.98rem; padding-block: 0.5rem; border-bottom: 2px solid transparent; white-space: nowrap; }
   .primary a:hover, .primary a[aria-current='page'] { border-bottom-color: var(--color-ember); }
+  .has-panel { position: relative; display: flex; }
+  .panel { position: absolute; left: 50%; top: 100%; transform: translate(-50%, 8px); display: grid; grid-template-columns: 1fr 1fr; gap: 0.9rem; width: 34rem; padding: 0.9rem; background: var(--color-paper); border: 1px solid var(--color-line); border-radius: 14px; box-shadow: 0 24px 50px -24px rgb(0 0 0 / 0.45); opacity: 0; visibility: hidden; transition: opacity 0.35s cubic-bezier(0.22, 1, 0.36, 1), transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), visibility 0.35s; z-index: 60; }
+  .has-panel:hover .panel, .has-panel:focus-within .panel { opacity: 1; visibility: visible; transform: translate(-50%, 0); }
+  .primary .panel-card { display: grid; gap: 0.15rem; padding: 0 0 0.5rem; border-bottom: 0; white-space: normal; font-weight: 400; border-radius: 10px; }
+  .primary .panel-card:hover { border-bottom: 0; }
+  .panel-card :global(img) { width: 100%; height: auto; aspect-ratio: 26 / 17; object-fit: cover; border-radius: 9px; margin-bottom: 0.4rem; }
+  .panel-card strong { font-family: var(--font-display); font-size: 1.1rem; font-weight: 560; }
+  .panel-card:hover strong { color: var(--color-ember); }
+  .panel-card span { font-size: 0.88rem; color: var(--color-ink-3); }
   .actions { margin-left: auto; display: flex; align-items: center; gap: 0.5rem; flex: none; }
   .phone { display: inline-flex; align-items: center; gap: 0.4rem; font-weight: 800; text-decoration: none; white-space: nowrap; min-height: 2.75rem; padding-inline: 0.35rem; color: var(--color-ink); font-size: 1rem; }
   .phone svg { color: var(--color-ember); }

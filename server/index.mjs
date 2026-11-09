@@ -20,6 +20,8 @@ const MAX_BODY = 30 * 1024 * 1024;
 
 const assets = sirv(new URL('../dist/client', import.meta.url).pathname, {
   etag: true,
+  brotli: true,
+  gzip: true,
   setHeaders(res, pathname) {
     res.setHeader('Cache-Control', pathname.startsWith('/_astro/') ? 'public, max-age=31536000, immutable' : 'public, max-age=300');
   },

@@ -51,6 +51,7 @@ const localBusiness = {
     <script is:inline>document.documentElement.classList.add('js');</script>
     <title>{fullTitle}</title>
     <meta name="description" content={description} />
+    <slot name="head" />
     <link rel="canonical" href={canonical} />
     {(!isProduction || noindex) && <meta name="robots" content="noindex, nofollow" />}
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />

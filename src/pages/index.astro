@@ -1,5 +1,5 @@
 ---
-import { Image } from 'astro:assets';
+import { Image, getImage } from 'astro:assets';
 import { getCollection, getEntry } from 'astro:content';
 import Base from '../layouts/Base.astro';
 import OptionCard from '../components/OptionCard.astro';
@@ -17,6 +17,7 @@ import heroShowroom from '../assets/showroom/showroom-141.jpg';
 import showroomWide from '../assets/showroom/showroom-158.jpg';
 import showroomDetail from '../assets/showroom/showroom-145.jpg';
 
+const heroSet = await Promise.all([480, 800, 1124].map(async (w) => `${(await getImage({ src: heroShowroom, width: w })).src} ${w}w`));
 const pathImages = {
   new: (await getEntry('projects', 'modern-fireplace'))!.data.images[0],
   existing: (await getEntry('projects', 'wood-to-gas-fireplace-conversion'))!.data.images[0],
@@ -40,9 +41,10 @@ const projects = (await getCollection('projects', (p) => p.data.featured && !p.d
   title="Fireplaces & Outdoor Kitchens in NYC: Showroom, Design & Installation | NYC Fireplaces & Outdoor Kitchens"
   description="Find the right fireplace or outdoor kitchen with expert help. Visit our Maspeth, Queens showroom or call 718-326-4328. You don't need a model number to get started."
 >
+  <link slot="head" rel="preload" as="image" fetchpriority="high" imagesrcset={heroSet.join(', ')} imagesizes="(max-width: 767px) 62vw, 100vw" />
   <!-- A. Hero: the one dark, cinematic moment. Real showroom, living fire. -->
   <section class="hero cinema">
-    <LivingImage class="hero-bg" src={heroShowroom} alt="Our Maspeth showroom at dusk, with linear and traditional fireplaces burning" eager fill motion="parallax" id="home-hero" position="70% 60%" sizes="100vw"
+    <LivingImage class="hero-bg" src={heroShowroom} alt="Our Maspeth showroom at dusk, with linear and traditional fireplaces burning" eager fill motion="parallax" id="home-hero" position="70% 60%" sizes="(max-width: 767px) 62vw, 100vw"
       effects={[
         { t: 'flames', r: [76.6, 62.2, 20.6, 4.6] },
         { t: 'flames', r: [7.2, 51, 9.6, 2.6], i: 0.8 },
