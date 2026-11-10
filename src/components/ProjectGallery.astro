@@ -7,7 +7,8 @@ const items = await Promise.all(images.map(async ({ src, alt }) => {
   const tw = layout === 'stack' ? Math.min(1000, src.width) : 560;
   const thumb = await getImage({ src, width: tw, ...(layout === 'grid' ? { height: 420, fit: 'cover' as const } : {}), format: 'webp', quality: 68 });
   const full = await getImage({ src, width: Math.min(1600, src.width), format: 'webp', quality: 78 });
-  return { thumb: thumb.src, full: full.src, alt, w: tw, h: layout === 'grid' ? 420 : Math.round(tw * src.height / src.width) };
+  const fw = Math.min(1600, src.width);
+  return { thumb: thumb.src, full: full.src, alt, w: tw, h: layout === 'grid' ? 420 : Math.round(tw * src.height / src.width), fw, fh: Math.round(fw * src.height / src.width) };
 }));
 ---
 <Gallery client:visible images={items} layout={layout} />
