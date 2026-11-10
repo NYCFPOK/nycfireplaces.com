@@ -237,6 +237,10 @@
 .msf-drop { display: grid; place-items: center; min-height: 8rem; padding: 1rem; border: 2px dashed #b9aa95; border-radius: 12px; background: #fff; text-align: center; cursor: pointer; font-weight: 600; position: relative; }
 .msf-drop input { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
 .msf-drop:focus-within { outline: 3px solid var(--color-ember); outline-offset: 3px; }
+.msf-attach { position: relative; display: flex; flex-wrap: wrap; align-items: center; gap: 0.35rem 0.75rem; cursor: pointer; }
+.msf-attach input { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
+.msf-attach-btn { display: inline-flex; align-items: center; min-height: 2.75rem; padding: 0.4rem 1rem; border: 1.5px dashed #b9aa95; border-radius: 10px; background: #fff; font-weight: 650; }
+.msf-attach:focus-within .msf-attach-btn { outline: 3px solid var(--color-ember); outline-offset: 3px; }
 .msf-fields { display: grid; gap: 0.9rem; }
 @media (min-width: 560px) { .msf-fields { grid-template-columns: 1fr 1fr; } .msf-wide, .msf-fields label:first-child { grid-column: 1 / -1; } }
 .msf-fields label { display: grid; gap: 0.3rem; font-weight: 650; }

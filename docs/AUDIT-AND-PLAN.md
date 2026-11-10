@@ -80,7 +80,7 @@ Then edit order, the homepage flag, and showroom display status in the editor. K
 The earlier build followed a dark, cinematic direction with animated flames laid over photos. This rebuild replaces it:
 
 - Light, warm and practical, because the brief asks that practical information never be hidden.
-- No flame animation over photographs. Altering real project photos works against "real proof".
+- Simulated fire is used sparingly: only on photos individually calibrated in `src/data/fire.ts`, and never on photos with no visible fire source. (The first pass of this rebuild removed it entirely; it was brought back in this limited form.)
 - The rooftop hero image was removed. It appears to be a rendering, not a photograph of completed work.
 - "Shop Online" is back as a clearly labelled secondary link.
 - Numeric claims (review counts, display counts, two-day installs, free design) are off the site until verified.

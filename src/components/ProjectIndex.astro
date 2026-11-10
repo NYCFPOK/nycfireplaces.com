@@ -12,6 +12,7 @@ const FILTERS = {
   'outdoor-living': { label: 'Fire pits & heating', cats: ['outdoor-living'], href: '/projects/type/outdoor-living/', title: 'Fire Pit & Outdoor Heating Projects' },
 };
 const f = FILTERS[filter];
+const PAGE = 12;
 const projects = (await getCollection('projects', (p) => !p.data.draft && (!f.cats || f.cats.includes(p.data.category))))
   .sort((a, b) => Number(b.data.featured) - Number(a.data.featured) || a.data.order - b.data.order || (b.data.year ?? 0) - (a.data.year ?? 0) || (b.data.legacyId ?? 0) - (a.data.legacyId ?? 0));
 ---
@@ -24,12 +25,44 @@ const projects = (await getCollection('projects', (p) => !p.data.draft && (!f.ca
       <nav class="filters" aria-label="Filter projects">
         {Object.entries(FILTERS).map(([key, v]) => <a href={v.href} aria-current={key === filter ? 'page' : undefined}>{v.label}</a>)}
       </nav>
-      <div class="grid3">{projects.map((p, i) => <ProjectCard project={p} eager={i < 3} />)}</div>
+      <div class="grid3" data-project-grid>{projects.map((p, i) => <div class="cell"><ProjectCard project={p} eager={i < 3} /></div>)}</div>
+      {projects.length > PAGE && (
+        <div class="more" data-project-more hidden>
+          <p aria-live="polite" data-project-count></p>
+          <button type="button" class="btn btn-secondary">Show more projects</button>
+        </div>
+      )}
     </div>
   </section>
   <CtaBand placement="projects_band" heading="See something close to what you want?" text="Tell us which project caught your eye. You do not need to know what the products are called." />
 </Base>
+<script>
+  // Every project stays in the HTML (for search engines and no-JavaScript visitors).
+  // With JavaScript, show 12 at a time so phones do not load 151 photos at once.
+  const PAGE = 12;
+  const grid = document.querySelector<HTMLElement>('[data-project-grid]');
+  const more = document.querySelector<HTMLElement>('[data-project-more]');
+  if (grid && more) {
+    const cells = [...grid.children] as HTMLElement[];
+    const count = more.querySelector<HTMLElement>('[data-project-count]')!;
+    const button = more.querySelector('button')!;
+    let shown = PAGE;
+    const render = (focus = false) => {
+      cells.forEach((c, i) => { c.hidden = i >= shown; });
+      count.textContent = `Showing ${Math.min(shown, cells.length)} of ${cells.length} projects`;
+      button.hidden = shown >= cells.length;
+      if (focus) cells[shown - PAGE]?.querySelector('a')?.focus({ preventScroll: true });
+    };
+    more.hidden = false;
+    render();
+    button.addEventListener('click', () => { shown += PAGE; render(true); });
+  }
+</script>
 <style>
+  .cell { display: grid; }
+  .cell[hidden] { display: none; }
+  .more { display: grid; justify-items: center; gap: 0.9rem; margin-top: 2.5rem; }
+  .more p { color: var(--color-ink-3); font-weight: 600; }
   h1 { margin-block: 0.6rem 1rem; }
   .filters { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 2rem; }
   .filters a { display: inline-flex; align-items: center; min-height: 2.75rem; padding: 0.4rem 1.1rem; border: 1.5px solid var(--color-line); border-radius: 999px; text-decoration: none; font-weight: 650; background: #fff; }

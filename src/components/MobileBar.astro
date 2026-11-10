@@ -1,5 +1,5 @@
 ---
-// Mobile bottom dock: Call, Showrooms, Get a Quote. It hides while scrolling
+// Mobile bottom dock: Call, Showroom, Get Project Help. It hides while scrolling
 // down, returns on scroll up, and stays out of the way of any form in use.
 import { telHref, helpHref } from '../data/site';
 interface Props { quote?: { href: string; label?: string } }
@@ -12,9 +12,9 @@ const { quote } = Astro.props;
   </a>
   <a href="/showroom/" data-track="showroom_info_click" data-placement="dock">
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12Z"/><circle cx="12" cy="10" r="2.6"/></svg>
-    <span>Showrooms</span>
+    <span>Showroom</span>
   </a>
-  <a href={quote?.href ?? helpHref} class="primary" data-track="help_cta_click" data-placement={quote ? 'dock_product' : 'dock'}><span>{quote?.label ?? 'Get a Quote'}</span></a>
+  <a href={quote?.href ?? helpHref} class="primary" data-track="help_cta_click" data-placement={quote ? 'dock_product' : 'dock'}><span>{quote?.label ?? 'Get Project Help'}</span></a>
 </nav>
 <script>
   const dock = document.querySelector<HTMLElement>('[data-dock]');

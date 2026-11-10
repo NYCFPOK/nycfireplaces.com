@@ -2,6 +2,7 @@
 import { Image } from 'astro:assets';
 import { getCollection } from 'astro:content';
 import Base from '../../layouts/Base.astro';
+import { metaDescription } from '../../data/site';
 import ProjectCard from '../../components/ProjectCard.astro';
 import CtaBand from '../../components/CtaBand.astro';
 import ProjectGallery from '../../components/ProjectGallery.astro';
@@ -25,7 +26,7 @@ const [catLabel, catHref, type] = CAT[p.category];
 const caseStudy = [['The goal', p.goal], ['What was selected', p.solution], ['What our team did', p.ourRole], ['Worth knowing', p.takeaway]].filter(([, v]) => v);
 const fallback = `${p.title}, a completed ${catLabel.toLowerCase()} project by NYC Fireplaces & Outdoor Kitchens.`;
 const source = p.summary ?? p.description ?? '';
-const description = (source.length >= 60 ? source : fallback).slice(0, 158);
+const description = metaDescription(source.length >= 60 ? source : fallback);
 ---
 <Base title={`${p.title}: Completed Project`} description={description} breadcrumbs={[['Our Projects', '/projects/'], [p.title, `/projects/${project.id}/`]]}>
   <article class="section">

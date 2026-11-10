@@ -65,16 +65,16 @@ export default function MultiStepForm({ cards, phone, tel, directions, page, ini
 
   const follow = FOLLOW[a.plan] ?? [];
   const isService = a.plan === 'service';
-  // 0 plan, 1..n follow-ups, then photo, then contact
-  const total = 1 + follow.length + 2;
-  const photoStep = 1 + follow.length;
-  const contactStep = photoStep + 1;
+  // 0 plan, 1..n follow-ups, then contact (photos are an optional row on the contact step).
+  // Before a plan is chosen the length is not known yet, so assume the typical path.
+  const total = a.plan ? 1 + follow.length + 1 : 4;
+  const contactStep = 1 + follow.length;
 
   useEffect(() => {
     document.getElementById(fallbackId || '')?.setAttribute('hidden', '');
     try {
       const saved = JSON.parse(sessionStorage.getItem(STORE) || 'null');
-      if (saved && !initial) { setA(saved.a); setStep(Math.min(saved.step, 1 + (FOLLOW[saved.a.plan]?.length ?? 0) + 1)); }
+      if (saved && !initial) { setA(saved.a); setStep(Math.min(saved.step, 1 + (FOLLOW[saved.a.plan]?.length ?? 0))); }
     } catch { /* start fresh */ }
   }, []);
   useEffect(() => {
@@ -140,7 +140,6 @@ export default function MultiStepForm({ cards, phone, tel, directions, page, ini
         try { sessionStorage.removeItem(STORE); } catch { /* ignore */ }
       } else if (data?.errors) {
         setErrors(data.errors.form ? { form: data.errors.form } : data.errors);
-        if (data.errors.files || data.errors.files_note) go(photoStep);
         setState('idle');
       } else setState('failed');
     } catch { setState('failed'); }
@@ -168,10 +167,10 @@ export default function MultiStepForm({ cards, phone, tel, directions, page, ini
     <form className="msf" onSubmit={submit} noValidate aria-label="Project inquiry">
       <div className="msf-top">
         <button type="button" className="msf-back" onClick={() => go(step - 1)} disabled={step === 0} aria-label="Back to the previous question">← Back</button>
-        <div className="msf-progress" role="progressbar" aria-valuemin={1} aria-valuemax={total} aria-valuenow={step + 1} aria-label={`Step ${step + 1} of ${total}`}>
+        <div className="msf-progress" role="progressbar" aria-valuemin={1} aria-valuemax={total} aria-valuenow={step + 1} aria-label={a.plan && step > 0 ? `Step ${step + 1} of ${total}` : 'Step 1'}>
           <span style={{ transform: `scaleX(${(step + 1) / total})` }} />
         </div>
-        <span className="msf-count">{step + 1} / {total}</span>
+        <span className="msf-count">{a.plan && step > 0 ? `${step + 1} / ${total}` : 'Step 1'}</span>
       </div>
       <AnimatePresence mode="wait" initial={false} custom={dir}>
         <motion.div key={step} className="msf-step" {...slide}>
@@ -193,20 +192,6 @@ export default function MultiStepForm({ cards, phone, tel, directions, page, ini
               <h2 className="msf-q" tabIndex={-1} ref={heading}>{q.q}</h2>
               <div className="msf-options">
                 {q.options.map((o) => <button type="button" key={o} className={'msf-option' + (a[q.key] === o ? ' is-on' : '')} onClick={() => answer(q.key, o)}>{o}</button>)}
-              </div>
-            </>
-          )}
-          {step === photoStep && (
-            <>
-              <h2 className="msf-q" tabIndex={-1} ref={heading}>{isService ? 'Have a photo of the unit?' : 'Have a photo of the space?'}</h2>
-              <p className="msf-hint">Optional. A phone photo helps us give you a better answer. Up to 5 files, 10 MB each.</p>
-              <label className="msf-drop">
-                <input type="file" multiple accept="image/jpeg,image/png,image/webp,image/heic,application/pdf,.heic" onChange={(e) => setFiles([...(e.target.files || [])].slice(0, 5))} />
-                <span>{files.length ? `${files.length} file${files.length > 1 ? 's' : ''} added: ${files.map((f) => f.name).join(', ')}` : 'Tap to add photos or plans'}</span>
-              </label>
-              {(errors.files || errors.files_note) && <p className="msf-error" role="alert">{errors.files || errors.files_note}</p>}
-              <div className="msf-actions">
-                <button type="button" className="btn btn-primary" onClick={() => { track('quote_step', { quote_step: String(step + 1), quote_question: 'photos', quote_answer: files.length ? 'added' : 'skipped' }); go(contactStep); }}>{files.length ? 'Continue' : 'Skip this step'}</button>
               </div>
             </>
           )}
@@ -236,6 +221,12 @@ export default function MultiStepForm({ cards, phone, tel, directions, page, ini
                   <textarea className="input" name="message" rows={3} value={a.message || ''} onChange={set('message')} aria-invalid={!!errors.message} />
                   {errors.message && <span className="msf-error">{errors.message}</span>}
                 </label>
+                <label className="msf-wide msf-attach">
+                  <input type="file" multiple accept="image/jpeg,image/png,image/webp,image/heic,application/pdf,.heic" onChange={(e) => { const picked = [...(e.target.files || [])].slice(0, 5); setFiles(picked); track('quote_step', { quote_step: String(step + 1), quote_question: 'photos', quote_answer: picked.length ? 'added' : 'cleared' }); }} />
+                  <span className="msf-attach-btn">{files.length ? 'Change photos' : isService ? 'Add a photo of the unit' : 'Add a photo of the space'}</span>
+                  <small>{files.length ? `${files.length} file${files.length > 1 ? 's' : ''} added: ${files.map((f) => f.name).join(', ')}` : 'Optional. Up to 5 files, 10 MB each.'}</small>
+                </label>
+                {(errors.files || errors.files_note) && <span className="msf-error msf-wide" role="alert">{errors.files || errors.files_note}</span>}
               </div>
               {errors.contact && <p className="msf-error" role="alert">{errors.contact}</p>}
               {state === 'failed' && <p className="msf-error" role="alert">We could not send that just now. Please try again, or call {phone}.</p>}

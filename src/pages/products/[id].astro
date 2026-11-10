@@ -10,6 +10,7 @@ import FitHelper from '../../components/islands/FitHelper.tsx';
 import { fireForOption } from '../../data/fire';
 import { getCollection, getEntries } from 'astro:content';
 import Base from '../../layouts/Base.astro';
+import { metaDescription } from '../../data/site';
 import ProjectCard from '../../components/ProjectCard.astro';
 import ShowroomInfo from '../../components/ShowroomInfo.astro';
 import LeadForm from '../../components/LeadForm.astro';
@@ -36,7 +37,7 @@ const installs = related.flatMap((p) => p.data.images.slice(0, 2).map((src) => (
 const FAQ = { 'new-fireplace': 'fireplaces', 'existing-fireplace': 'existing', 'outdoor-kitchen': 'outdoor-kitchens', 'outdoor-living': 'outdoor-kitchens' } as const;
 const productSchema = { '@context': 'https://schema.org', '@type': 'Product', name: o.title, description: o.whatItIs, image: new URL(o.image.src, site.url).href, category: parentLabel, brand: { '@type': 'Organization', name: site.name } };
 ---
-<Base title={`${o.title}: What It Is and Who It Suits`} description={`${o.whatItIs} ${o.goodFor}`.slice(0, 158)} quote={{ href: quoteHref, label: 'Get a quote on this' }} breadcrumbs={[[parentLabel, parentHref], [o.title, `/products/${option.id}/`]]} schema={[productSchema]}>
+<Base title={`${o.title}: What It Is and Who It Suits`} description={metaDescription(`${o.whatItIs} ${o.goodFor}`)} quote={{ href: quoteHref, label: 'Get a quote on this' }} breadcrumbs={[[parentLabel, parentHref], [o.title, `/products/${option.id}/`]]} schema={[productSchema]}>
   <LivingHero image={o.image} alt={o.imageAlt} effects={fireForOption(option.id)} eyebrow={parentLabel} title={o.title} lede={o.whatItIs} crumbs={[[parentLabel, parentHref]]} placement="product_top" quoteHref={quoteHref} position={o.imagePosition} id={`product-${option.id}`}>
     <p class="good"><strong>A good starting point for:</strong> {o.goodFor}</p>
     <p class="price">{o.priceNote ?? 'Contact us for pricing. The appliance is one part of the cost; we quote the complete project once we understand it.'}</p>

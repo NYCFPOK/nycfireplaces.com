@@ -41,5 +41,5 @@ Only "30+ years" is shown.
 
 ## Other
 - [ ] Financing: approved Acorn Finance wording, link and required disclosures. The site currently says only "Ask us about financing through Acorn Finance."
-- [ ] Whether 718-326-4328 accepts text messages (the dock ships with Call, Showrooms, Get a Quote).
+- [ ] Whether 718-326-4328 accepts text messages (the dock ships with Call, Showroom, Get Project Help).
 - [ ] Greenvale opening date and hours. It is listed last and labelled "coming soon".

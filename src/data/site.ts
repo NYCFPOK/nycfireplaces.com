@@ -45,3 +45,13 @@ export const hoursClientData = JSON.stringify({
 });
 
 export const isProduction = import.meta.env.SITE_ENV === 'production';
+
+/** Trim text for a meta description at a word boundary, never mid-word. */
+export const metaDescription = (text: string, max = 158) => {
+  const clean = text.replace(/\s+/g, ' ').trim();
+  if (clean.length <= max) return clean;
+  const cut = clean.slice(0, max - 1);
+  const sentence = cut.lastIndexOf('. ');
+  if (sentence > max * 0.6) return cut.slice(0, sentence + 1);
+  return cut.slice(0, cut.lastIndexOf(' ')).replace(/[,;:\s]+$/, '') + '…';
+};
