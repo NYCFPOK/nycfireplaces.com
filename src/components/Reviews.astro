@@ -1,13 +1,22 @@
 ---
 // Shows approved, real reviews only. With none approved it renders a plain
 // pointer to our Google reviews rather than anything invented.
+// With four or more approved reviews (and marquee enabled) they scroll in the
+// 21st.dev testimonials marquee (./ui/grid-testimonials-marquee.tsx); with fewer they sit in a static row.
 import { getCollection } from 'astro:content';
 import { site } from '../data/site';
-interface Props { limit?: number }
-const { limit = 3 } = Astro.props;
-const reviews = (await getCollection('reviews')).filter((r) => r.data.approved).sort((a, b) => a.data.order - b.data.order).slice(0, limit);
+import TestimonialsMarquee from './ui/grid-testimonials-marquee';
+interface Props { limit?: number; marquee?: boolean }
+const { limit = 3, marquee = false } = Astro.props;
+const approved = (await getCollection('reviews')).filter((r) => r.data.approved).sort((a, b) => a.data.order - b.data.order);
+const useMarquee = marquee && approved.length >= 4;
+const reviews = useMarquee ? approved : approved.slice(0, limit);
+const items = reviews.map((r) => ({ id: r.id, name: r.data.author, source: r.data.source, sourceUrl: r.data.sourceUrl, content: r.data.quote }));
+const half = Math.ceil(items.length / 2);
 ---
-{reviews.length > 0 ? (
+{useMarquee ? (
+  <div class="bleed"><TestimonialsMarquee firstRow={items.length >= 6 ? items.slice(0, half) : items} secondRow={items.length >= 6 ? items.slice(half) : []} /></div>
+) : reviews.length > 0 ? (
   <div class="reviews">
     {reviews.map((r) => (
       <figure class="card">
@@ -24,6 +33,7 @@ const reviews = (await getCollection('reviews')).filter((r) => r.data.approved).
   <p class="fallback">Want to hear from customers directly? <a class="link link-arrow" href={site.googleReviewsUrl} rel="noopener" target="_blank">Read our reviews on Google</a></p>
 ) : null}
 <style>
+  .bleed { width: 100vw; margin-inline: calc(50% - 50vw); margin-top: clamp(2.5rem, 5vw, 4rem); }
   .reviews { display: grid; gap: 1.25rem; }
   @media (min-width: 860px) { .reviews { grid-template-columns: repeat(3, 1fr); } }
   figure { padding: 1.4rem; display: grid; gap: 1rem; align-content: space-between; }

@@ -1,9 +1,34 @@
 ---
-import { Image } from 'astro:assets';
+import { Image, getImage } from 'astro:assets';
+import Hero04 from './ui/hero-04';
 import { site, telHref, helpHref } from '../data/site';
-interface Props { eyebrow?: string; title: string; lede: string; image?: ImageMetadata; imageAlt?: string; placement: string; helpQuery?: string; crumbs?: [string, string][] }
-const { eyebrow, title, lede, image, imageAlt = '', placement, helpQuery = '', crumbs = [] } = Astro.props;
+// With a second image the hero becomes the editorial collage (21st.dev hero-04, see ./ui/hero-04.tsx).
+interface Props { eyebrow?: string; title: string; lede: string; image?: ImageMetadata; imageAlt?: string; image2?: ImageMetadata; image2Alt?: string; placement: string; helpQuery?: string; crumbs?: [string, string][] }
+const { eyebrow, title, lede, image, imageAlt = '', image2, image2Alt = '', placement, helpQuery = '', crumbs = [] } = Astro.props;
+const collage = image && image2 ? await (async () => {
+  const a = await getImage({ src: image, widths: [360, 520, 840], width: 840, height: 1050, fit: 'cover', format: 'webp', quality: 72 });
+  const b = await getImage({ src: image2, widths: [200, 320, 440], width: 440, height: 440, fit: 'cover', format: 'webp', quality: 70 });
+  return {
+    primary: { src: a.src, srcSet: a.srcSet.attribute, sizes: '(min-width: 900px) 420px, (min-width: 640px) 420px, 78vw', width: 840, height: 1050, alt: imageAlt },
+    secondary: { src: b.src, srcSet: b.srcSet.attribute, sizes: '(min-width: 640px) 215px, 40vw', width: 440, height: 440, alt: image2Alt },
+  };
+})() : null;
 ---
+{collage ? (
+  <Hero04 title={title} description={lede} primaryImage={collage.primary} secondaryImage={collage.secondary}>
+    <Fragment slot="before">
+      {crumbs.length > 0 && (
+        <nav aria-label="Breadcrumb" class="crumbs"><a href="/">Home</a>{crumbs.map(([l, h]) => <><span aria-hidden="true"> / </span><a href={h}>{l}</a></>)}</nav>
+      )}
+      {eyebrow && <p class="eyebrow">{eyebrow}</p>}
+    </Fragment>
+    <div class="acts">
+      <a class="btn btn-primary btn-lg" href={telHref} data-track="phone_click" data-placement={placement}>{site.cta.call}</a>
+      <a class="btn btn-secondary btn-lg" href={`${helpHref}${helpQuery}`} data-track="help_cta_click" data-placement={placement}>{site.cta.help}</a>
+    </div>
+    <slot />
+  </Hero04>
+) : (
 <section class="page-hero">
   <div class:list={['wrap', 'inner', { 'has-image': image }]}>
     <div>
@@ -24,15 +49,16 @@ const { eyebrow, title, lede, image, imageAlt = '', placement, helpQuery = '', c
     )}
   </div>
 </section>
-<style>
+)}
+<style is:global>
   .page-hero { background: var(--color-paper-2); border-bottom: 1px solid var(--color-line); padding-block: clamp(2rem, 5vw, 4rem); }
-  .inner { display: grid; gap: 2rem; align-items: center; }
-  @media (min-width: 900px) { .inner.has-image { grid-template-columns: 1.1fr 0.9fr; gap: 3.5rem; } }
-  .crumbs { font-size: 0.9rem; color: var(--color-ink-3); margin-bottom: 1rem; }
-  .crumbs a { text-decoration: underline; text-underline-offset: 2px; }
-  .eyebrow { margin-bottom: 0.7rem; }
-  h1 { margin-bottom: 1rem; max-width: 20ch; }
-  .acts { display: flex; flex-wrap: wrap; gap: 0.8rem; margin-top: 1.6rem; }
-  .media { border-radius: var(--radius-card); overflow: hidden; aspect-ratio: 4 / 3; box-shadow: var(--shadow-card); }
-  .media :global(img) { width: 100%; height: 100%; object-fit: cover; }
+  .page-hero .inner { display: grid; gap: 2rem; align-items: center; }
+  @media (min-width: 900px) { .page-hero .inner.has-image { grid-template-columns: 1.1fr 0.9fr; gap: 3.5rem; } }
+  :is(.page-hero, .hero-collage) .crumbs { font-size: 0.9rem; color: var(--color-ink-3); margin-bottom: 1rem; }
+  :is(.page-hero, .hero-collage) .crumbs a { text-decoration: underline; text-underline-offset: 2px; }
+  :is(.page-hero, .hero-collage) .eyebrow { margin-bottom: 0.7rem; }
+  .page-hero h1 { margin-bottom: 1rem; max-width: 20ch; }
+  :is(.page-hero, .hero-collage) .acts { display: flex; flex-wrap: wrap; gap: 0.8rem; margin-top: 1.6rem; }
+  .page-hero .media { border-radius: var(--radius-card); overflow: hidden; aspect-ratio: 4 / 3; box-shadow: var(--shadow-card); }
+  .page-hero .media img { width: 100%; height: 100%; object-fit: cover; }
 </style>
